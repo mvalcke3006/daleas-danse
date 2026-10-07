@@ -256,7 +256,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   .tease--wide .tease__media { aspect-ratio: 4 / 3; }
   .tease:hover .tease__media :global(img) { transform: scale(1.04); }
 
-  .gal { display: block; }
+  .gal { display: block; overflow: hidden; }
   .gal__head { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem 3rem; align-items: end; }
   .gal__head .h2 { margin-top: 1rem; }
   .gal__side { display: grid; gap: 1.25rem; justify-items: start; max-width: 24rem; }
@@ -298,6 +298,6 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   }
   @media (max-width: 560px) {
     .expand { height: 160vh; }
-    .gal__item:nth-child(1), .gal__item:nth-child(7) { display: none; }
+    .gal__item:nth-child(1), .gal__item:nth-child(2), .gal__item:nth-child(6), .gal__item:nth-child(7) { display: none; }
   }
 </style>
