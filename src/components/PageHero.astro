@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  kicker: string;
+  accent: string;
+  image?: ImageMetadata;
+  pos?: string;
+}
+const { kicker, accent, image, pos = '50% 40%' } = Astro.props;
+---
+<header class="ph on-white">
+  <div class="wrap">
+    <div class="ph__top">
+      <p class="kicker" data-reveal>{kicker}</p>
+      <p class="label muted ph__accent" data-reveal style="--d:.05s">{accent}</p>
+    </div>
+    {Astro.slots.has('default') && (
+      <h1 class="h1 ph__title" data-reveal style="--d:.08s"><slot /></h1>
+    )}
+    {Astro.slots.has('sub') && <div class="lead ph__sub" data-reveal style="--d:.14s"><slot name="sub" /></div>}
+  </div>
+  {image && (
+    <div class="ph__media" data-clip>
+      <div class="ph__img">
+        <Image src={image} alt="" widths={[800, 1400, 2000]} sizes="100vw" loading="eager" style={`object-position:${pos}`} />
+      </div>
+    </div>
+  )}
+</header>
+
+<style>
+  .ph { padding-top: clamp(7.5rem, 14vh, 10rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+  .ph__top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .ph__title { margin-top: clamp(1.5rem, 3vw, 2.5rem); font-size: clamp(2.8rem, 7.4vw, 7rem); max-width: 16ch; }
+  .ph__sub { margin-top: 1.75rem; max-width: 36rem; }
+  .ph__media { margin: clamp(2.5rem, 5vw, 4rem) var(--side) 0; border-radius: 4px; overflow: hidden; }
+  .ph__img { height: clamp(260px, 56vh, 680px); }
+  .ph__img :global(img) { width: 100%; height: 100%; object-fit: cover; }
+</style>

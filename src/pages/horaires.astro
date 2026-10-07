@@ -1,0 +1,191 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { schedule, days, season } from '../data/site';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+
+const toMin = (t: string) => {
+  const [h, m] = t.split('h').map(Number);
+  return h * 60 + (m || 0);
+};
+const byDay = days.map((day) => ({
+  day,
+  items: schedule
+    .flatMap((d) => d.slots.filter((s) => s.day === day).map((s) => ({ ...s, disc: d })))
+    .sort((a, b) => toMin(a.start) - toMin(b.start)),
+}));
+const total = schedule.reduce((n, d) => n + d.slots.length, 0);
+---
+<Base
+  title="Horaires des cours"
+  description={`Horaires ${season} des cours de danse Daléas à Annecy : éveil rythmique, initiation jazz, jazz ados et adultes, moderne, classe chorégraphique.`}
+>
+  <PageHero kicker={`Planning ${season}`} accent="cours réguliers" image={jazz} pos="50% 45%">
+    Horaires<br /><em>{total} cours par semaine</em>
+    <Fragment slot="sub">De l’éveil rythmique dès 2 ans ½ jusqu’aux classes avancées.</Fragment>
+  </PageHero>
+
+  <section class="planning" data-planning>
+    <div class="controls" data-reveal>
+      <div class="controls__group" role="tablist" aria-label="Affichage">
+        <button class="chip" role="tab" aria-selected="true" data-view="disc">Par cours<sup>1</sup></button>
+        <button class="chip" role="tab" aria-selected="false" data-view="day">Par jour<sup>2</sup></button>
+      </div>
+      <div class="controls__group" role="group" aria-label="Filtrer par discipline">
+        <button class="chip" aria-pressed="true" data-filter="all">Tous</button>
+        {schedule.map((d) => <button class="chip" aria-pressed="false" data-filter={d.id}>{d.name}</button>)}
+      </div>
+    </div>
+
+    <div data-panel="disc">
+      {schedule.map((d, i) => (
+        <article class="disc" id={d.id} data-disc={d.id}>
+          <header class="disc__head">
+            <p class="label grey">{String(i + 1).padStart(2, '0')}</p>
+            <h2 class="disc__name display">{d.name}</h2>
+            <p class="label">{d.audience}</p>
+            <p class="prose grey disc__desc">{d.description}</p>
+          </header>
+          <ul class="slots">
+            {d.slots.map((s) => (
+              <li>
+                <span class="label">{s.level}</span>
+                <span class="display slots__day">{s.day}</span>
+                <span class="display slots__time">{s.start} – {s.end}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+      ))}
+    </div>
+
+    <div class="week" data-panel="day" hidden>
+      {byDay.map(({ day, items }) => (
+        <div class="week__col">
+          <h2 class="week__day display">{day}</h2>
+          <ul>
+            {items.map((it) => (
+              <li class="cell" data-disc={it.disc.id}>
+                <span class="display cell__time">{it.start} – {it.end}</span>
+                <span class="label">{it.disc.name}</span>
+                <span class="label grey">{it.level}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+
+    <div class="notes label">
+      <p>Pas de cours pendant les vacances scolaires et les jours fériés.<br />Cours dispensés de septembre à juin.</p>
+      <a href="/daleas-danse-annecy-tarifs/" class="btn btn--ghost">Voir les tarifs</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .planning { padding: 0 var(--side) 4rem; max-width: 1240px; margin-inline: auto; }
+  .controls {
+    position: sticky;
+    top: 48px;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 20px;
+    padding: 10px 0;
+    margin-bottom: 4rem;
+    background: rgba(255, 255, 255, 0.9);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .controls__group { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+  .controls .chip[aria-selected='true'], .controls .chip[aria-pressed='true'] { background: var(--black); color: var(--white); }
+
+  [data-disc].is-off { display: none; }
+
+  .disc {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr;
+    gap: 2rem clamp(2rem, 6vw, 6rem);
+    padding: 3.5rem 0;
+    border-top: 1px solid var(--hair);
+    scroll-margin-top: 9rem;
+    animation: fade 0.7s var(--ease-out) both;
+  }
+  .disc__head { display: flex; flex-direction: column; gap: 0.6rem; }
+  .disc__name { font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 320; line-height: 1; letter-spacing: -0.025em; }
+  .disc__desc { max-width: 20rem; margin-top: 0.6rem; }
+  .slots li {
+    display: grid;
+    grid-template-columns: 1.3fr 0.7fr 0.9fr;
+    gap: 1rem;
+    align-items: baseline;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--hair);
+  }
+  .slots li:first-child { padding-top: 0.4rem; }
+  .slots__day, .slots__time { font-size: 17px; }
+  .slots__day { text-transform: capitalize; }
+  .slots__time { text-align: right; font-variant-numeric: tabular-nums; }
+
+  .week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .week[hidden] { display: none; }
+  .week__day { font-size: 1.7rem; font-weight: 320; text-transform: capitalize; letter-spacing: -0.02em; margin-bottom: 1rem; }
+  .week ul { display: grid; gap: 4px; }
+  .cell {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px;
+    border-radius: 4px;
+    background: var(--chip);
+    animation: fade 0.6s var(--ease-out) both;
+  }
+  .cell__time { font-size: 17px; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } }
+
+  .notes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: center;
+    margin-top: 6rem;
+  }
+
+  @media (max-width: 1000px) {
+    .week { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; }
+  }
+  @media (max-width: 700px) {
+    .controls { position: static; }
+    .disc { grid-template-columns: 1fr; }
+    .slots li { grid-template-columns: 1fr auto; }
+    .slots li .label { grid-column: 1 / -1; }
+    .week { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-planning]')!;
+  const tabs = root.querySelectorAll<HTMLButtonElement>('[data-view]');
+  const chips = root.querySelectorAll<HTMLButtonElement>('[data-filter]');
+  const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
+
+  const setView = (v: string) => {
+    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.view === v)));
+    panels.forEach((p) => (p.hidden = p.dataset.panel !== v));
+  };
+  const setFilter = (f: string) => {
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === f)));
+    root.querySelectorAll<HTMLElement>('[data-disc]').forEach((el) => {
+      el.classList.toggle('is-off', f !== 'all' && el.dataset.disc !== f);
+    });
+  };
+  tabs.forEach((t) => t.addEventListener('click', () => setView(t.dataset.view!)));
+  chips.forEach((c) => c.addEventListener('click', () => setFilter(c.dataset.filter!)));
+
+  const hash = location.hash.slice(1);
+  if (hash && root.querySelector(`[data-filter="${CSS.escape(hash)}"]`)) setFilter(hash);
+</script>

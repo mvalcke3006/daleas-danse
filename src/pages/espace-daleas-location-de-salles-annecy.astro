@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site, sms } from '../data/site';
+import studio from '../assets/img/espacedaleas-salle1.jpg';
+
+const features = [
+  ['3 studios', 'Pour activités artistiques et de bien-être, yoga, répétitions.'],
+  ['Un grand vestiaire', 'Avec douches et toutes les commodités nécessaires.'],
+  ['À l’heure ou au week-end', 'Location hebdomadaire ou ponctuelle, stages de week-end selon disponibilités.'],
+];
+---
+<Base
+  title="Location de salles"
+  description="L’Espace Daléas propose ses 3 studios à la location, en plein centre d’Annecy, pour les professeurs de disciplines artistiques et bien-être ainsi que les répétitions."
+>
+  <PageHero kicker="Espace Daléas" accent="location de salles" image={studio} pos="50% 50%">
+    Location<br /><em>trois studios à Annecy</em>
+    <Fragment slot="sub">Pour les professeurs de disciplines artistiques et de bien-être, et pour vos répétitions.</Fragment>
+  </PageHero>
+
+
+  <section class="feats">
+    {features.map(([k, v], i) => (
+      <div class="feat" style={`--x:${[0, 5, 2][i]}rem`} data-reveal>
+        <p class="label">{String(i + 1).padStart(2, '0')}</p>
+        <p class="feat__k display">{k}</p>
+        <p class="prose grey">{v}</p>
+      </div>
+    ))}
+  </section>
+
+  <section class="book" data-reveal>
+    <p class="intro">Réserver <span class="display">par écrit</span></p>
+    <p class="prose book__txt">Précisez l’activité, les créneaux et la fréquence souhaités.</p>
+    <div class="book__links">
+      <a href={sms(site.rentalPhone)} class="btn">SMS — {site.rentalPhone}</a>
+      <a href={`mailto:${site.email}?subject=Location%20de%20salle`} class="btn btn--ghost">E-mail</a>
+      <a href={site.links.espace} class="btn btn--ghost" target="_blank" rel="noopener">espacedaleas.fr</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .feats { display: flex; flex-direction: column; align-items: center; gap: 4.5rem; padding: clamp(8rem, 14vw, 11rem) 1rem 0; }
+  .feat { width: min(20rem, 100%); transform: translateX(var(--x)); }
+  .feat__k { font-size: 1.9rem; font-weight: 320; letter-spacing: -0.02em; line-height: 1.1; margin: 0.5rem 0; }
+  .book { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; padding: clamp(8rem, 14vw, 11rem) 1rem 0; text-align: center; }
+  .book__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 0.6rem; }
+  @media (max-width: 700px) { .feat { transform: none; } }
+</style>

@@ -1,0 +1,64 @@
+<svg class="edges-svg" aria-hidden="true" focusable="false">
+  <filter id="edge-warp" x="0" y="0" width="100%" height="100%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.006 0.035" numOctaves="2" seed="7" result="n" />
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="38" xChannelSelector="R" yChannelSelector="G" />
+  </filter>
+</svg>
+
+<div class="edge edge--top" aria-hidden="true" data-edge="top">
+  <i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="warp"></i>
+</div>
+<div class="edge edge--bottom" aria-hidden="true" data-edge="bottom">
+  <i class="b1"></i><i class="b2"></i><i class="b3"></i><i class="b4"></i><i class="warp"></i>
+</div>
+
+<style>
+  .edges-svg { position: absolute; width: 0; height: 0; }
+  .edge {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    pointer-events: none;
+    transition: transform 0.6s var(--ease-out);
+  }
+  .edge--top { top: 0; height: clamp(60px, 11vh, 130px); transform: translateY(calc((1 - var(--o, 0)) * -100%)); }
+  .edge--bottom { bottom: 0; height: clamp(70px, 13vh, 150px); transform: translateY(calc((1 - var(--o, 0)) * 100%)); }
+  .edge i { position: absolute; inset: 0; }
+  .edge--top i { --dir: to top; }
+  .edge--bottom i { --dir: to bottom; }
+  .edge .b1 { -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); -webkit-mask: linear-gradient(var(--dir), transparent 0%, #000 30%); mask: linear-gradient(var(--dir), transparent 0%, #000 30%); }
+  .edge .b2 { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); -webkit-mask: linear-gradient(var(--dir), transparent 25%, #000 55%); mask: linear-gradient(var(--dir), transparent 25%, #000 55%); }
+  .edge .b3 { -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); -webkit-mask: linear-gradient(var(--dir), transparent 50%, #000 78%); mask: linear-gradient(var(--dir), transparent 50%, #000 78%); }
+  .edge .b4 { -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); -webkit-mask: linear-gradient(var(--dir), transparent 72%, #000 100%); mask: linear-gradient(var(--dir), transparent 72%, #000 100%); }
+  .edge .warp {
+    opacity: var(--va, 0);
+    backdrop-filter: url(#edge-warp);
+    -webkit-mask: linear-gradient(var(--dir), transparent 10%, #000 70%);
+    mask: linear-gradient(var(--dir), transparent 10%, #000 70%);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .edge .warp { display: none; }
+  }
+  @media (max-width: 640px) {
+    .edge--top { height: 70px; }
+    .edge--bottom { height: 90px; }
+    .edge .warp { display: none; }
+  }
+</style>
+
+<script>
+  const top = document.querySelector<HTMLElement>('[data-edge="top"]');
+  const bottom = document.querySelector<HTMLElement>('[data-edge="bottom"]');
+  if (top && bottom) {
+    const set = () => {
+      const y = scrollY;
+      const max = document.documentElement.scrollHeight - innerHeight;
+      top.style.setProperty('--o', y > 80 ? '1' : '0');
+      bottom.style.setProperty('--o', y > 120 && max - y > 160 ? '1' : '0');
+    };
+    set();
+    addEventListener('scroll', set, { passive: true });
+    addEventListener('resize', set);
+  }
+</script>

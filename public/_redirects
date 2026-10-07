@@ -1,0 +1,7 @@
+# Anciennes URL WordPress → nouvelles pages
+/stage-week-end-2023/   /stages/                        301
+/stage-week-end-2023    /stages/                        301
+/wp-content/uploads/2026/08/32stagedanseannecy-inscriptionsweb5.pdf  /32stagedanseannecy-inscriptionsweb5.pdf  301
+/wp-admin/*             /                               301
+/author/*               /                               301
+/feed/*                 /                               301

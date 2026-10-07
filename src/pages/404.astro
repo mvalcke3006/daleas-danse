@@ -1,0 +1,14 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Page introuvable" description="Cette page n’existe pas ou a été déplacée." footer={false}>
+  <section class="nf">
+    <p class="intro">Erreur <span class="display">404</span></p>
+    <p class="statement">Faux pas.</p>
+    <a href="/" class="btn btn--ghost">Retour à l’accueil</a>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3rem; padding: 1rem; }
+</style>

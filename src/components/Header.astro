@@ -1,0 +1,204 @@
+---
+import { getImage } from 'astro:assets';
+import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
+import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
+import studio from '../assets/img/espacedaleas-salle1.jpg';
+import gala from '../assets/img/daleasdanse-slide4.jpg';
+import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+import { navigation, site, tel } from '../data/site';
+
+const path = Astro.url.pathname;
+const previews = [team, jazz, kids, duo, yoga, studio, gala, team];
+const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640, format: 'webp' })));
+---
+<header class="nav">
+  <a href="/" class="nav__pill nav__brand" aria-label="Daléas Danse, accueil">
+    <img src="/logo.svg" alt="" width="628" height="944" />
+  </a>
+  <div class="nav__right">
+    <a href="/horaires/" class="nav__pill nav__quick">Horaires</a>
+    <button class="nav__pill nav__menu" aria-expanded="false" aria-controls="menu" data-menu-btn>
+      <span data-menu-txt>Menu</span>
+      <span class="nav__dots" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </div>
+</header>
+
+<div class="menu on-black" id="menu" data-menu aria-hidden="true">
+  <div class="menu__inner">
+    <nav class="menu__nav" aria-label="Menu principal">
+      <a href="/" class:list={['menu__link', path === '/' && 'is-current']} style="--i:0" data-preview="0">Accueil</a>
+      {navigation.map((n, i) => (
+        <a
+          href={n.href}
+          class:list={['menu__link', path.startsWith(n.href) && 'is-current']}
+          style={`--i:${i + 1}`}
+          data-preview={i}
+          aria-current={path.startsWith(n.href) ? 'page' : undefined}
+        >{n.label}</a>
+      ))}
+    </nav>
+    <div class="menu__side">
+      <div class="menu__preview" aria-hidden="true">
+        {shots.map((s, i) => <img src={s.src} alt="" loading="lazy" class:list={[i === 0 && 'is-on']} data-shot={i} />)}
+      </div>
+      <div class="menu__info">
+        <p class="kicker">Nous joindre</p>
+        {site.teachers.map((t) => <a href={tel(t.phone)} class="menu__tel">{t.name} — {t.phone}</a>)}
+        <p class="muted">{site.address.street}, {site.address.city}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 60;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: clamp(12px, 2vw, 22px) max(var(--side), calc((100vw - var(--max)) / 2 + var(--side))) 0;
+    pointer-events: none;
+    transition: transform 0.7s var(--ease-expo);
+  }
+  .nav.is-hidden { transform: translateY(-140%); }
+  .nav__right { display: flex; gap: 8px; }
+  .nav__pill {
+    pointer-events: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 0 0 1px rgba(20, 22, 23, 0.06), 0 12px 30px -18px rgba(20, 22, 23, 0.4);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 500;
+    transition: transform 0.4s var(--ease-out), background-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  }
+  .nav__pill:active { transform: scale(0.96); }
+  .nav__brand { width: 48px; padding: 0; justify-content: center; }
+  .nav__brand img { width: 20px; height: auto; transition: transform 0.6s var(--ease-expo); }
+  .nav__brand:hover img { transform: rotate(-8deg); }
+  .nav__quick:hover { background: var(--white); }
+  .nav__menu { background: var(--ink); color: var(--white); padding-right: 16px; }
+  .nav__menu:hover { background: var(--black); }
+  .nav__dots { display: grid; gap: 4px; width: 16px; }
+  .nav__dots i { display: block; height: 1.5px; background: currentColor; transition: transform 0.5s var(--ease-expo); }
+  .nav__menu[aria-expanded='true'] .nav__dots i:first-child { transform: translateY(2.75px) rotate(45deg); }
+  .nav__menu[aria-expanded='true'] .nav__dots i:last-child { transform: translateY(-2.75px) rotate(-45deg); }
+  .nav__menu[aria-expanded='true'] { background: var(--cream); color: var(--ink); }
+
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    visibility: hidden;
+    clip-path: circle(0% at calc(100% - 60px) 40px);
+    transition: clip-path 0.9s var(--ease-expo), visibility 0s linear 0.9s;
+  }
+  .menu.is-open { visibility: visible; clip-path: circle(150% at calc(100% - 60px) 40px); transition: clip-path 0.9s var(--ease-expo); }
+  .menu__inner {
+    height: 100dvh;
+    display: grid;
+    grid-template-columns: 1.3fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    max-width: 1600px;
+    margin-inline: auto;
+    padding: clamp(6rem, 12vh, 8rem) var(--side) clamp(1.5rem, 4vh, 2.5rem);
+    overflow-y: auto;
+  }
+  .menu__nav { display: flex; flex-direction: column; justify-content: safe center; }
+  .menu__link {
+    font-family: var(--anton);
+    font-size: clamp(2rem, min(7.4vw, 7.4vh), 6.6rem);
+    line-height: 1.02;
+    text-transform: uppercase;
+    width: fit-content;
+    color: var(--fg-muted);
+    opacity: 0;
+    transform: translateY(40%);
+    filter: blur(6px);
+    transition: opacity 0.6s var(--ease-out), transform 0.9s var(--ease-expo), filter 0.6s var(--ease-out), color 0.3s;
+  }
+  .menu.is-open .menu__link {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition-delay: calc(var(--i) * 45ms + 180ms), calc(var(--i) * 45ms + 180ms), calc(var(--i) * 45ms + 180ms), 0s;
+  }
+  .menu__link:hover, .menu__link.is-current { color: var(--white); }
+  .menu__link:hover { transform: translateX(0.15em); }
+  .menu__side { display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; padding-block: 1rem; }
+  .menu__preview { position: relative; aspect-ratio: 4 / 5; max-height: 58vh; border-radius: 6px; overflow: hidden; background: #151515; }
+  .menu__preview img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1.08);
+    filter: blur(14px) grayscale(0.2);
+    transition: opacity 0.6s var(--ease-out), transform 1.2s var(--ease-expo), filter 0.6s var(--ease-out);
+  }
+  .menu__preview img.is-on { opacity: 1; transform: none; filter: none; }
+  .menu__info { display: grid; gap: 0.4rem; }
+  .menu__info .kicker { margin-bottom: 0.5rem; }
+  .menu__tel { font-size: 1.15rem; font-weight: 500; }
+  .menu__tel:hover { text-decoration: underline; text-underline-offset: 4px; }
+
+  @media (max-width: 900px) {
+    .menu__inner { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
+    .menu__preview { display: none; }
+    .menu__link { font-size: clamp(2rem, min(11vw, 6.6vh), 4.2rem); }
+  }
+  @media (max-width: 560px) {
+    .nav__quick { display: none; }
+    .nav__brand { width: 44px; }
+    .nav__pill { height: 44px; }
+  }
+</style>
+
+<script>
+  const nav = document.querySelector<HTMLElement>('.nav')!;
+  const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]')!;
+  const txt = document.querySelector<HTMLElement>('[data-menu-txt]')!;
+  const menu = document.querySelector<HTMLElement>('[data-menu]')!;
+  const shots = [...menu.querySelectorAll<HTMLElement>('[data-shot]')];
+
+  const setOpen = (open: boolean) => {
+    btn.setAttribute('aria-expanded', String(open));
+    txt.textContent = open ? 'Fermer' : 'Menu';
+    menu.classList.toggle('is-open', open);
+    menu.setAttribute('aria-hidden', String(!open));
+    document.documentElement.style.overflow = open ? 'hidden' : '';
+    if (open) nav.classList.remove('is-hidden');
+  };
+  btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+  menu.querySelectorAll<HTMLElement>('.menu__link').forEach((a) => {
+    a.addEventListener('pointerenter', () => {
+      const n = Number(a.dataset.preview);
+      shots.forEach((s, i) => s.classList.toggle('is-on', i === n));
+    });
+    a.addEventListener('click', () => setOpen(false));
+  });
+
+  let last = scrollY;
+  addEventListener('scroll', () => {
+    const y = scrollY;
+    if (menu.classList.contains('is-open')) return;
+    if (y > last + 4 && y > 200) nav.classList.add('is-hidden');
+    else if (y < last - 4 || y < 200) nav.classList.remove('is-hidden');
+    last = y;
+  }, { passive: true });
+</script>

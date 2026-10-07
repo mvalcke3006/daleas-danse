@@ -1,0 +1,107 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { weekends, summerCamp, site, tel } from '../data/site';
+import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
+import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+import gala from '../assets/img/daleasdanse-slide4.jpg';
+
+const shots = [
+  { img: duo, pos: '45% 30%', title: 'Stage d’été', cap: summerCamp.dates },
+  { img: team, pos: '40% 50%', title: 'Modern Jazz & Moderne', cap: 'Intermédiaires, avancés, professionnels' },
+  { img: gala, pos: '60% 40%', title: 'Week-ends', cap: 'Chorégraphes invités' },
+];
+const indent = [0, 0.6, 1.5, 0.3];
+---
+<Base
+  title="Stages de danse"
+  description="Stages de danse à Annecy : week-ends avec des chorégraphes invités et stage d’été de 4 jours, en modern jazz, moderne et contemporain. Ouverts aux danseurs intermédiaires, avancés et professionnels."
+>
+  <PageHero kicker="Association Danse Découverte" accent="stages de danse" image={duo} pos="50% 28%">
+    Stages<br /><em>chorégraphes invités</em>
+    <Fragment slot="sub">Modern jazz, moderne, contemporain. Ouverts aux danseurs intermédiaires, avancés et professionnels.</Fragment>
+  </PageHero>
+
+  <div class="grid3">
+    {shots.map((s, i) => (
+      <figure class="tile" data-reveal style={`--d:${i * 0.06}s`}>
+        <div class="tile__img">
+          {i === 0 && summerCamp.past && <span class="chip tile__tag">Édition {summerCamp.year} terminée</span>}
+          <Image src={s.img} alt="" widths={[400, 700]} sizes="(max-width: 560px) 100vw, 33vw" style={`object-position:${s.pos}`} loading="eager" />
+        </div>
+        <figcaption class="tile__cap label"><p>{s.title}</p><p class="grey">{s.cap}</p></figcaption>
+      </figure>
+    ))}
+  </div>
+
+  <section class="ch">
+    <div class="chapter-head" data-reveal><p class="label">Ch. Un</p><p class="num">I</p><h2 class="label">Week-ends</h2></div>
+    <div class="ch__cols">
+      <p class="prose ch__l" data-reveal>
+        Chaque saison, l’école invite des danseurs et chorégraphes pour un week-end de travail intensif.
+        D’autres invités seront annoncés au fil de l’année.
+      </p>
+      <div class="ch__r" data-reveal style="--d:.1s">
+        {weekends.map((w) => (
+          <div class="we">
+            <p class="label">{w.style}</p>
+            <p class="we__date display">{w.date}</p>
+            <p class="prose">{w.teacher}</p>
+            <p class="label grey">{w.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="ch">
+    <div class="chapter-head" data-reveal><p class="label">Ch. Deux</p><p class="num">II</p><h2 class="label">Été</h2></div>
+    <div class="ch__cols">
+      <div class="prose ch__l" data-reveal>
+        <p>
+          Chaque année, et ce depuis plus de trente ans, quatre jours de danse au cœur de la ville d’Annecy.
+          {summerCamp.edition}, {summerCamp.dates.toLowerCase()}.
+        </p>
+        {summerCamp.past
+          ? <p class="grey ete__state">Les dates de la prochaine édition seront annoncées ici.</p>
+          : <p class="ete__state"><a href={summerCamp.registrationPdf} class="btn" target="_blank" rel="noopener">S’inscrire</a></p>}
+      </div>
+      <div class="ch__r" data-reveal style="--d:.1s">
+        <p class="label">Équipe {summerCamp.year}</p>
+        {summerCamp.team.map((g, gi) => (
+          <div class="team">
+            <p class="label grey">{g.style}</p>
+            <ul class="prose">
+              {g.names.map((n, i) => <li style={`padding-left:${indent[(gi + i) % 4]}em`}>{n}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="ask" data-reveal>
+    <p class="intro">Une question sur <span class="display">un stage</span></p>
+    <div class="ask__links">
+      {site.teachers.map((t) => <a href={tel(t.phone)} class="btn btn--ghost">{t.name} — {t.phone}</a>)}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ch { padding: clamp(8rem, 14vw, 11rem) 1rem 2rem; }
+  .ch__cols { display: grid; grid-template-columns: 1fr clamp(80px, 10vw, 150px) 1fr; margin-top: 5rem; }
+  .ch__l { grid-column: 1; justify-self: end; max-width: 18rem; text-align: right; }
+  .ch__r { grid-column: 3; max-width: 19rem; margin-top: 6rem; }
+  .we__date { font-size: 1.9rem; font-weight: 320; letter-spacing: -0.02em; line-height: 1.1; margin: 0.6rem 0 0.4rem; }
+  .ete__state { margin-top: 1.5rem; }
+  .team { margin-top: 1.6rem; }
+  .team .label { margin-bottom: 0.4rem; }
+  .ask { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: clamp(8rem, 14vw, 11rem) 1rem 0; }
+  .ask__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
+  @media (max-width: 700px) {
+    .ch__cols { grid-template-columns: 1fr; gap: 3rem; }
+    .ch__l, .ch__r { grid-column: 1; justify-self: start; text-align: left; margin-top: 0; }
+  }
+</style>

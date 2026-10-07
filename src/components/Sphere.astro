@@ -1,0 +1,320 @@
+---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
+import studio from '../assets/img/espacedaleas-salle1.jpg';
+import gala from '../assets/img/daleasdanse-slide4.jpg';
+import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
+import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+
+interface Props {
+  mode?: 'gallery' | 'hero';
+}
+const { mode = 'gallery' } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+type T = { src: ImageMetadata; r: string; pos: string; title: string; cap: string; href: string };
+const H = 'horaires/', S = 'stages/', Y = 'yoga-annecy/', L = 'espace-daleas-location-de-salles-annecy/', C = 'contact-tel/';
+
+const all: T[] = [
+  { src: kids, r: '3/4', pos: '50% 40%', title: 'Initiation jazz', cap: '6 – 9 ans', href: H },
+  { src: duo, r: '1/1', pos: '45% 30%', title: 'Stages', cap: 'Chorégraphes invités', href: S },
+  { src: jazz, r: '3/4', pos: '50% 50%', title: 'Jazz ados', cap: 'Du 1er au 3e degré', href: H },
+  { src: studio, r: '4/3', pos: '30% 50%', title: 'Espace Daléas', cap: 'Trois studios à louer', href: L },
+  { src: yoga, r: '3/4', pos: '50% 35%', title: 'Yoga', cap: 'Viniyoga avec Maryse', href: Y },
+  { src: gala, r: '16/10', pos: '50% 40%', title: 'Spectacle', cap: 'Toutes les classes sur scène', href: H },
+  { src: team, r: '4/5', pos: '35% 50%', title: 'Diane & Delphine', cap: 'Diplômées d’État en jazz', href: C },
+  { src: kids, r: '1/1', pos: '70% 20%', title: 'Éveil rythmique', cap: '2 ans ½ – 5 ans', href: H },
+  { src: duo, r: '3/4', pos: '58% 20%', title: 'Moderne', cap: 'Ados & adultes', href: H },
+  { src: studio, r: '3/4', pos: '72% 50%', title: 'Location', cap: 'Centre-ville d’Annecy', href: L },
+  { src: jazz, r: '1/1', pos: '80% 30%', title: 'Jazz adultes', cap: 'Débutants à avancés', href: H },
+  { src: gala, r: '1/1', pos: '25% 30%', title: 'Classe chorégraphique', cap: 'Inter & avancés', href: H },
+  { src: team, r: '1/1', pos: '62% 40%', title: 'Contact', cap: 'Par téléphone', href: C },
+  { src: yoga, r: '1/1', pos: '50% 80%', title: 'Yoga', cap: 'Matin, midi, soir', href: Y },
+  { src: kids, r: '4/5', pos: '20% 60%', title: 'Initiation jazz', cap: 'Les premières bases', href: H },
+  { src: duo, r: '4/3', pos: '50% 50%', title: 'Stage d’été', cap: '32e édition', href: S },
+  { src: jazz, r: '4/5', pos: '20% 70%', title: 'Jazz ados', cap: 'Classe junior', href: H },
+  { src: studio, r: '1/1', pos: '55% 60%', title: 'Espace Daléas', cap: 'Vestiaire & douches', href: L },
+  { src: gala, r: '3/4', pos: '78% 40%', title: 'Spectacle', cap: 'Fin d’année', href: H },
+  { src: team, r: '3/4', pos: '70% 50%', title: 'L’équipe', cap: 'Trois générations', href: C },
+];
+const tiles = mode === 'hero' ? all.slice(0, 16) : all;
+
+const imgs = await Promise.all(
+  tiles.map((t) => getImage({ src: t.src, width: Math.min(t.src.width, mode === 'hero' ? 420 : 360), format: 'webp' }))
+);
+---
+<section class:list={['sph', `sph--${mode}`]} data-sphere={mode} aria-label={mode === 'hero' ? 'Daléas Danse' : 'Galerie de l’école'}>
+  {mode === 'hero' && (
+    <div class="sph__logo" data-logo>
+      <img src={`${base}logo.svg`} alt="Daléas Danse" width="628" height="944" fetchpriority="high" />
+    </div>
+  )}
+  <div class="sph__stage">
+    {tiles.map((t, i) => (
+      <a
+        href={`${base}${t.href}`}
+        class="sph__tile"
+        style={`aspect-ratio:${t.r}`}
+        data-title={t.title}
+        data-cap={t.cap}
+        aria-label={`${t.title} — ${t.cap}`}
+        draggable="false"
+      >
+        <img src={imgs[i].src} alt="" style={`object-position:${t.pos}`} draggable="false" loading={i < 10 ? 'eager' : 'lazy'} />
+      </a>
+    ))}
+  </div>
+
+  <div class="sph__tip" data-tip aria-hidden="true">
+    <span class="sph__tip-title" data-tip-title></span>
+    <span class="muted" data-tip-cap></span>
+  </div>
+
+  {mode === 'gallery' && (
+    <div class="sph__foot label">
+      <span>École de danse privée<br />Annecy</span>
+      <span class="muted sph__hint">Glisser pour explorer</span>
+      <span class="r">Modern’Jazz, Moderne<br />Classe chorégraphique, Yoga</span>
+    </div>
+  )}
+</section>
+
+<style>
+  .sph {
+    position: relative;
+    height: 100dvh;
+    min-height: 560px;
+    background: var(--white);
+    overflow: hidden;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+  }
+  .sph--hero { height: calc(100dvh - clamp(4.5rem, 12vh, 8rem)); min-height: 520px; }
+  .sph.is-drag { cursor: grabbing; }
+  .sph__stage { position: absolute; inset: 0; }
+  .sph__tile {
+    --u: clamp(46px, 5.2vw, 84px);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: var(--u);
+    margin-left: calc(var(--u) / -2);
+    margin-top: calc(var(--u) / -2);
+    background: #f1f1f1;
+    will-change: transform, opacity;
+    opacity: 0;
+  }
+  .sph--hero .sph__tile { --u: clamp(64px, 7.4vw, 132px); border-radius: 3px; overflow: hidden; }
+  .sph__tile img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+
+  .sph__logo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    z-index: 50;
+    width: clamp(150px, min(24vw, 38vh), 400px);
+    pointer-events: none;
+    translate: -50% -50%;
+    transform: scale(var(--ls, 1));
+    opacity: var(--lo, 1);
+    filter: blur(var(--lb, 0px));
+  }
+  .sph__logo img { width: 100%; height: auto; animation: logo-in 1.6s var(--ease-expo) 0.1s both; }
+  @keyframes logo-in {
+    from { opacity: 0; transform: translateY(24px) scale(0.92); filter: blur(16px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+
+  .sph__tip {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 70;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 10px 24px -14px rgba(0, 0, 0, 0.35);
+    font-size: 13px;
+    line-height: 1.35;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.25s var(--ease-out);
+  }
+  .sph__tip.is-on { opacity: 1; }
+  .sph__tip-title { font-weight: 500; }
+
+  .sph__foot {
+    position: absolute;
+    left: var(--side);
+    right: var(--side);
+    bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    pointer-events: none;
+  }
+  .sph__foot .r { text-align: right; }
+  @media (max-width: 640px) {
+    .sph__hint { display: none; }
+    .sph__tile { --u: clamp(40px, 12vw, 60px); }
+    .sph--hero .sph__tile { --u: clamp(48px, 15vw, 72px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sph__logo img { animation: none; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-sphere]').forEach((root) => {
+    const hero = root.dataset.sphere === 'hero';
+    const tiles = [...root.querySelectorAll<HTMLElement>('.sph__tile')];
+    const logo = root.querySelector<HTMLElement>('[data-logo]');
+    const tip = root.querySelector<HTMLElement>('[data-tip]')!;
+    const tipTitle = root.querySelector<HTMLElement>('[data-tip-title]')!;
+    const tipCap = root.querySelector<HTMLElement>('[data-tip-cap]')!;
+    const n = tiles.length;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    const golden = Math.PI * (3 - Math.sqrt(5));
+    const pts = tiles.map((_, i) => {
+      if (hero) {
+        const y = -0.9 + (i / (n - 1)) * 1.8;
+        const th = i * golden * 1.7;
+        return [Math.cos(th), y, Math.sin(th)];
+      }
+      const y = 1 - (i / (n - 1)) * 2;
+      const r = Math.sqrt(1 - y * y);
+      const th = i * golden;
+      return [Math.cos(th) * r, y, Math.sin(th) * r];
+    });
+
+    const baseTilt = hero ? -0.12 : -0.18;
+    let ry = 0.4, rx = baseTilt, vy = 0.0016, vx = 0;
+    let open = reduce ? 1 : 0;
+    let hovering = false, dragging = false, moved = 0, visible = true;
+    let lastX = 0, lastY = 0, lastScroll = scrollY;
+    let mx = 0, my = 0, cmx = 0, cmy = 0, spread = 0;
+    let RX = 1, RY = 1, W = 0, H = 0;
+
+    const size = () => {
+      W = root.clientWidth; H = root.clientHeight;
+      if (hero) {
+        RX = Math.min(W * (W < 640 ? 0.44 : 0.38), H * 0.75);
+        RY = H * 0.34;
+      } else {
+        RX = RY = Math.min(W, H) * (W < 640 ? 0.36 : 0.3);
+      }
+    };
+    size();
+    addEventListener('resize', size);
+
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(root);
+
+    const frame = () => {
+      if (visible) {
+        const base = hovering ? 0.0002 : hero ? 0.0022 : 0.0016;
+        const target = base + (hero && !reduce ? cmx * 0.006 : 0);
+        if (!dragging) {
+          vy += (target - vy) * 0.04;
+          vx *= 0.94;
+          rx += vx;
+          rx += (baseTilt + (hero ? cmy * 0.35 : 0) - rx) * 0.02;
+        }
+        if (!reduce) ry += vy;
+        cmx += (mx - cmx) * 0.05;
+        cmy += (my - cmy) * 0.05;
+
+        if (hero) {
+          const r = root.getBoundingClientRect();
+          spread = Math.min(1, Math.max(0, -r.top / (r.height * 0.8)));
+          if (logo) {
+            logo.style.setProperty('--ls', (1 - spread * 0.25).toFixed(3));
+            logo.style.setProperty('--lo', (1 - spread * 0.9).toFixed(3));
+            logo.style.setProperty('--lb', `${(spread * 10).toFixed(1)}px`);
+          }
+        }
+
+        const sY = Math.sin(ry), cY = Math.cos(ry), sX = Math.sin(rx), cX = Math.cos(rx);
+        const k = 1 + spread * 0.9;
+        const f = RX * 3.4;
+        for (let i = 0; i < n; i++) {
+          const [x0, y0, z0] = pts[i];
+          const x1 = x0 * cY - z0 * sY;
+          const z1 = x0 * sY + z0 * cY;
+          const y2 = y0 * cX - z1 * sX;
+          const z2 = y0 * sX + z1 * cX;
+          const px = x1 * RX * open * k;
+          const py = y2 * RY * open * k;
+          const z = z2 * RX * open;
+          const s = f / (f - z);
+          const depth = (z2 + 1) / 2;
+          const el = tiles[i];
+          el.style.transform = `translate3d(${(px * s).toFixed(1)}px, ${(py * s).toFixed(1)}px, 0) scale(${(s * (0.6 + depth * 0.4)).toFixed(3)})`;
+          el.style.opacity = String((open * (0.3 + depth * 0.7) * (1 - spread * 0.5)).toFixed(3));
+          el.style.zIndex = String(Math.round(depth * 100));
+          el.style.filter = hero && depth < 0.45 ? `blur(${((0.45 - depth) * 8).toFixed(1)}px)` : '';
+        }
+      }
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+
+    const reveal = () => {
+      if (reduce) return;
+      const t0 = performance.now();
+      const step = (t: number) => {
+        const p = Math.min(1, (t - t0) / 1800);
+        open = 1 - Math.pow(1 - p, 4);
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    };
+    if (document.documentElement.classList.contains('is-loaded')) reveal();
+    else addEventListener('dd:ready', reveal, { once: true });
+
+    root.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'touch') return;
+      dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
+      root.classList.add('is-drag');
+    });
+    addEventListener('pointermove', (e) => {
+      if (fine) { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; }
+      if (dragging) {
+        const dx = e.clientX - lastX, dy = e.clientY - lastY;
+        moved += Math.abs(dx) + Math.abs(dy);
+        vy = dx * 0.004; vx = dy * 0.003;
+        ry += vy; rx = Math.max(-1, Math.min(1, rx + vx));
+        lastX = e.clientX; lastY = e.clientY;
+      }
+      if (tip.classList.contains('is-on')) tip.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 16}px)`;
+    }, { passive: true });
+    addEventListener('pointerup', () => { dragging = false; root.classList.remove('is-drag'); });
+    root.addEventListener('click', (e) => { if (moved > 8) e.preventDefault(); }, true);
+
+    addEventListener('scroll', () => {
+      if (!reduce) vy += (scrollY - lastScroll) * 0.00012;
+      lastScroll = scrollY;
+    }, { passive: true });
+
+    tiles.forEach((el) => {
+      el.addEventListener('pointerenter', (e) => {
+        hovering = true;
+        tipTitle.textContent = el.dataset.title || '';
+        tipCap.textContent = el.dataset.cap || '';
+        tip.style.transform = `translate(${e.clientX + 16}px, ${e.clientY + 16}px)`;
+        tip.classList.add('is-on');
+      });
+      el.addEventListener('pointerleave', () => { hovering = false; tip.classList.remove('is-on'); });
+    });
+  });
+</script>

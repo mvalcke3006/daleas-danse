@@ -1,0 +1,170 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { schedule, season } from '../data/site';
+
+import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
+import gala from '../assets/img/daleasdanse-slide4.jpg';
+import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+
+const total = schedule.reduce((n, d) => n + d.slots.length, 0);
+const discImg = { eveil: kids, initiation: kids, ado: jazz, adultes: team, moderne: duo, choregraphique: gala } as const;
+const hover = await Promise.all(
+  schedule.map((d) => getImage({ src: discImg[d.id as keyof typeof discImg], width: 460, format: 'webp' }))
+);
+const pad = (n: number) => String(n).padStart(2, '0');
+
+const story = [
+  { n: 'I', y: '1965', t: 'La fondation', p: 'Maryse Daléas, formée trois ans au centre Irène Popard à Paris, fonde son école de danse à Annecy. Elle y enseigne seule pendant trente ans.' },
+  { n: 'II', y: '1992', t: 'Diane', p: 'Diplômée d’État en danse jazz, Diane rejoint l’enseignement aux côtés de sa mère.' },
+  { n: 'III', y: '1995', t: 'Delphine', p: 'Diplômée d’État en danse jazz à son tour, Delphine complète le trio. Aujourd’hui, Diane et Delphine enseignent aux petits comme aux grands.' },
+];
+---
+<Base
+  title="L’école"
+  description="Daléas Danse, école de danse privée fondée en 1965 à Annecy par Maryse Daléas, rejointe par ses filles Diane et Delphine, diplômées d’État en danse jazz."
+>
+  <PageHero kicker="L’école" accent="Annecy, depuis 1965" image={team} pos="40% 45%">
+    Une histoire<br /><em>de famille</em>
+    <Fragment slot="sub">Au fil des années, les élèves construisent leurs bases en Modern’Jazz. Une fois le vocabulaire maîtrisé, ados et adultes peuvent rejoindre le Moderne.</Fragment>
+  </PageHero>
+
+  <section class="story on-white section">
+    <div class="wrap story__grid">
+      {story.map((s, i) => (
+        <article class="step" data-speed={[0.04, -0.05, 0.07][i]}>
+          <p class="step__y anton">{s.y}</p>
+          <p class="label muted">{s.n} — {s.t}</p>
+          <p class="prose">{s.p}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="years on-black section">
+    <div class="wrap">
+      <p class="kicker">En chiffres</p>
+      <div class="years__head">
+        <p class="years__big anton" data-count="60">60</p>
+        <p class="h2">ans de danse<br />à Annecy</p>
+      </div>
+      <ul class="years__stats">
+        <li data-reveal><span class="anton" data-count={total}>{total}</span><p class="label muted">cours chaque semaine</p></li>
+        <li data-reveal style="--d:.08s"><span class="anton" data-count={schedule.length}>{schedule.length}</span><p class="label muted">disciplines, de 2 ans ½ à adulte</p></li>
+        <li data-reveal style="--d:.16s"><span class="anton" data-count="3">3</span><p class="label muted">studios à l’Espace Daléas</p></li>
+        <li data-reveal style="--d:.24s"><span class="anton" data-count="32">32</span><p class="label muted">éditions du stage d’été</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="courses on-white section">
+    <div class="wrap">
+      <p class="kicker">Les disciplines</p>
+      <h2 class="h1 courses__title" data-reveal>Six disciplines,<br /><em>un seul parcours</em></h2>
+      <ul class="courses__list">
+        {schedule.map((d, i) => (
+          <li>
+            <a href={`/horaires/#${d.id}`} class="course" data-img={hover[i].src}>
+              <span class="label muted">{pad(i + 1)}</span>
+              <span class="course__name">{d.name}</span>
+              <span class="label course__aud">{d.audience}</span>
+              <span class="course__arrow" aria-hidden="true"></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+      <div class="courses__foot" data-reveal>
+        <a href="/horaires/" class="btn">Voir le planning {season}</a>
+        <a href="/daleas-danse-annecy-tarifs/" class="tlink">Les tarifs</a>
+      </div>
+    </div>
+    <div class="float" data-float aria-hidden="true"><img alt="" /></div>
+  </section>
+</Base>
+
+<style>
+  .story__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 4rem); }
+  .step { display: grid; align-content: start; gap: 1rem; padding-top: 1.5rem; border-top: 1.5px solid var(--ink); }
+  .step__y { font-size: clamp(4rem, 7vw, 6.5rem); }
+
+  .years__head { display: flex; align-items: flex-end; gap: clamp(1.5rem, 4vw, 3rem); margin: 1.5rem 0 3.5rem; flex-wrap: wrap; }
+  .years__big { font-size: clamp(9rem, 28vw, 24rem); line-height: 0.8; }
+  .years__head .h2 { padding-bottom: 0.5em; }
+  .years__stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule); }
+  .years__stats li { display: grid; align-content: start; gap: 0.75rem; padding: 1.5rem 1.5rem 0 0; }
+  .years__stats li + li { padding-left: 1.5rem; border-left: 1px solid var(--rule); }
+  .years__stats .anton { font-size: clamp(3rem, 5.5vw, 5rem); }
+
+  .courses__title { margin: 1.25rem 0 clamp(2.5rem, 5vw, 4rem); }
+  .courses__list { border-top: 1.5px solid var(--ink); }
+  .course {
+    display: grid;
+    grid-template-columns: 3rem 1fr 14rem 2rem;
+    align-items: center;
+    gap: 1.25rem;
+    padding: clamp(1rem, 2vw, 1.5rem) 0;
+    border-bottom: 1px solid var(--line);
+    transition: color 0.35s var(--ease-out);
+  }
+  .course__name { font-size: clamp(1.6rem, 3.4vw, 3.2rem); font-weight: 500; line-height: 1.05; letter-spacing: -0.03em; text-transform: uppercase; transition: transform 0.6s var(--ease-expo); }
+  .course__aud { color: var(--muted); }
+  .course__arrow { justify-self: end; width: 12px; height: 12px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); transition: transform 0.6s var(--ease-expo); }
+  .course:hover { color: var(--plum); }
+  .course:hover .course__name { transform: translateX(1rem); }
+  .course:hover .course__arrow { transform: translateX(4px) rotate(45deg); }
+  .courses__foot { display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; margin-top: 2.5rem; }
+  .float {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 30;
+    width: clamp(200px, 18vw, 300px);
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 6px;
+    pointer-events: none;
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(0.9) rotate(-3deg);
+    transition: opacity 0.35s var(--ease-out), filter 0.45s var(--ease-out), transform 0.7s var(--ease-expo);
+  }
+  .float.is-on { opacity: 1; filter: none; transform: none; }
+  .float img { width: 100%; height: 100%; object-fit: cover; }
+
+  @media (max-width: 900px) {
+    .story__grid { grid-template-columns: 1fr; }
+    .years__stats { grid-template-columns: 1fr 1fr; row-gap: 1.5rem; }
+    .years__stats li:nth-child(3) { padding-left: 0; border-left: 0; }
+    .course { grid-template-columns: 2.2rem 1fr 1.5rem; row-gap: 0.35rem; }
+    .course__aud { grid-column: 2; grid-row: 2; }
+    .course__arrow { grid-column: 3; grid-row: 1 / 3; }
+  }
+  @media (max-width: 560px) {
+    .years__stats { grid-template-columns: 1fr; }
+    .years__stats li + li { padding-left: 0; border-left: 0; border-top: 1px solid var(--rule); }
+  }
+</style>
+
+<script>
+  const float = document.querySelector<HTMLElement>('[data-float]');
+  if (float && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const img = float.querySelector('img')!;
+    let x = 0, y = 0, cx = 0, cy = 0, on = false;
+    document.querySelectorAll<HTMLElement>('.course').forEach((el) => {
+      el.addEventListener('pointerenter', () => { img.src = el.dataset.img || ''; float.classList.add('is-on'); on = true; });
+      el.addEventListener('pointerleave', () => { float.classList.remove('is-on'); on = false; });
+    });
+    addEventListener('pointermove', (e) => { x = e.clientX; y = e.clientY; }, { passive: true });
+    const follow = () => {
+      const k = reduce ? 1 : 0.16;
+      cx += (x - cx) * k; cy += (y - cy) * k;
+      if (on) float.style.translate = `${cx + 28}px ${cy - 160}px`;
+      requestAnimationFrame(follow);
+    };
+    requestAnimationFrame(follow);
+  }
+</script>

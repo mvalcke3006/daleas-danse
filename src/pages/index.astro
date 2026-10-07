@@ -1,0 +1,303 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Sphere from '../components/Sphere.astro';
+import { announcement, schedule, weekends, season, singleClass, site, tel } from '../data/site';
+
+import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
+import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
+import studio from '../assets/img/espacedaleas-salle1.jpg';
+import gala from '../assets/img/daleasdanse-slide4.jpg';
+import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+
+const next = weekends[0];
+const total = schedule.reduce((n, d) => n + d.slots.length, 0);
+---
+<Base
+  title="Daléas Danse"
+  description="École de danse privée fondée en 1965 à Annecy. Cours de Modern’Jazz, Moderne et classe chorégraphique pour enfants, ados et adultes, stages et yoga."
+>
+  <h1 class="sr-only">Daléas Danse, école de danse à Annecy depuis 1965</h1>
+  <Sphere mode="hero" />
+
+  <section class="hero on-white">
+    <div class="wrap hero__row">
+      <p class="lead hero__lead" data-reveal>
+        École de danse privée à Annecy depuis 1965. Modern’Jazz, Moderne et classe chorégraphique, de l’éveil des tout-petits aux danseurs avancés.
+      </p>
+      <div class="hero__ctas" data-reveal style="--d:.08s">
+        <a href="/horaires/" class="btn btn--plum">Voir les horaires</a>
+        <a href="/ecole/" class="tlink">Découvrir l’école</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="expand" data-progress aria-label="Le spectacle de l’école">
+    <div class="expand__sticky">
+      <div class="expand__frame">
+        <Image src={gala} alt="Les élèves de l’école réunis sur scène pour le spectacle de fin d’année" widths={[960, 1280]} sizes="100vw" />
+      </div>
+      {announcement.show && (
+        <div class="expand__caption">
+          <a href="/contact-tel/" class="chip">{announcement.eyebrow} — {announcement.title}</a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="hub-intro on-white">
+    <div class="wrap">
+      <p class="kicker">Bienvenue</p>
+      <h2 class="h1 hub-intro__title" data-reveal>Une école de danse,<br /><em>tout un univers</em></h2>
+    </div>
+  </section>
+
+  <a href="/ecole/" class="block block--school on-white">
+    <div class="wrap block__grid">
+      <div class="block__text">
+        <p class="label muted">01 — L’école</p>
+        <h2 class="h2" data-reveal>Soixante ans<br />de transmission</h2>
+        <p class="prose muted" data-reveal>De Maryse Daléas à ses filles Diane et Delphine, une histoire de famille au cœur d’Annecy.</p>
+        <span class="block__go" data-reveal>Découvrir l’école</span>
+      </div>
+      <div class="block__media media dist" data-clip>
+        <Image src={team} alt="Diane et Delphine Daléas en studio" widths={[700, 1100]} sizes="(max-width: 900px) 100vw, 55vw" />
+      </div>
+    </div>
+  </a>
+
+  <section class="pair">
+    <div class="wrap pair__grid">
+      <a href="/horaires/" class="card on-cream" data-reveal>
+        <p class="label muted">02 — Horaires</p>
+        <p class="card__big anton">{total}</p>
+        <p class="h3">cours par semaine</p>
+        <p class="prose muted">De l’éveil rythmique dès 2 ans ½ aux classes avancées, du lundi au vendredi.</p>
+        <span class="block__go">Voir le planning {season}</span>
+      </a>
+      <a href="/daleas-danse-annecy-tarifs/" class="card on-black" data-reveal style="--d:.08s">
+        <p class="label muted">03 — Tarifs</p>
+        <p class="card__big anton"><small>dès</small>{singleClass}€</p>
+        <p class="h3">le cours à l’unité</p>
+        <p class="prose muted">Forfaits trimestriels ou annuels, carte 10 cours, forfait illimité.</p>
+        <span class="block__go">Voir les tarifs</span>
+      </a>
+    </div>
+  </section>
+
+  <a href="/stages/" class="block block--full">
+    <div class="full__media dist">
+      <Image src={duo} alt="Deux danseuses en mouvement lors d’un stage" widths={[960, 1600, 1920]} sizes="100vw" />
+    </div>
+    <div class="wrap full__content">
+      <p class="label full__label">04 — Stages</p>
+      <h2 class="full__title anton" data-reveal>Stages</h2>
+      <div class="full__row" data-reveal>
+        <p class="lead">Des chorégraphes invités chaque saison.{next && <> Prochain week-end : {next.date}, {next.teacher}.</>}</p>
+        <span class="block__go">Tous les stages</span>
+      </div>
+    </div>
+  </a>
+
+  <section class="duo-cards on-white section">
+    <div class="wrap duo-cards__grid">
+      <a href="/yoga-annecy/" class="tease" data-reveal>
+        <div class="tease__media media dist"><Image src={yoga} alt="Maryse Daléas en posture de yoga" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" /></div>
+        <p class="label muted">05 — Yoga</p>
+        <h2 class="h3">Le Viniyoga avec Maryse</h2>
+        <span class="block__go">Le yoga</span>
+      </a>
+      <a href="/espace-daleas-location-de-salles-annecy/" class="tease tease--wide" data-reveal style="--d:.08s">
+        <div class="tease__media media dist"><Image src={studio} alt="Studio de l’Espace Daléas" widths={[700, 1100]} sizes="(max-width: 900px) 100vw, 55vw" /></div>
+        <p class="label muted">06 — Location</p>
+        <h2 class="h3">Trois studios au cœur d’Annecy</h2>
+        <span class="block__go">Louer un studio</span>
+      </a>
+    </div>
+  </section>
+
+  <a href="/galerie/" class="gal on-white section">
+    <div class="wrap gal__head">
+      <div>
+        <p class="label muted">07 — Galerie</p>
+        <h2 class="h2" data-reveal>Entrer dans la danse</h2>
+      </div>
+      <div class="gal__side" data-reveal>
+        <p class="prose muted">Cours, coulisses, studios et scène : toutes les photos de l’école, à parcourir en 3D.</p>
+        <span class="block__go">Ouvrir la galerie</span>
+      </div>
+    </div>
+    <div class="gal__fan" data-reveal>
+      {[team, studio, duo, gala, yoga, jazz, kids].map((img, i) => (
+        <span class="gal__item" style={`--r:${[-7, -4, -1.5, 0, 1.5, 4, 7][i]}deg; --y:${[34, 14, 4, 0, 4, 14, 34][i]}px; --i:${i}`}>
+          <Image src={img} alt="" widths={[300]} sizes="220px" />
+        </span>
+      ))}
+    </div>
+  </a>
+
+  <section class="contact on-white section">
+    <div class="wrap contact__grid">
+      <div>
+        <p class="label muted">08 — Contact</p>
+        <h2 class="h2" data-reveal>Une question ?<br />Un appel suffit.</h2>
+        <a href="/contact-tel/" class="block__go contact__more">Toutes les informations</a>
+      </div>
+      <div class="contact__cards">
+        {site.teachers.map((t, i) => (
+          <a href={tel(t.phone)} class="contact__card" data-reveal style={`--d:${i * 0.08}s`}>
+            <span class="label">{t.name} — cours & stages</span>
+            <span class="contact__tel anton">{t.phone}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding: clamp(1.5rem, 4vh, 2.5rem) 0 clamp(3rem, 8vh, 5rem); }
+  .hero__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 1.5rem 3rem;
+    flex-wrap: wrap;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+  }
+  .hero__lead { max-width: 38rem; }
+  .hero__ctas { display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; }
+
+  .expand { --p: 0; position: relative; height: 190vh; }
+  .expand__sticky { position: sticky; top: 0; height: 100dvh; overflow: hidden; }
+  .expand__frame {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(calc((1 - var(--p)) * 18%) calc((1 - var(--p)) * 24%) round calc((1 - var(--p)) * 10px));
+    background: var(--black);
+  }
+  .expand__frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(calc(1.2 - var(--p) * 0.2));
+    filter: blur(calc((1 - var(--p)) * 6px));
+  }
+  .expand__caption { position: absolute; left: var(--side); bottom: calc(clamp(70px, 13vh, 150px) + 0.5rem); opacity: clamp(0, calc((var(--p) - 0.6) * 4), 1); }
+  .expand__caption .chip { --chip-bg: var(--white); color: var(--ink); font-size: 14px; padding: 11px 16px; border-radius: 999px; }
+
+  .hub-intro { padding: var(--section) 0 clamp(2rem, 5vw, 4rem); }
+  .hub-intro__title { margin-top: 1.25rem; max-width: 16ch; }
+
+  .block { display: block; }
+  .block__go {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    width: fit-content;
+    font-weight: 500;
+    font-size: 16px;
+    padding-bottom: 4px;
+    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1.5px no-repeat;
+    transition: background-size 0.5s var(--ease-in-out);
+  }
+  .block__go::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.45s var(--ease-out);
+  }
+  a:hover .block__go::after { transform: translateX(4px) rotate(45deg); }
+  a:hover .block__go { background-size: 0 1.5px; background-position: 100% 100%; }
+
+  .block--school { padding-bottom: var(--section); }
+  .block__grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; }
+  .block__text { display: grid; gap: 1.4rem; max-width: 30rem; }
+  .block__media { aspect-ratio: 5 / 4; border-radius: 6px; }
+  .block__media :global(img), .tease__media :global(img), .full__media :global(img) { transition: transform 1.4s var(--ease-expo); }
+  .block--school:hover .block__media :global(img) { transform: scale(1.04); }
+
+  .pair { padding-bottom: var(--section); }
+  .pair__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-height: clamp(380px, 52vh, 560px);
+    padding: clamp(1.5rem, 3vw, 2.75rem);
+    border-radius: 6px;
+    transition: transform 0.6s var(--ease-expo);
+  }
+  .card:hover { transform: translateY(-6px); }
+  .card__big { font-size: clamp(6rem, 13vw, 12rem); margin-top: auto; line-height: 0.85; }
+  .card__big small { font-size: 0.28em; margin-right: 0.15em; vertical-align: 0.35em; }
+  .card .prose { max-width: 26rem; }
+
+  .block--full { position: relative; height: min(100dvh, 980px); min-height: 560px; overflow: hidden; color: var(--white); background: var(--black); }
+  .full__media { position: absolute; inset: 0; }
+  .full__media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+  .block--full::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 7, 7, 0) 40%, rgba(7, 7, 7, 0.65)); }
+  .block--full:hover .full__media :global(img) { transform: scale(1.03); }
+  .full__content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 1rem; padding-bottom: calc(clamp(70px, 13vh, 150px) + 0.5rem); }
+  .full__label { color: rgba(255, 255, 255, 0.8); }
+  .full__title { font-size: clamp(5rem, 20vw, 20rem); line-height: 0.82; }
+  .full__row { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem 3rem; flex-wrap: wrap; padding-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.3); }
+  .full__row .lead { max-width: 36rem; }
+
+  .duo-cards__grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: clamp(1.5rem, 3vw, 2.5rem); align-items: end; }
+  .tease { display: grid; gap: 0.9rem; }
+  .tease__media { aspect-ratio: 4 / 5; border-radius: 6px; margin-bottom: 0.6rem; }
+  .tease--wide .tease__media { aspect-ratio: 4 / 3; }
+  .tease:hover .tease__media :global(img) { transform: scale(1.04); }
+
+  .gal { display: block; }
+  .gal__head { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem 3rem; align-items: end; }
+  .gal__head .h2 { margin-top: 1rem; }
+  .gal__side { display: grid; gap: 1.25rem; justify-items: start; max-width: 24rem; }
+  .gal__fan { display: flex; justify-content: center; margin-top: clamp(2.5rem, 6vw, 4.5rem); padding-inline: var(--side); }
+  .gal__item {
+    flex: 0 0 auto;
+    width: clamp(110px, 14vw, 240px);
+    aspect-ratio: 3 / 4;
+    margin-inline: -1.4vw;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 0 0 5px var(--white), 0 30px 40px -30px rgba(20, 22, 23, 0.45);
+    transform: translateY(var(--y)) rotate(var(--r));
+    transition: transform 0.9s var(--ease-expo);
+    transition-delay: calc(var(--i) * 25ms);
+  }
+  .gal__item :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .gal:hover .gal__item { transform: translateY(calc(var(--y) * 0.3 - 14px)) rotate(calc(var(--r) * 1.7)); }
+
+  .contact__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: end; }
+  .contact__grid .h2 { margin: 1rem 0 1.75rem; }
+  .contact__cards { display: grid; gap: 10px; }
+  .contact__card {
+    display: grid;
+    gap: 2rem;
+    padding: 1.5rem;
+    border-radius: 6px;
+    background: #f3f3f3;
+    transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
+  }
+  .contact__card:hover { background: var(--ink); color: var(--white); }
+  .contact__tel { font-size: clamp(2.4rem, 4.6vw, 4.2rem); }
+
+  @media (max-width: 900px) {
+    .block__grid, .pair__grid, .duo-cards__grid, .gal__head, .contact__grid { grid-template-columns: 1fr; }
+    .block__grid .block__media { order: -1; }
+    .card { min-height: 0; }
+    .card__big { margin-top: 1.5rem; }
+  }
+  @media (max-width: 560px) {
+    .expand { height: 160vh; }
+    .gal__item:nth-child(1), .gal__item:nth-child(7) { display: none; }
+  }
+</style>

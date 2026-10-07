@@ -1,0 +1,30 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHero from '../components/PageHero.astro';
+import { site } from '../data/site';
+---
+<Base title="Mentions légales" description="Mentions légales du site Daléas Danse.">
+  <PageHero kicker="Informations" accent="légales">Mentions<br /><em>légales</em></PageHero>
+
+  <section class="legal prose">
+    <p class="label">Éditeur</p>
+    <p>Daléas Danse — École de danse privée<br />{site.address.street}, {site.address.zip} {site.address.city}<br /><a href={`mailto:${site.email}`}>{site.email}</a></p>
+    <p>SIRET : à compléter<br />Responsable de la publication : à compléter</p>
+
+    <p class="label">Hébergement</p>
+    <p>À compléter.</p>
+
+    <p class="label">Propriété intellectuelle</p>
+    <p>L’ensemble des contenus de ce site (textes, photographies, logo) est la propriété de Daléas Danse. Toute reproduction sans autorisation est interdite.</p>
+
+    <p class="label">Données personnelles</p>
+    <p>Ce site ne dépose aucun cookie de suivi et ne collecte aucune donnée personnelle.</p>
+  </section>
+</Base>
+
+<style>
+  .legal { width: min(30rem, 100% - 2rem); margin: 0 auto; }
+  .legal .label { margin: 3rem 0 0.8rem; }
+  .legal p:not(.label) { margin-bottom: 0.8rem; }
+  .legal a { text-decoration: underline; text-underline-offset: 3px; }
+</style>
