@@ -21,7 +21,7 @@ const features = [
   </PageHero>
 
 
-  <section class="feats">
+  <section class="feats stage">
     {features.map(([k, v], i) => (
       <div class="feat" style={`--x:${[0, 5, 2][i]}rem`} data-reveal>
         <p class="label">{String(i + 1).padStart(2, '0')}</p>
@@ -31,7 +31,7 @@ const features = [
     ))}
   </section>
 
-  <section class="book" data-reveal>
+  <section class="book stage" data-reveal>
     <p class="intro">Réserver <span class="display">par écrit</span></p>
     <p class="prose book__txt">Précisez l’activité, les créneaux et la fréquence souhaités.</p>
     <div class="book__links">

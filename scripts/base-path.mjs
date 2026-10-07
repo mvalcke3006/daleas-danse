@@ -9,7 +9,7 @@ const prefix = (url) => (url.startsWith('/') && !url.startsWith('//') && !url.st
 
 const rewriteHtml = (html) =>
   html
-    .replace(/\b(href|src|action|poster|content)="(\/[^"]*)"/g, (m, attr, url) =>
+    .replace(/\b(href|src|action|poster|content|data-img)="(\/[^"]*)"/g, (m, attr, url) =>
       attr === 'content' && !url.startsWith('/') ? m : `${attr}="${prefix(url)}"`)
     .replace(/\bsrcset="([^"]*)"/g, (m, set) =>
       `srcset="${set.split(',').map((part) => part.trim().replace(/^(\S+)/, (u) => prefix(u))).join(', ')}"`)

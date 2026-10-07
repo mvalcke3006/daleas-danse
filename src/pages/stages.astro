@@ -35,7 +35,7 @@ const indent = [0, 0.6, 1.5, 0.3];
     ))}
   </div>
 
-  <section class="ch">
+  <section class="ch stage">
     <div class="chapter-head" data-reveal><p class="label">Ch. Un</p><p class="num">I</p><h2 class="label">Week-ends</h2></div>
     <div class="ch__cols">
       <p class="prose ch__l" data-reveal>
@@ -55,7 +55,7 @@ const indent = [0, 0.6, 1.5, 0.3];
     </div>
   </section>
 
-  <section class="ch">
+  <section class="ch stage">
     <div class="chapter-head" data-reveal><p class="label">Ch. Deux</p><p class="num">II</p><h2 class="label">Été</h2></div>
     <div class="ch__cols">
       <div class="prose ch__l" data-reveal>
@@ -81,7 +81,7 @@ const indent = [0, 0.6, 1.5, 0.3];
     </div>
   </section>
 
-  <section class="ask" data-reveal>
+  <section class="ask stage" data-reveal>
     <p class="intro">Une question sur <span class="display">un stage</span></p>
     <div class="ask__links">
       {site.teachers.map((t) => <a href={tel(t.phone)} class="btn btn--ghost">{t.name} — {t.phone}</a>)}

@@ -32,7 +32,7 @@ const story = [
     <Fragment slot="sub">Au fil des années, les élèves construisent leurs bases en Modern’Jazz. Une fois le vocabulaire maîtrisé, ados et adultes peuvent rejoindre le Moderne.</Fragment>
   </PageHero>
 
-  <section class="story on-white section">
+  <section class="story on-white section stage">
     <div class="wrap story__grid">
       {story.map((s, i) => (
         <article class="step" data-speed={[0.04, -0.05, 0.07][i]}>
@@ -44,7 +44,7 @@ const story = [
     </div>
   </section>
 
-  <section class="years on-black section">
+  <section class="years on-black section stage">
     <div class="wrap">
       <p class="kicker">En chiffres</p>
       <div class="years__head">
@@ -60,7 +60,7 @@ const story = [
     </div>
   </section>
 
-  <section class="courses on-white section">
+  <section class="courses on-white section stage">
     <div class="wrap">
       <p class="kicker">Les disciplines</p>
       <h2 class="h1 courses__title" data-reveal>Six disciplines,<br /><em>un seul parcours</em></h2>

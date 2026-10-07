@@ -14,7 +14,7 @@ import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
     <Fragment slot="sub">Joignez directement Diane ou Delphine par téléphone.</Fragment>
   </PageHero>
 
-  <section class="people">
+  <section class="people stage">
     {site.teachers.map((t, i) => (
       <a href={tel(t.phone)} class="person" data-reveal style={`--d:${i * 0.08}s`}>
         <p class="label">{t.name}</p>
@@ -23,7 +23,7 @@ import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
     ))}
   </section>
 
-  <section class="contact">
+  <section class="contact stage">
     <div class="group g1" data-reveal>
       <p class="label">Location de salles</p>
       <ul class="prose">

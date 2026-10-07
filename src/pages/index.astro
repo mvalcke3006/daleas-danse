@@ -22,7 +22,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   <h1 class="sr-only">Daléas Danse, école de danse à Annecy depuis 1965</h1>
   <HeroFloat />
 
-  <section class="hero on-white">
+  <section class="hero on-white stage">
     <div class="wrap hero__row">
       <p class="lead hero__lead" data-reveal>
         École de danse privée à Annecy depuis 1965. Modern’Jazz, Moderne et classe chorégraphique, de l’éveil des tout-petits aux danseurs avancés.
@@ -47,14 +47,14 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
   </section>
 
-  <section class="hub-intro on-white">
+  <section class="hub-intro on-white stage">
     <div class="wrap">
       <p class="kicker">Bienvenue</p>
       <h2 class="h1 hub-intro__title" data-reveal>Une école de danse,<br /><em>tout un univers</em></h2>
     </div>
   </section>
 
-  <a href="/ecole/" class="block block--school on-white">
+  <a href="/ecole/" class="block block--school on-white stage">
     <div class="wrap block__grid">
       <div class="block__text">
         <p class="label muted">01 — L’école</p>
@@ -70,14 +70,14 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
 
   <section class="pair">
     <div class="wrap pair__grid">
-      <a href="/horaires/" class="card on-cream" data-reveal>
+      <a href="/horaires/" class="card on-cream stage" data-reveal>
         <p class="label muted">02 — Horaires</p>
         <p class="card__big xl">{total}</p>
         <p class="h3">cours par semaine</p>
         <p class="prose muted">De l’éveil rythmique dès 2 ans ½ aux classes avancées, du lundi au vendredi.</p>
         <span class="block__go">Voir le planning {season}</span>
       </a>
-      <a href="/daleas-danse-annecy-tarifs/" class="card on-black" data-reveal style="--d:.08s">
+      <a href="/daleas-danse-annecy-tarifs/" class="card on-black stage" data-reveal style="--d:.08s">
         <p class="label muted">03 — Tarifs</p>
         <p class="card__big xl"><small>dès</small>{singleClass}€</p>
         <p class="h3">le cours à l’unité</p>
@@ -101,7 +101,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
   </a>
 
-  <section class="duo-cards on-white section">
+  <section class="duo-cards on-white section stage">
     <div class="wrap duo-cards__grid">
       <a href="/yoga-annecy/" class="tease" data-reveal>
         <div class="tease__media media dist"><Image src={yoga} alt="Maryse Daléas en posture de yoga" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" /></div>
@@ -118,7 +118,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
   </section>
 
-  <a href="/galerie/" class="gal on-white section">
+  <a href="/galerie/" class="gal on-white section stage">
     <div class="wrap gal__head">
       <div>
         <p class="label muted">07 — Galerie</p>
@@ -138,7 +138,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
   </a>
 
-  <section class="contact on-white section">
+  <section class="contact on-white section stage">
     <div class="wrap contact__grid">
       <div>
         <p class="label muted">08 — Contact</p>

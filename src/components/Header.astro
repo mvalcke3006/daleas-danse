@@ -19,9 +19,6 @@ const mark = await getImage({ src: figure, width: 120, format: 'webp' });
   <a href="/" class="nav__brand lit" aria-label="Daléas Danse, accueil" data-mark>
     <span class="nav__mark" data-mark-in><img src={mark.src} alt="" width="287" height="495" /></span>
   </a>
-  <a href="/" class="nav__title" aria-hidden="true" tabindex="-1">
-    <span>Daléas</span><i></i><span>Danse</span>
-  </a>
   <div class="nav__right">
     <a href="/horaires/" class="nav__pill nav__quick">Horaires</a>
     <button class="nav__pill nav__menu" aria-expanded="false" aria-controls="menu" data-menu-btn>
@@ -71,30 +68,6 @@ const mark = await getImage({ src: figure, width: 120, format: 'webp' });
     transition: transform 0.7s var(--ease-expo);
   }
   .nav.is-hidden { transform: translateY(-140%); }
-  .nav__title {
-    pointer-events: auto;
-    position: absolute;
-    left: 50%;
-    top: calc(clamp(12px, 2vw, 22px) + clamp(64px, 6vw, 84px) / 2);
-    translate: -50% -50%;
-    display: flex;
-    align-items: center;
-    gap: 0.9em;
-    font-size: clamp(0.95rem, 1.35vw, 1.35rem);
-    font-weight: 300;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    white-space: nowrap;
-    color: var(--ink);
-    padding: 0.6em 0.4em 0.6em 1.3em;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.72);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    animation: title-in 1.6s var(--ease-expo) 0.2s backwards;
-  }
-  .nav__title i { width: 1.8em; height: 1px; background: currentColor; opacity: 0.5; }
-  @keyframes title-in { from { opacity: 0; letter-spacing: 0.9em; filter: blur(8px); } }
   .nav__right { display: flex; gap: 8px; }
   .nav__pill {
     pointer-events: auto;
@@ -205,13 +178,6 @@ const mark = await getImage({ src: figure, width: 120, format: 'webp' });
     .menu__inner { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
     .menu__preview { display: none; }
     .menu__link { font-size: clamp(2rem, min(11vw, 6.6vh), 4.2rem); }
-  }
-  @media (max-width: 760px) {
-    .nav__title { font-size: 0.78rem; letter-spacing: 0.3em; gap: 0.6em; top: calc(12px + 30px); }
-    .nav__title i { width: 1em; }
-  }
-  @media (max-width: 520px) {
-    .nav__title { top: calc(12px + 60px + 18px); font-size: 0.72rem; letter-spacing: 0.3em; }
   }
   @media (max-width: 560px) {
     .nav__quick { display: none; }
