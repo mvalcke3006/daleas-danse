@@ -102,10 +102,10 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 .muted { color: var(--fg-muted); }
 
 .label {
-  font-size: 13px;
-  line-height: 1.4;
-  font-weight: 500;
-  letter-spacing: 0.015em;
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-weight: 400; text-transform: uppercase;
+  letter-spacing: 0.07em;
 }
 .kicker {
   display: inline-flex;
@@ -113,7 +113,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   gap: 10px;
   font-size: 13px;
   line-height: 1.4;
-  font-weight: 500;
+  font-weight: 400;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
@@ -121,19 +121,18 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 
 .h1, .h2, .h3, .h4 {
   font-family: var(--text);
-  font-weight: 500;
+  font-weight: 400; text-transform: uppercase;
   letter-spacing: -0.015em;
   line-height: 1.2;
 }
-.h1 { font-size: clamp(2.6rem, 6.2vw, 5.6rem); line-height: 1.02; letter-spacing: -0.03em; text-transform: uppercase; }
-.h2 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.06; letter-spacing: -0.025em; text-transform: uppercase; }
+.h1 { font-size: clamp(2.6rem, 6.2vw, 5.6rem); line-height: 1.02; letter-spacing: -0.03em; }
+.h2 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.06; letter-spacing: -0.025em; }
 .h3 { font-size: clamp(1.5rem, 2.2vw, 2.25rem); }
 .h4 { font-size: 1.5rem; }
 .h1 em, .h2 em, .h3 em {
   font-style: italic;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: -0.02em;
+  font-weight: 300;
+  text-transform: uppercase;
   color: var(--accent);
 }
 
@@ -158,10 +157,10 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   border-radius: 3px;
   background: var(--ink);
   color: var(--white);
-  font-size: 16px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400; text-transform: uppercase;
   line-height: 1.2;
-  letter-spacing: 0.015em;
+  letter-spacing: 0.08em;
   white-space: nowrap;
   transition: background-color 0.35s var(--ease-out), transform 0.2s var(--ease-out);
 }
@@ -195,14 +194,17 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   border-radius: 3px;
   background: var(--chip-bg);
   color: var(--fg);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 12.5px;
+  font-weight: 400; text-transform: uppercase;
+  letter-spacing: 0.07em;
   line-height: 1.2;
   white-space: nowrap;
 }
 
 .tlink {
-  font-weight: 500;
+  font-weight: 400; text-transform: uppercase;
+  font-size: 14px;
+  letter-spacing: 0.08em;
   background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1.5px no-repeat;
   padding-bottom: 3px;
   transition: background-size 0.5s var(--ease-in-out);
@@ -245,9 +247,9 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 }
 
 .grey { color: var(--fg-muted); }
-.display { font-family: var(--text); font-weight: 500; letter-spacing: -0.02em; line-height: 1.1; }
-.intro { font-size: 13px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; }
-.intro .display { font-weight: 500; }
+.display { font-family: var(--text); font-weight: 400; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; }
+.intro { font-size: 13px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; }
+.intro .display { font-weight: 400; text-transform: uppercase; }
 .statement { font-family: var(--anton); font-size: clamp(3.5rem, 12vw, 10rem); line-height: 0.88; text-transform: uppercase; text-align: center; }
 
 .chapter-head {
@@ -259,7 +261,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   margin-inline: auto;
 }
 .chapter-head > :first-child { text-align: right; }
-.chapter-head .label { font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; }
+.chapter-head .label { letter-spacing: 0.06em; }
 .chapter-head .num { font-family: var(--anton); font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 0.85; }
 
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem 10px; padding-inline: var(--side); }
@@ -269,7 +271,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 .tile:hover .tile__img img { transform: scale(1.04); }
 .tile__tag { position: absolute; top: 10px; left: 10px; z-index: 1; background: var(--white); }
 .tile__cap { padding-top: 12px; }
-.tile__cap p:first-child { font-weight: 500; }
+.tile__cap p:first-child { font-weight: 400; text-transform: uppercase; }
 @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 560px) { .grid3 { grid-template-columns: 1fr; } }
 

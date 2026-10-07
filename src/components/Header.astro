@@ -81,7 +81,7 @@ const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640
     box-shadow: 0 0 0 1px rgba(20, 22, 23, 0.06), 0 12px 30px -18px rgba(20, 22, 23, 0.4);
     color: var(--ink);
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 400; text-transform: uppercase;
     transition: transform 0.4s var(--ease-out), background-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
   }
   .nav__pill:active { transform: scale(0.96); }
@@ -153,7 +153,7 @@ const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640
   .menu__preview img.is-on { opacity: 1; transform: none; filter: none; }
   .menu__info { display: grid; gap: 0.4rem; }
   .menu__info .kicker { margin-bottom: 0.5rem; }
-  .menu__tel { font-size: 1.15rem; font-weight: 500; }
+  .menu__tel { font-size: 1.15rem; font-weight: 400; text-transform: uppercase; }
   .menu__tel:hover { text-decoration: underline; text-underline-offset: 4px; }
 
   @media (max-width: 900px) {
