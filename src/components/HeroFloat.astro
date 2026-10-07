@@ -146,7 +146,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
   .hf__logo {
     --sx: 0px;
     --sy: 18px;
-    height: clamp(300px, 64vh, 620px);
+    height: clamp(260px, min(64vh, 50vw), 620px);
     aspect-ratio: 287 / 495;
     perspective: 900px;
   }
@@ -160,10 +160,10 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
   }
   @keyframes logo-in { from { opacity: 0; filter: blur(18px); } }
 
-  @media (max-width: 760px) {
-    .hf__center { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; justify-items: center; padding-block: 2rem; gap: 0.5rem; }
+  @media (max-width: 760px), (max-aspect-ratio: 4/5) {
+    .hf__center { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; justify-items: center; align-content: center; padding-block: clamp(4.75rem, 11vh, 6rem) 1.5rem; gap: 0.25rem; }
     .hf__word--l, .hf__word--r { justify-self: center; font-size: 15vw; }
-    .hf__logo { height: min(48vh, 420px); }
+    .hf__logo { height: min(50vh, 120vw, 520px); }
     .hf__p { width: clamp(70px, calc(var(--w) * 2), 150px); }
     .hf__p:nth-child(5), .hf__p:nth-child(7) { display: none; }
   }
