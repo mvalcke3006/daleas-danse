@@ -12,13 +12,6 @@
   font-display: swap;
   src: url('/fonts/inter-italic.woff2') format('woff2');
 }
-@font-face {
-  font-family: 'Anton';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('/fonts/anton.woff2') format('woff2');
-}
 
 :root {
   --white: #ffffff;
@@ -42,7 +35,6 @@
   --accent: currentColor;
 
   --text: 'Inter', 'Helvetica Neue', Arial, sans-serif;
-  --anton: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
@@ -136,12 +128,13 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   color: var(--accent);
 }
 
-.anton {
-  font-family: var(--anton);
-  font-weight: 400;
+.xl {
+  font-family: var(--text);
+  font-weight: 200;
   text-transform: uppercase;
-  letter-spacing: -0.01em;
-  line-height: 0.88;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+  font-variant-numeric: tabular-nums;
 }
 
 .lead { font-size: clamp(1.15rem, 1.5vw, 1.4rem); line-height: 1.5; letter-spacing: 0; }
@@ -250,7 +243,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 .display { font-family: var(--text); font-weight: 400; text-transform: uppercase; letter-spacing: -0.02em; line-height: 1.1; }
 .intro { font-size: 13px; font-weight: 400; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; }
 .intro .display { font-weight: 400; text-transform: uppercase; }
-.statement { font-family: var(--anton); font-size: clamp(3.5rem, 12vw, 10rem); line-height: 0.88; text-transform: uppercase; text-align: center; }
+.statement { font-family: var(--text); font-weight: 200; letter-spacing: -0.045em; font-size: clamp(3rem, 9vw, 8rem); line-height: 0.92; text-transform: uppercase; text-align: center; }
 
 .chapter-head {
   display: grid;
@@ -262,7 +255,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 }
 .chapter-head > :first-child { text-align: right; }
 .chapter-head .label { letter-spacing: 0.06em; }
-.chapter-head .num { font-family: var(--anton); font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 0.85; }
+.chapter-head .num { font-family: var(--text); font-weight: 200; font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 0.85; }
 
 .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem 10px; padding-inline: var(--side); }
 .tile { display: block; }

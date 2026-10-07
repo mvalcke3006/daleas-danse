@@ -1,0 +1,233 @@
+---
+import { getImage } from 'astro:assets';
+import figure from '../assets/img/daleas-figure.png';
+import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
+import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
+import studio from '../assets/img/espacedaleas-salle1.jpg';
+import gala from '../assets/img/daleasdanse-slide4.jpg';
+import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+
+const base = import.meta.env.BASE_URL;
+const logo = await getImage({ src: figure, width: 574, format: 'webp' });
+
+const photos = [
+  { src: duo, x: 15, y: 20, w: 11, r: -6, d: 0.25, ratio: '4/5', pos: '45% 30%', href: 'stages/' },
+  { src: gala, x: 79, y: 27, w: 15, r: 4, d: 1, ratio: '4/3', pos: '50% 40%', href: 'galerie/' },
+  { src: kids, x: 87, y: 63, w: 10, r: 7, d: 0.3, ratio: '3/4', pos: '50% 40%', href: 'horaires/' },
+  { src: team, x: 11, y: 70, w: 16, r: -3, d: 0.95, ratio: '4/3', pos: '40% 50%', href: 'ecole/' },
+  { src: jazz, x: 30, y: 90, w: 9, r: 5, d: 0.55, ratio: '3/4', pos: '50% 50%', href: 'horaires/' },
+  { src: yoga, x: 70, y: 88, w: 10, r: -5, d: 0.5, ratio: '3/4', pos: '50% 35%', href: 'yoga-annecy/' },
+  { src: studio, x: 64, y: 8, w: 8, r: 3, d: 0.2, ratio: '4/3', pos: '30% 50%', href: 'espace-daleas-location-de-salles-annecy/' },
+];
+const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 520, format: 'webp' })));
+---
+<section class="hf" data-hf aria-label="Daléas Danse">
+  <div class="hf__light" aria-hidden="true">
+    <span class="hf__beam hf__beam--l"></span>
+    <span class="hf__beam hf__beam--r"></span>
+    <span class="hf__spot"></span>
+  </div>
+
+  <div class="hf__stage">
+    {photos.map((p, i) => (
+      <a
+        href={`${base}${p.href}`}
+        class:list={['hf__p', p.d > 0.7 ? 'is-front' : 'is-back']}
+        style={`--x:${p.x}%; --y:${p.y}%; --w:${p.w}vw; --r:${p.r}deg; --d:${p.d}; --i:${i}; aspect-ratio:${p.ratio}`}
+        tabindex="-1"
+        aria-hidden="true"
+        data-depth={p.d}
+      >
+        <span class="hf__pin"><img src={shots[i].src} alt="" style={`object-position:${p.pos}`} loading="eager" draggable="false" /></span>
+      </a>
+    ))}
+
+    <div class="hf__center">
+      <span class="hf__word hf__word--l">Daléas</span>
+      <div class="hf__logo" data-hf-logo>
+        <img src={logo.src} alt="Daléas Danse" width="287" height="495" fetchpriority="high" />
+      </div>
+      <span class="hf__word hf__word--r">Danse</span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hf {
+    --lx: 50%;
+    --ly: 32%;
+    position: relative;
+    height: calc(100dvh - clamp(4.5rem, 12vh, 8rem));
+    min-height: 560px;
+    overflow: hidden;
+    isolation: isolate;
+    background: #ededec;
+  }
+
+  .hf__light { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .hf__spot {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(circle at var(--lx) var(--ly), rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.85) 18%, rgba(255, 255, 255, 0) 55%),
+      radial-gradient(ellipse 80% 60% at 50% 45%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 70%);
+  }
+  .hf__beam {
+    position: absolute;
+    top: -20%;
+    width: 60%;
+    height: 140%;
+    background: conic-gradient(from 180deg at 50% 0%, transparent 0deg, rgba(255, 255, 255, 0.55) 10deg, transparent 22deg);
+    filter: blur(14px);
+    mix-blend-mode: screen;
+    transform-origin: 50% 0%;
+    animation: sweep 14s var(--ease-in-out) infinite alternate;
+  }
+  .hf__beam--l { left: -10%; --a: -18deg; --b: 12deg; }
+  .hf__beam--r { right: -10%; --a: 16deg; --b: -14deg; animation-delay: -6s; }
+  @keyframes sweep { from { transform: rotate(var(--a)); } to { transform: rotate(var(--b)); } }
+
+  .hf__stage { position: absolute; inset: 0; z-index: 1; }
+
+  .hf__p {
+    position: absolute;
+    left: var(--x);
+    top: var(--y);
+    width: clamp(90px, var(--w), 260px);
+    translate: -50% -50%;
+    z-index: 1;
+    opacity: 0;
+    scale: 0.6;
+    filter: blur(14px);
+    transition: opacity 1.2s var(--ease-out), scale 1.6s var(--ease-expo), filter 1.2s var(--ease-out);
+    transition-delay: calc(var(--i) * 90ms + 300ms);
+  }
+  .hf__p.is-front { z-index: 3; }
+  .hf.is-in .hf__p { opacity: 1; scale: 1; filter: none; }
+  .hf.is-in .hf__p.is-back { opacity: 0.8; filter: blur(2.5px) saturate(0.85); }
+  .hf__pin {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    border-radius: 4px;
+    rotate: var(--r);
+    box-shadow: 0 30px 50px -30px rgba(20, 22, 23, 0.45);
+    will-change: transform;
+    transition: scale 0.6s var(--ease-expo);
+  }
+  .hf__p:hover .hf__pin { scale: 1.06; }
+  .hf__pin img { width: 100%; height: 100%; object-fit: cover; }
+
+  .hf__center {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    padding-inline: var(--side);
+    pointer-events: none;
+  }
+  .hf__word {
+    font-size: clamp(2.4rem, 8.6vw, 10.5rem);
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+    animation: word-in 1.6s var(--ease-expo) 0.2s backwards;
+  }
+  .hf__word--l { justify-self: end; }
+  .hf__word--r { justify-self: start; }
+  @keyframes word-in { from { opacity: 0; filter: blur(14px); transform: translateY(20px); } }
+  .hf__logo {
+    --sx: 0px;
+    --sy: 18px;
+    height: clamp(300px, 64vh, 620px);
+    aspect-ratio: 287 / 495;
+    perspective: 900px;
+  }
+  .hf__logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(var(--sx) var(--sy) 16px rgba(20, 22, 23, 0.22));
+    will-change: transform;
+    animation: logo-in 1.8s var(--ease-expo) 0.05s backwards;
+  }
+  @keyframes logo-in { from { opacity: 0; filter: blur(18px); } }
+
+  @media (max-width: 760px) {
+    .hf__center { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; justify-items: center; padding-block: 2rem; gap: 0.5rem; }
+    .hf__word--l, .hf__word--r { justify-self: center; font-size: 15vw; }
+    .hf__logo { height: min(48vh, 420px); }
+    .hf__p { width: clamp(70px, calc(var(--w) * 2), 150px); }
+    .hf__p:nth-child(5), .hf__p:nth-child(7) { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hf__beam, .hf__word, .hf__logo img { animation: none; }
+    .hf__p { transition: none; }
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-hf]');
+  if (root) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const logoBox = root.querySelector<HTMLElement>('[data-hf-logo]')!;
+    const logoImg = logoBox.querySelector('img')!;
+    const items = [...root.querySelectorAll<HTMLElement>('.hf__p')].map((el, i) => ({
+      pin: el.querySelector<HTMLElement>('.hf__pin')!,
+      d: Number(el.dataset.depth),
+      ph: i * 1.7,
+    }));
+
+    requestAnimationFrame(() => root.classList.add('is-in'));
+
+    let mx = 0, my = 0, cmx = 0, cmy = 0, visible = true;
+    if (fine) {
+      root.addEventListener('pointermove', (e) => {
+        const r = root.getBoundingClientRect();
+        mx = (e.clientX - r.left) / r.width - 0.5;
+        my = (e.clientY - r.top) / r.height - 0.5;
+      }, { passive: true });
+      root.addEventListener('pointerleave', () => { mx = 0; my = -0.15; });
+    }
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(root);
+
+    const tick = (time: number) => {
+      if (visible) {
+        const t = time / 1000;
+        if (!fine && !reduce) { mx = Math.sin(t * 0.35) * 0.3; my = Math.cos(t * 0.27) * 0.2 - 0.1; }
+        cmx += (mx - cmx) * 0.06;
+        cmy += (my - cmy) * 0.06;
+        const scroll = Math.max(0, -root.getBoundingClientRect().top);
+
+        root.style.setProperty('--lx', `${(50 + cmx * 70).toFixed(2)}%`);
+        root.style.setProperty('--ly', `${(32 + cmy * 60).toFixed(2)}%`);
+        logoBox.style.setProperty('--sx', `${(-cmx * 40).toFixed(1)}px`);
+        logoBox.style.setProperty('--sy', `${(18 - cmy * 30).toFixed(1)}px`);
+
+        const fl = reduce ? 0 : 1;
+        logoImg.style.transform =
+          `translateY(${(Math.sin(t * 0.9) * 7 * fl - scroll * 0.12).toFixed(1)}px) ` +
+          `rotateX(${(-cmy * 9).toFixed(2)}deg) rotateY(${(cmx * 14).toFixed(2)}deg) ` +
+          `rotateZ(${(Math.sin(t * 0.6) * 1.6 * fl).toFixed(2)}deg)`;
+
+        items.forEach(({ pin, d, ph }) => {
+          const fx = Math.sin(t * 0.5 + ph) * 10 * fl;
+          const fy = Math.cos(t * 0.6 + ph) * 12 * fl;
+          const px = -cmx * d * 70;
+          const py = -cmy * d * 50 - scroll * d * 0.35;
+          pin.style.transform = `translate3d(${(fx + px).toFixed(1)}px, ${(fy + py).toFixed(1)}px, 0)`;
+        });
+      }
+      requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+</script>

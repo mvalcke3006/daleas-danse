@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Sphere from '../components/Sphere.astro';
+import HeroFloat from '../components/HeroFloat.astro';
 import { announcement, schedule, weekends, season, singleClass, site, tel } from '../data/site';
 
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
@@ -20,7 +20,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   description="École de danse privée fondée en 1965 à Annecy. Cours de Modern’Jazz, Moderne et classe chorégraphique pour enfants, ados et adultes, stages et yoga."
 >
   <h1 class="sr-only">Daléas Danse, école de danse à Annecy depuis 1965</h1>
-  <Sphere mode="hero" />
+  <HeroFloat />
 
   <section class="hero on-white">
     <div class="wrap hero__row">
@@ -72,14 +72,14 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     <div class="wrap pair__grid">
       <a href="/horaires/" class="card on-cream" data-reveal>
         <p class="label muted">02 — Horaires</p>
-        <p class="card__big anton">{total}</p>
+        <p class="card__big xl">{total}</p>
         <p class="h3">cours par semaine</p>
         <p class="prose muted">De l’éveil rythmique dès 2 ans ½ aux classes avancées, du lundi au vendredi.</p>
         <span class="block__go">Voir le planning {season}</span>
       </a>
       <a href="/daleas-danse-annecy-tarifs/" class="card on-black" data-reveal style="--d:.08s">
         <p class="label muted">03 — Tarifs</p>
-        <p class="card__big anton"><small>dès</small>{singleClass}€</p>
+        <p class="card__big xl"><small>dès</small>{singleClass}€</p>
         <p class="h3">le cours à l’unité</p>
         <p class="prose muted">Forfaits trimestriels ou annuels, carte 10 cours, forfait illimité.</p>
         <span class="block__go">Voir les tarifs</span>
@@ -93,7 +93,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
     <div class="wrap full__content">
       <p class="label full__label">04 — Stages</p>
-      <h2 class="full__title anton" data-reveal>Stages</h2>
+      <h2 class="full__title xl" data-reveal>Stages</h2>
       <div class="full__row" data-reveal>
         <p class="lead">Des chorégraphes invités chaque saison.{next && <> Prochain week-end : {next.date}, {next.teacher}.</>}</p>
         <span class="block__go">Tous les stages</span>
@@ -149,7 +149,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
         {site.teachers.map((t, i) => (
           <a href={tel(t.phone)} class="contact__card" data-reveal style={`--d:${i * 0.08}s`}>
             <span class="label">{t.name} — cours & stages</span>
-            <span class="contact__tel anton">{t.phone}</span>
+            <span class="contact__tel xl">{t.phone}</span>
           </a>
         ))}
       </div>

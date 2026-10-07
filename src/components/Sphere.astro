@@ -9,10 +9,6 @@ import gala from '../assets/img/daleasdanse-slide4.jpg';
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
 import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
 
-interface Props {
-  mode?: 'gallery' | 'hero';
-}
-const { mode = 'gallery' } = Astro.props;
 const base = import.meta.env.BASE_URL;
 
 type T = { src: ImageMetadata; r: string; pos: string; title: string; cap: string; href: string };
@@ -40,18 +36,13 @@ const all: T[] = [
   { src: gala, r: '3/4', pos: '78% 40%', title: 'Spectacle', cap: 'Fin d’année', href: H },
   { src: team, r: '3/4', pos: '70% 50%', title: 'L’équipe', cap: 'Trois générations', href: C },
 ];
-const tiles = mode === 'hero' ? all.slice(0, 16) : all;
+const tiles = all;
 
 const imgs = await Promise.all(
-  tiles.map((t) => getImage({ src: t.src, width: Math.min(t.src.width, mode === 'hero' ? 420 : 360), format: 'webp' }))
+  tiles.map((t) => getImage({ src: t.src, width: Math.min(t.src.width, 360), format: 'webp' }))
 );
 ---
-<section class:list={['sph', `sph--${mode}`]} data-sphere={mode} aria-label={mode === 'hero' ? 'Daléas Danse' : 'Galerie de l’école'}>
-  {mode === 'hero' && (
-    <div class="sph__logo" data-logo>
-      <img src={`${base}logo.svg`} alt="Daléas Danse" width="628" height="944" fetchpriority="high" />
-    </div>
-  )}
+<section class="sph" data-sphere aria-label="Galerie de l’école">
   <div class="sph__stage">
     {tiles.map((t, i) => (
       <a
@@ -73,13 +64,11 @@ const imgs = await Promise.all(
     <span class="muted" data-tip-cap></span>
   </div>
 
-  {mode === 'gallery' && (
-    <div class="sph__foot label">
-      <span>École de danse privée<br />Annecy</span>
-      <span class="muted sph__hint">Glisser pour explorer</span>
-      <span class="r">Modern’Jazz, Moderne<br />Classe chorégraphique, Yoga</span>
-    </div>
-  )}
+  <div class="sph__foot label">
+    <span>École de danse privée<br />Annecy</span>
+    <span class="muted sph__hint">Glisser pour explorer</span>
+    <span class="r">Modern’Jazz, Moderne<br />Classe chorégraphique, Yoga</span>
+  </div>
 </section>
 
 <style>
@@ -93,7 +82,6 @@ const imgs = await Promise.all(
     touch-action: pan-y;
     user-select: none;
   }
-  .sph--hero { height: calc(100dvh - clamp(4.5rem, 12vh, 8rem)); min-height: 520px; }
   .sph.is-drag { cursor: grabbing; }
   .sph__stage { position: absolute; inset: 0; }
   .sph__tile {
@@ -108,26 +96,8 @@ const imgs = await Promise.all(
     will-change: transform, opacity;
     opacity: 0;
   }
-  .sph--hero .sph__tile { --u: clamp(64px, 7.4vw, 132px); border-radius: 3px; overflow: hidden; }
   .sph__tile img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
-  .sph__logo {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 50;
-    width: clamp(150px, min(24vw, 38vh), 400px);
-    pointer-events: none;
-    translate: -50% -50%;
-    transform: scale(var(--ls, 1));
-    opacity: var(--lo, 1);
-    filter: blur(var(--lb, 0px));
-  }
-  .sph__logo img { width: 100%; height: auto; animation: logo-in 1.6s var(--ease-expo) 0.1s both; }
-  @keyframes logo-in {
-    from { opacity: 0; transform: translateY(24px) scale(0.92); filter: blur(16px); }
-    to { opacity: 1; transform: none; filter: none; }
-  }
 
   .sph__tip {
     position: fixed;
@@ -166,103 +136,65 @@ const imgs = await Promise.all(
   @media (max-width: 640px) {
     .sph__hint { display: none; }
     .sph__tile { --u: clamp(40px, 12vw, 60px); }
-    .sph--hero .sph__tile { --u: clamp(48px, 15vw, 72px); }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .sph__logo img { animation: none; }
-  }
+    }
 </style>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-sphere]').forEach((root) => {
-    const hero = root.dataset.sphere === 'hero';
     const tiles = [...root.querySelectorAll<HTMLElement>('.sph__tile')];
-    const logo = root.querySelector<HTMLElement>('[data-logo]');
     const tip = root.querySelector<HTMLElement>('[data-tip]')!;
     const tipTitle = root.querySelector<HTMLElement>('[data-tip-title]')!;
     const tipCap = root.querySelector<HTMLElement>('[data-tip-cap]')!;
     const n = tiles.length;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
 
     const golden = Math.PI * (3 - Math.sqrt(5));
     const pts = tiles.map((_, i) => {
-      if (hero) {
-        const y = -0.9 + (i / (n - 1)) * 1.8;
-        const th = i * golden * 1.7;
-        return [Math.cos(th), y, Math.sin(th)];
-      }
       const y = 1 - (i / (n - 1)) * 2;
       const r = Math.sqrt(1 - y * y);
       const th = i * golden;
       return [Math.cos(th) * r, y, Math.sin(th) * r];
     });
 
-    const baseTilt = hero ? -0.12 : -0.18;
-    let ry = 0.4, rx = baseTilt, vy = 0.0016, vx = 0;
+    let ry = 0.4, rx = -0.18, vy = 0.0016, vx = 0;
     let open = reduce ? 1 : 0;
     let hovering = false, dragging = false, moved = 0, visible = true;
     let lastX = 0, lastY = 0, lastScroll = scrollY;
-    let mx = 0, my = 0, cmx = 0, cmy = 0, spread = 0;
-    let RX = 1, RY = 1, W = 0, H = 0;
+    let R = 1;
 
     const size = () => {
-      W = root.clientWidth; H = root.clientHeight;
-      if (hero) {
-        RX = Math.min(W * (W < 640 ? 0.44 : 0.38), H * 0.75);
-        RY = H * 0.34;
-      } else {
-        RX = RY = Math.min(W, H) * (W < 640 ? 0.36 : 0.3);
-      }
+      const W = root.clientWidth, H = root.clientHeight;
+      R = Math.min(W, H) * (W < 640 ? 0.36 : 0.3);
     };
     size();
     addEventListener('resize', size);
-
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(root);
 
     const frame = () => {
       if (visible) {
-        const base = hovering ? 0.0002 : hero ? 0.0022 : 0.0016;
-        const target = base + (hero && !reduce ? cmx * 0.006 : 0);
+        const target = hovering ? 0.0002 : 0.0016;
         if (!dragging) {
           vy += (target - vy) * 0.04;
           vx *= 0.94;
           rx += vx;
-          rx += (baseTilt + (hero ? cmy * 0.35 : 0) - rx) * 0.02;
+          rx += (-0.18 - rx) * 0.01;
         }
         if (!reduce) ry += vy;
-        cmx += (mx - cmx) * 0.05;
-        cmy += (my - cmy) * 0.05;
-
-        if (hero) {
-          const r = root.getBoundingClientRect();
-          spread = Math.min(1, Math.max(0, -r.top / (r.height * 0.8)));
-          if (logo) {
-            logo.style.setProperty('--ls', (1 - spread * 0.25).toFixed(3));
-            logo.style.setProperty('--lo', (1 - spread * 0.9).toFixed(3));
-            logo.style.setProperty('--lb', `${(spread * 10).toFixed(1)}px`);
-          }
-        }
-
         const sY = Math.sin(ry), cY = Math.cos(ry), sX = Math.sin(rx), cX = Math.cos(rx);
-        const k = 1 + spread * 0.9;
-        const f = RX * 3.4;
+        const f = R * 3.2;
         for (let i = 0; i < n; i++) {
           const [x0, y0, z0] = pts[i];
           const x1 = x0 * cY - z0 * sY;
           const z1 = x0 * sY + z0 * cY;
           const y2 = y0 * cX - z1 * sX;
           const z2 = y0 * sX + z1 * cX;
-          const px = x1 * RX * open * k;
-          const py = y2 * RY * open * k;
-          const z = z2 * RX * open;
-          const s = f / (f - z);
+          const rr = R * open;
+          const s = f / (f - z2 * rr);
           const depth = (z2 + 1) / 2;
           const el = tiles[i];
-          el.style.transform = `translate3d(${(px * s).toFixed(1)}px, ${(py * s).toFixed(1)}px, 0) scale(${(s * (0.6 + depth * 0.4)).toFixed(3)})`;
-          el.style.opacity = String((open * (0.3 + depth * 0.7) * (1 - spread * 0.5)).toFixed(3));
+          el.style.transform = `translate3d(${(x1 * rr * s).toFixed(1)}px, ${(y2 * rr * s).toFixed(1)}px, 0) scale(${(s * (0.62 + depth * 0.38)).toFixed(3)})`;
+          el.style.opacity = String((open * (0.25 + depth * 0.75)).toFixed(3));
           el.style.zIndex = String(Math.round(depth * 100));
-          el.style.filter = hero && depth < 0.45 ? `blur(${((0.45 - depth) * 8).toFixed(1)}px)` : '';
         }
       }
       requestAnimationFrame(frame);
@@ -273,7 +205,7 @@ const imgs = await Promise.all(
       if (reduce) return;
       const t0 = performance.now();
       const step = (t: number) => {
-        const p = Math.min(1, (t - t0) / 1800);
+        const p = Math.min(1, (t - t0) / 1600);
         open = 1 - Math.pow(1 - p, 4);
         if (p < 1) requestAnimationFrame(step);
       };
@@ -288,7 +220,6 @@ const imgs = await Promise.all(
       root.classList.add('is-drag');
     });
     addEventListener('pointermove', (e) => {
-      if (fine) { mx = e.clientX / innerWidth - 0.5; my = e.clientY / innerHeight - 0.5; }
       if (dragging) {
         const dx = e.clientX - lastX, dy = e.clientY - lastY;
         moved += Math.abs(dx) + Math.abs(dy);

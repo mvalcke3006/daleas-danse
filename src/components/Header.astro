@@ -118,8 +118,10 @@ const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640
   }
   .menu__nav { display: flex; flex-direction: column; justify-content: safe center; }
   .menu__link {
-    font-family: var(--anton);
-    font-size: clamp(2rem, min(7.4vw, 7.4vh), 6.6rem);
+    font-family: var(--text);
+    font-weight: 200;
+    letter-spacing: -0.03em;
+    font-size: clamp(2rem, min(6vw, 7vh), 5.6rem);
     line-height: 1.02;
     text-transform: uppercase;
     width: fit-content;

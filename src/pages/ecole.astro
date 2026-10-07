@@ -36,7 +36,7 @@ const story = [
     <div class="wrap story__grid">
       {story.map((s, i) => (
         <article class="step" data-speed={[0.04, -0.05, 0.07][i]}>
-          <p class="step__y anton">{s.y}</p>
+          <p class="step__y xl">{s.y}</p>
           <p class="label muted">{s.n} — {s.t}</p>
           <p class="prose">{s.p}</p>
         </article>
@@ -48,14 +48,14 @@ const story = [
     <div class="wrap">
       <p class="kicker">En chiffres</p>
       <div class="years__head">
-        <p class="years__big anton" data-count="60">60</p>
+        <p class="years__big xl" data-count="60">60</p>
         <p class="h2">ans de danse<br />à Annecy</p>
       </div>
       <ul class="years__stats">
-        <li data-reveal><span class="anton" data-count={total}>{total}</span><p class="label muted">cours chaque semaine</p></li>
-        <li data-reveal style="--d:.08s"><span class="anton" data-count={schedule.length}>{schedule.length}</span><p class="label muted">disciplines, de 2 ans ½ à adulte</p></li>
-        <li data-reveal style="--d:.16s"><span class="anton" data-count="3">3</span><p class="label muted">studios à l’Espace Daléas</p></li>
-        <li data-reveal style="--d:.24s"><span class="anton" data-count="32">32</span><p class="label muted">éditions du stage d’été</p></li>
+        <li data-reveal><span class="xl" data-count={total}>{total}</span><p class="label muted">cours chaque semaine</p></li>
+        <li data-reveal style="--d:.08s"><span class="xl" data-count={schedule.length}>{schedule.length}</span><p class="label muted">disciplines, de 2 ans ½ à adulte</p></li>
+        <li data-reveal style="--d:.16s"><span class="xl" data-count="3">3</span><p class="label muted">studios à l’Espace Daléas</p></li>
+        <li data-reveal style="--d:.24s"><span class="xl" data-count="32">32</span><p class="label muted">éditions du stage d’été</p></li>
       </ul>
     </div>
   </section>
@@ -96,7 +96,7 @@ const story = [
   .years__stats { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--rule); }
   .years__stats li { display: grid; align-content: start; gap: 0.75rem; padding: 1.5rem 1.5rem 0 0; }
   .years__stats li + li { padding-left: 1.5rem; border-left: 1px solid var(--rule); }
-  .years__stats .anton { font-size: clamp(3rem, 5.5vw, 5rem); }
+  .years__stats .xl { font-size: clamp(3rem, 5.5vw, 5rem); }
 
   .courses__title { margin: 1.25rem 0 clamp(2.5rem, 5vw, 4rem); }
   .courses__list { border-top: 1.5px solid var(--ink); }
