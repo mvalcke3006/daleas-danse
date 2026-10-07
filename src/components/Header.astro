@@ -1,5 +1,6 @@
 ---
 import { getImage } from 'astro:assets';
+import figure from '../assets/img/daleas-figure.png';
 import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
 import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
@@ -12,10 +13,14 @@ import { navigation, site, tel } from '../data/site';
 const path = Astro.url.pathname;
 const previews = [team, jazz, kids, duo, yoga, studio, gala, team];
 const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640, format: 'webp' })));
+const mark = await getImage({ src: figure, width: 120, format: 'webp' });
 ---
 <header class="nav">
-  <a href="/" class="nav__pill nav__brand" aria-label="Daléas Danse, accueil">
-    <img src="/logo.svg" alt="" width="628" height="944" />
+  <a href="/" class="nav__brand lit" aria-label="Daléas Danse, accueil" data-mark>
+    <span class="nav__mark" data-mark-in><img src={mark.src} alt="" width="287" height="495" /></span>
+  </a>
+  <a href="/" class="nav__title" aria-hidden="true" tabindex="-1">
+    <span>Daléas</span><i></i><span>Danse</span>
   </a>
   <div class="nav__right">
     <a href="/horaires/" class="nav__pill nav__quick">Horaires</a>
@@ -66,6 +71,30 @@ const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640
     transition: transform 0.7s var(--ease-expo);
   }
   .nav.is-hidden { transform: translateY(-140%); }
+  .nav__title {
+    pointer-events: auto;
+    position: absolute;
+    left: 50%;
+    top: calc(clamp(12px, 2vw, 22px) + clamp(64px, 6vw, 84px) / 2);
+    translate: -50% -50%;
+    display: flex;
+    align-items: center;
+    gap: 0.9em;
+    font-size: clamp(0.95rem, 1.35vw, 1.35rem);
+    font-weight: 300;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--ink);
+    padding: 0.6em 0.4em 0.6em 1.3em;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    animation: title-in 1.6s var(--ease-expo) 0.2s backwards;
+  }
+  .nav__title i { width: 1.8em; height: 1px; background: currentColor; opacity: 0.5; }
+  @keyframes title-in { from { opacity: 0; letter-spacing: 0.9em; filter: blur(8px); } }
   .nav__right { display: flex; gap: 8px; }
   .nav__pill {
     pointer-events: auto;
@@ -85,9 +114,23 @@ const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640
     transition: transform 0.4s var(--ease-out), background-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
   }
   .nav__pill:active { transform: scale(0.96); }
-  .nav__brand { width: 48px; padding: 0; justify-content: center; }
-  .nav__brand img { width: 20px; height: auto; transition: transform 0.6s var(--ease-expo); }
-  .nav__brand:hover img { transform: rotate(-8deg); }
+  .nav__brand {
+    pointer-events: auto;
+    display: grid;
+    place-items: center;
+    width: clamp(64px, 6vw, 84px);
+    height: clamp(64px, 6vw, 84px);
+    overflow: hidden;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    perspective: 400px;
+    transition: scale 0.5s var(--ease-expo);
+  }
+  .nav__brand:hover { scale: 1.06; }
+  .nav__mark { display: block; height: calc(clamp(64px, 6vw, 84px) * 0.74); aspect-ratio: 287 / 495; transition: transform 0.6s var(--ease-expo); will-change: transform; }
+  .nav__mark img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(calc(var(--shx, 0px) * 0.15) calc(var(--shy, 22px) * 0.12) 3px rgba(20, 22, 23, 0.3)); }
   .nav__quick:hover { background: var(--white); }
   .nav__menu { background: var(--ink); color: var(--white); padding-right: 16px; }
   .nav__menu:hover { background: var(--black); }
@@ -163,9 +206,17 @@ const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640
     .menu__preview { display: none; }
     .menu__link { font-size: clamp(2rem, min(11vw, 6.6vh), 4.2rem); }
   }
+  @media (max-width: 760px) {
+    .nav__title { font-size: 0.78rem; letter-spacing: 0.3em; gap: 0.6em; top: calc(12px + 30px); }
+    .nav__title i { width: 1em; }
+  }
+  @media (max-width: 520px) {
+    .nav__title { top: calc(12px + 60px + 18px); font-size: 0.72rem; letter-spacing: 0.3em; }
+  }
   @media (max-width: 560px) {
     .nav__quick { display: none; }
-    .nav__brand { width: 44px; }
+    .nav__brand { width: 60px; height: 60px; }
+    .nav__mark { height: 44px; }
     .nav__pill { height: 44px; }
   }
 </style>
@@ -187,6 +238,21 @@ const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640
   };
   btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
   document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
+  const markLink = document.querySelector<HTMLElement>('[data-mark]');
+  const markIn = document.querySelector<HTMLElement>('[data-mark-in]');
+  if (markLink && markIn && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    markLink.addEventListener('pointermove', (e) => {
+      const r = markLink.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      markIn.style.transition = 'transform 0.15s var(--ease-out)';
+      markIn.style.transform = `translate(${x * 8}px, ${y * 6}px) rotateY(${x * 40}deg) rotateX(${-y * 30}deg) rotateZ(${x * 8}deg)`;
+    });
+    markLink.addEventListener('pointerleave', () => {
+      markIn.style.transition = '';
+      markIn.style.transform = '';
+    });
+  }
   menu.querySelectorAll<HTMLElement>('.menu__link').forEach((a) => {
     a.addEventListener('pointerenter', () => {
       const n = Number(a.dataset.preview);

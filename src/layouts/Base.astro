@@ -67,6 +67,7 @@ const jsonLd = {
     </main>
     {footer && <Footer />}
     <Edges />
+    <div class="lightfx" aria-hidden="true"></div>
 
     <script>
       const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -139,6 +140,32 @@ const jsonLd = {
         requestAnimationFrame(update);
       };
       requestAnimationFrame(update);
+
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce) {
+        const sel = '.lit, .media, .tile__img, .gal__item, .ph__img';
+        let tx = innerWidth / 2, ty = innerHeight * 0.25, cx = tx, cy = ty, running = false;
+        const step = () => {
+          cx += (tx - cx) * 0.12;
+          cy += (ty - cy) * 0.12;
+          const nx = cx / innerWidth - 0.5, ny = cy / innerHeight - 0.5;
+          rootStyle.setProperty('--mx', `${cx.toFixed(0)}px`);
+          rootStyle.setProperty('--my', `${cy.toFixed(0)}px`);
+          rootStyle.setProperty('--shx', `${(-nx * 36).toFixed(1)}px`);
+          rootStyle.setProperty('--shy', `${(22 - ny * 26).toFixed(1)}px`);
+          if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.5) requestAnimationFrame(step);
+          else running = false;
+        };
+        addEventListener('pointermove', (e) => {
+          tx = e.clientX; ty = e.clientY;
+          if (!running) { running = true; requestAnimationFrame(step); }
+          const el = (e.target as Element).closest<HTMLElement>(sel);
+          if (el) {
+            const r = el.getBoundingClientRect();
+            el.style.setProperty('--px', `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
+            el.style.setProperty('--py', `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
+          }
+        }, { passive: true });
+      }
 
       document.documentElement.classList.add('is-loaded');
       window.dispatchEvent(new Event('dd:ready'));

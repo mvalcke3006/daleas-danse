@@ -224,7 +224,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   transition: clip-path 1.4s var(--ease-expo);
 }
 [data-clip] img { transform: scale(1.18); filter: blur(10px); transition: transform 1.8s var(--ease-expo), filter 1.2s var(--ease-out); }
-[data-clip].is-in { clip-path: inset(0 0 0 0 round 0); }
+[data-clip].is-in { clip-path: inset(-80px -80px -80px -80px); }
 [data-clip].is-in img { transform: none; filter: none; }
 
 .no-js [data-reveal], .no-js [data-clip], .no-js [data-clip] img { opacity: 1; transform: none; filter: none; clip-path: none; }
@@ -272,4 +272,41 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   scale: 1 calc(1 + var(--va, 0) * 0.07);
   filter: blur(calc(var(--va, 0) * 4px));
   transform-origin: 50% calc(50% - var(--vs, 0) * 50%);
+}
+
+:is(.lit, .media, .tile__img, .card, .contact__card, .gal__item, .ph__img) {
+  position: relative;
+  box-shadow: var(--shx, 0px) var(--shy, 22px) 46px -26px rgba(20, 22, 23, 0.45);
+}
+:is(.lit, .media, .tile__img, .gal__item, .ph__img)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--px, 50%) var(--py, 30%), rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 46%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+}
+:is(.lit, .media, .tile__img, .gal__item, .ph__img):hover::after { opacity: 1; }
+
+.lightfx {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  background: radial-gradient(circle 75vmax at var(--mx, 50vw) var(--my, 25vh), rgba(20, 22, 23, 0) 0%, rgba(20, 22, 23, 0.07) 100%);
+  mix-blend-mode: multiply;
+}
+.lightfx::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 28vmax at var(--mx, 50vw) var(--my, 25vh), rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 70%);
+  mix-blend-mode: screen;
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .lightfx { display: none; }
 }
