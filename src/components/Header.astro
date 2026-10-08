@@ -20,32 +20,34 @@ const links = [{ label: 'Accueil', href: '/' }, ...navigation];
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
 <header class="nav" data-nav>
-  <a href="/" class="nav__brand" aria-label="Daléas Danse, accueil">
-    <img src={mark.src} alt="" width="164" height="236" />
-  </a>
-
-  <p class="nav__meta" aria-hidden="true">
-    <span>École de danse</span>
-    <span>Annecy <span class="nav__clock" data-clock>—</span></span>
-  </p>
+  <div class="nav__l">
+    <a href="/" class="nav__brand" aria-label="Daléas Danse, accueil">
+      <img src={mark.src} alt="" width="164" height="236" />
+    </a>
+    <p class="nav__meta" aria-hidden="true">
+      <span>École de danse</span>
+      <span>Annecy <span class="nav__clock" data-clock>—</span></span>
+    </p>
+  </div>
 
   <nav class="nav__links" aria-label="Accès rapide">
-    {quick.map((n, i) => (
+    {quick.map((n) => (
       <a href={n.href} class:list={['nav__link', isCurrent(n.href) && 'is-current']} aria-current={isCurrent(n.href) ? 'page' : undefined}>
-        <sup>{pad(i + 1)}</sup><span class="roll"><span class="roll__in" data-t={n.label}>{n.label}</span></span>
+        <span class="roll"><span class="roll__in" data-t={n.label}>{n.label}</span></span>
       </a>
     ))}
   </nav>
 
-  <button class="nav__theme" data-theme-btn aria-label="Passer en thème sombre">
-    <span class="nav__dot" aria-hidden="true"></span>
-    <span class="roll"><span class="roll__in" data-t="Sombre" data-theme-t>Sombre</span></span>
-  </button>
-
-  <button class="nav__menu" aria-expanded="false" aria-controls="menu" data-menu-btn>
-    <span class="roll"><span class="roll__in" data-t="Menu" data-menu-txt>Menu</span></span>
-    <span class="nav__plus" aria-hidden="true"></span>
-  </button>
+  <div class="nav__r">
+    <button class="nav__theme" data-theme-btn aria-label="Passer en thème sombre">
+      <span class="nav__dot" aria-hidden="true"></span>
+      <span class="roll nav__theme-t"><span class="roll__in" data-t="Sombre" data-theme-t>Sombre</span></span>
+    </button>
+    <button class="nav__menu" aria-expanded="false" aria-controls="menu" data-menu-btn>
+      <span class="roll"><span class="roll__in" data-t="Menu" data-menu-txt>Menu</span></span>
+      <span class="nav__plus" aria-hidden="true"></span>
+    </button>
+  </div>
 </header>
 
 <div class="menu on-black" id="menu" data-menu aria-hidden="true">
@@ -80,10 +82,10 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
     inset: 0 0 auto 0;
     z-index: 60;
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: clamp(1rem, 2vw, 2rem);
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     align-items: start;
-    padding: clamp(14px, 2vw, 24px) max(var(--side), calc((100vw - var(--max)) / 2 + var(--side))) 0;
+    column-gap: 2rem;
+    padding: clamp(16px, 2vw, 26px) max(var(--side), calc((100vw - var(--max)) / 2 + var(--side))) 0;
     color: #fff;
     mix-blend-mode: difference;
     pointer-events: none;
@@ -92,10 +94,11 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .nav.is-hidden { transform: translateY(-160%); }
   .nav > * { pointer-events: auto; }
 
-  .nav__brand { grid-column: 1 / span 2; justify-self: start; display: block; width: fit-content; }
+  .nav__l { display: flex; align-items: flex-start; gap: clamp(1rem, 1.6vw, 1.5rem); justify-self: start; }
+  .nav__brand { display: block; flex: none; }
   .nav__brand img {
     display: block;
-    height: clamp(52px, 5vw, 68px);
+    height: clamp(48px, 4.4vw, 60px);
     width: auto;
     filter: invert(1);
     transition: transform 0.8s var(--ease-expo);
@@ -107,26 +110,28 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .nav__theme,
   .nav__menu {
     font-size: 12px;
-    line-height: 1.35;
+    line-height: 16px;
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: var(--tr-caps);
+    white-space: nowrap;
     font-feature-settings: 'case' 1, 'tnum' 1;
   }
-  .nav__meta { grid-column: 3 / span 3; display: grid; padding-top: 2px; pointer-events: none; }
+  .nav__meta { display: grid; padding-top: 3px; pointer-events: none; }
+  .nav__meta span:first-child { opacity: 1; }
   .nav__clock { font-variant-numeric: tabular-nums; }
   .nav__clock :global(i) { font-style: normal; animation: tick 2s steps(1) infinite; }
   @keyframes tick { 50% { opacity: 0.2; } }
 
-  .nav__links { grid-column: 6 / span 4; display: flex; flex-wrap: wrap; gap: 4px clamp(1rem, 2.4vw, 2.5rem); padding-top: 2px; }
-  .nav__link { display: inline-flex; align-items: flex-start; gap: 4px; }
-  .nav__link sup { font-size: 8.5px; letter-spacing: 0.04em; line-height: 1; opacity: 0.55; transform: translateY(1px); }
-  .nav__link.is-current .roll__in { text-decoration: line-through; text-decoration-thickness: 1px; }
+  .nav__links { display: flex; gap: clamp(1.5rem, 2.6vw, 2.75rem); padding-top: 3px; }
+  .nav__link { position: relative; display: inline-flex; }
+  .nav__link.is-current::before { content: ''; position: absolute; left: -10px; top: 6px; width: 4px; height: 4px; border-radius: 50%; background: currentColor; }
 
-  .nav__theme { grid-column: 10 / span 1; justify-self: end; display: inline-flex; align-items: center; gap: 8px; padding-top: 2px; }
+  .nav__r { justify-self: end; display: flex; align-items: flex-start; gap: clamp(1.5rem, 2.6vw, 2.75rem); padding-top: 3px; }
+  .nav__theme, .nav__menu { display: inline-flex; align-items: center; gap: 8px; }
   .nav__dot {
-    width: 11px;
-    height: 11px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     box-shadow: inset 0 0 0 1px currentColor;
     background: linear-gradient(90deg, currentColor 50%, transparent 50%);
@@ -135,14 +140,13 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .nav__theme:hover .nav__dot { transform: rotate(180deg); }
   :global(html[data-theme='dark']) .nav__dot { transform: rotate(180deg); }
   :global(html[data-theme='dark']) .nav__theme:hover .nav__dot { transform: rotate(360deg); }
-  .nav__menu { grid-column: 11 / span 2; justify-self: end; display: inline-flex; align-items: center; gap: 10px; padding-top: 2px; }
-  .nav__plus { position: relative; width: 11px; height: 11px; transition: transform 0.7s var(--ease-expo); }
+  .nav__plus { position: relative; width: 10px; height: 10px; transition: transform 0.7s var(--ease-expo); }
   .nav__plus::before, .nav__plus::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: currentColor; }
   .nav__plus::after { transform: rotate(90deg); }
   .nav__menu:hover .nav__plus { transform: rotate(90deg); }
   .nav__menu[aria-expanded='true'] .nav__plus { transform: rotate(45deg); }
 
-  .roll { display: inline-block; overflow: hidden; vertical-align: top; height: 1.35em; }
+  .roll { display: inline-block; overflow: hidden; vertical-align: top; height: 16px; }
   .roll__in { display: block; position: relative; transition: transform 0.6s var(--ease-expo); }
   .roll__in::after { content: attr(data-t); position: absolute; left: 0; top: 100%; }
   a:hover .roll__in, button:hover .roll__in { transform: translateY(-100%); }
@@ -227,10 +231,9 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .menu__info { display: grid; gap: 0.2rem; font-size: 14px; letter-spacing: var(--tr-body); }
   .menu__info a:hover, a.menu__info:hover span:last-child { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
 
-  @media (max-width: 1100px) {
+  @media (max-width: 1080px) {
+    .nav { grid-template-columns: minmax(0, 1fr) auto; }
     .nav__links { display: none; }
-    .nav__meta { grid-column: 4 / span 4; }
-    .nav__theme { grid-column: 9 / span 2; }
   }
   @media (max-width: 900px) {
     .menu__nav { grid-column: 1 / -1; }
@@ -240,8 +243,8 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   }
   @media (max-width: 600px) {
     .nav__meta { display: none; }
-    .nav__theme { grid-column: 5 / span 4; }
-    .nav__menu { grid-column: 9 / span 4; }
+    .nav__theme-t { display: none; }
+    .nav__r { gap: 1.5rem; }
   }
   @media (prefers-reduced-motion: reduce) {
     .nav__clock :global(i) { animation: none; }
