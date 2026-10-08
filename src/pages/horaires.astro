@@ -58,16 +58,20 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <div class="agenda__track">
           {hours.slice(0, -1).map((h) => <i class="agenda__line" style={`--h:${h - 12}`} />)}
           {items.map((it) => (
-            <a
-              href={`#${it.disc.id}`}
+            <button
+              type="button"
               class="ev"
               data-disc={it.disc.id}
+              data-day-name={day}
+              data-time={`${it.start} – ${it.end}`}
+              data-level={it.level}
+              aria-haspopup="dialog"
               style={`--t:${(it.a - START) / 60}; --len:${(it.b - it.a) / 60}; --lane:${it.lane}; --lanes:${it.lanes}`}
             >
               <span class="ev__time">{it.start} – {it.end}</span>
               <span class="ev__name">{it.disc.name}</span>
               <span class="ev__lvl">{it.level}</span>
-            </a>
+            </button>
           ))}
         </div>
       </div>
@@ -81,12 +85,35 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <p class="days__name">{day}</p>
         <ul>
           {items.map((it) => (
-            <li data-disc={it.disc.id}><span class="days__time">{it.start} – {it.end}</span><span>{it.disc.name}</span><span class="muted">{it.level}</span></li>
+            <li data-disc={it.disc.id}><button type="button" class="days__btn" data-disc={it.disc.id} data-day-name={day} data-time={`${it.start} – ${it.end}`} data-level={it.level} aria-haspopup="dialog"><span class="days__time">{it.start} – {it.end}</span><span>{it.disc.name}</span><span class="muted">{it.level}</span></button></li>
           ))}
         </ul>
       </div>
     ))}
   </section>
+
+  <div class="sheet" data-sheet hidden>
+    <div class="sheet__veil" data-close></div>
+    <aside class="sheet__panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title" data-discs={JSON.stringify(schedule.map((d) => ({ id: d.id, name: d.name, audience: d.audience, description: d.description, slots: d.slots })))}>
+      <button class="sheet__close" data-close aria-label="Fermer la fiche">Fermer <span aria-hidden="true">×</span></button>
+      <p class="label muted" data-s-when></p>
+      <h2 class="sheet__t" id="sheet-title" data-s-name></h2>
+      <p class="label" data-s-level></p>
+      <p class="prose muted" data-s-desc></p>
+      <div class="sheet__block">
+        <p class="label muted">Public</p>
+        <p class="sheet__aud" data-s-aud></p>
+      </div>
+      <div class="sheet__block">
+        <p class="label muted">Toutes les séances</p>
+        <ul class="sheet__slots" data-s-slots></ul>
+      </div>
+      <div class="ctas sheet__cta">
+        <a href="/daleas-danse-annecy-tarifs/" class="btn">Voir les tarifs</a>
+        <a href="/contact-tel/" class="tlink">S’inscrire par téléphone</a>
+      </div>
+    </aside>
+  </div>
 
   <section class="discs wrap sec">
     <p class="label muted discs__h">Les disciplines</p>
@@ -170,6 +197,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
     line-height: 1.25;
     transition: background-color 0.3s var(--ease-out), opacity 0.4s var(--ease-out), transform 0.5s var(--ease-expo);
   }
+  .ev { text-align: left; cursor: pointer; }
+  .ev.is-active { background: var(--plum); color: #fff; z-index: 3; }
   .ev__time { font-variant-numeric: tabular-nums; opacity: 0.7; letter-spacing: 0.02em; }
   .ev__name { text-transform: uppercase; letter-spacing: var(--tr-caps); }
   .ev__lvl { opacity: 0.7; }
@@ -195,6 +224,40 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .days li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0 1rem; padding: 0.5rem 0; font-size: 14px; }
   .days li .muted { grid-column: 2; font-size: 13px; }
   .days__time { grid-row: span 2; font-variant-numeric: tabular-nums; }
+  .days__btn { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0 1rem; width: 100%; text-align: left; text-transform: none; letter-spacing: inherit; font-size: 14px; }
+  .days__btn .muted { grid-column: 2; font-size: 13px; }
+  .days li { display: block; padding: 0.5rem 0; }
+
+  .sheet { position: fixed; inset: 0; z-index: 70; }
+  .sheet[hidden] { display: none; }
+  .sheet__veil { position: absolute; inset: 0; background: color-mix(in srgb, var(--paper) 55%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: sh-fade 0.4s var(--ease-out); }
+  .sheet__panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: min(520px, 100%);
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding: clamp(5.5rem, 12vh, 7rem) clamp(1.5rem, 3vw, 2.5rem) 2rem;
+    overflow-y: auto;
+    background: var(--paper);
+    border-left: 1px solid var(--ink);
+    animation: sh-in 0.7s var(--ease-expo);
+  }
+  .sheet__close { align-self: flex-end; display: inline-flex; gap: 8px; align-items: center; font-size: 12px; letter-spacing: var(--tr-caps); text-transform: uppercase; }
+  .sheet__close span { font-size: 18px; line-height: 1; }
+  .sheet__close:hover { color: var(--plum); }
+  .sheet__t { font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 200; line-height: 0.95; letter-spacing: var(--tr-h1); text-transform: uppercase; }
+  .sheet__block { padding-top: 1rem; border-top: 1px solid var(--line); display: grid; gap: 0.5rem; }
+  .sheet__aud { font-size: 1.2rem; font-weight: 300; text-transform: uppercase; letter-spacing: var(--tr-h3); }
+  .sheet__slots :global(li) { display: grid; grid-template-columns: 6.5rem 7rem 1fr; gap: 0.75rem; padding: 0.55rem 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+  .sheet__slots :global(li span:first-child) { text-transform: capitalize; }
+  .sheet__slots :global(li.is-cur) { color: var(--plum); }
+  .sheet__cta { margin-top: auto; padding-top: 1.5rem; }
+  @keyframes sh-in { from { transform: translateX(100%); } }
+  @keyframes sh-fade { from { opacity: 0; } }
   .days.is-filtered li:not(.is-on) { display: none; }
 
   .discs__h { margin-bottom: 1rem; }
@@ -226,13 +289,44 @@ const pad = (n: number) => String(n).padStart(2, '0');
     });
   };
   chips.forEach((c) => c.addEventListener('click', () => setFilter(c.dataset.filter!)));
-  agenda.querySelectorAll<HTMLElement>('.ev').forEach((ev) => {
-    ev.addEventListener('click', (e) => {
-      e.preventDefault();
-      setFilter(ev.dataset.disc!);
-      document.getElementById(ev.dataset.disc!)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const sheet = document.querySelector<HTMLElement>('[data-sheet]')!;
+  const panel = sheet.querySelector<HTMLElement>('.sheet__panel')!;
+  const discs = JSON.parse(panel.dataset.discs || '[]');
+  const $ = (k: string) => sheet.querySelector<HTMLElement>(`[data-s-${k}]`)!;
+  let opener: HTMLElement | null = null;
+  const open = (btn: HTMLElement) => {
+    const d = discs.find((x: { id: string }) => x.id === btn.dataset.disc);
+    if (!d) return;
+    opener = btn;
+    $('when').textContent = `${btn.dataset.dayName} — ${btn.dataset.time}`;
+    $('name').textContent = d.name;
+    $('level').textContent = btn.dataset.level || '';
+    $('desc').textContent = d.description;
+    $('aud').textContent = d.audience;
+    $('slots').innerHTML = '';
+    d.slots.forEach((sl: { day: string; start: string; end: string; level: string }) => {
+      const li = document.createElement('li');
+      if (sl.day === btn.dataset.dayName && `${sl.start} – ${sl.end}` === btn.dataset.time) li.className = 'is-cur';
+      [sl.day, `${sl.start} – ${sl.end}`, sl.level].forEach((v) => { const sp = document.createElement('span'); sp.textContent = v; li.append(sp); });
+      $('slots').append(li);
     });
-  });
+    agenda.querySelectorAll('.ev').forEach((e) => e.classList.toggle('is-active', e === btn));
+    setFilter(d.id);
+    sheet.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    sheet.querySelector<HTMLElement>('.sheet__close')!.focus({ preventScroll: true });
+  };
+  const close = () => {
+    if (sheet.hidden) return;
+    sheet.hidden = true;
+    document.documentElement.style.overflow = '';
+    agenda.querySelectorAll('.ev').forEach((e) => e.classList.remove('is-active'));
+    setFilter('all');
+    opener?.focus({ preventScroll: true });
+  };
+  document.querySelectorAll<HTMLElement>('.ev, .days__btn').forEach((b) => b.addEventListener('click', () => open(b)));
+  sheet.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   const hash = location.hash.slice(1);
   if (hash && chips.some((c) => c.dataset.filter === hash)) setFilter(hash);
 

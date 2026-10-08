@@ -6,7 +6,7 @@ interface Props {
   right: string;
 }
 const { title, accent, left, right } = Astro.props;
-const chars = [...title.toUpperCase()];
+const word = title.toUpperCase();
 ---
 <section class="th" data-th>
   <div class="th__labels wrap">
@@ -14,12 +14,32 @@ const chars = [...title.toUpperCase()];
     <p class="label muted">{right}</p>
   </div>
 
+  <svg class="th__blob" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <defs>
+      <filter id="thw-b" x="-30%" y="-30%" width="160%" height="160%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="3" seed={word.length * 5} result="n" data-turb-b />
+        <feDisplacementMap in="SourceGraphic" in2="n" scale="160" xChannelSelector="R" yChannelSelector="G" result="d" data-disp-b />
+        <feGaussianBlur in="d" stdDeviation="34" data-blur-b />
+      </filter>
+    </defs>
+    <g filter="url(#thw-b)" class="th__blob-g">
+      <ellipse cx="500" cy="300" rx="250" ry="105" />
+      <ellipse cx="610" cy="270" rx="120" ry="70" />
+      <ellipse cx="380" cy="335" rx="140" ry="60" />
+    </g>
+  </svg>
+
   <h1 class="th__title">
     <span class="sr-only">{accent ? `${title}, ${accent}` : title}</span>
     <svg class="th__svg" aria-hidden="true" focusable="false" data-th-svg>
-      <text x="0" y="0" dominant-baseline="alphabetic">
-        {chars.map((c, i) => <tspan style={`--i:${i}`}>{c === ' ' ? ' ' : c}</tspan>)}
-      </text>
+      <defs>
+        <filter id="thw-t" x="-25%" y="-60%" width="150%" height="220%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="2" seed="4" result="n" data-turb-t />
+          <feDisplacementMap in="SourceGraphic" in2="n" scale="120" xChannelSelector="R" yChannelSelector="G" result="d" data-disp-t />
+          <feGaussianBlur in="d" stdDeviation="14" data-blur-t />
+        </filter>
+      </defs>
+      <text x="0" y="0" filter="url(#thw-t)">{word}</text>
     </svg>
     {accent && <span class="th__accent" aria-hidden="true">{accent}</span>}
   </h1>
@@ -30,7 +50,7 @@ const chars = [...title.toUpperCase()];
 <style>
   .th {
     --s: 0;
-    --n: 8;
+    --in: 1;
     position: relative;
     height: 100dvh;
     min-height: 520px;
@@ -38,14 +58,26 @@ const chars = [...title.toUpperCase()];
     place-items: center;
     overflow: hidden;
   }
-  .th__labels { position: absolute; left: 0; right: 0; top: clamp(6.5rem, 13vh, 8.5rem); display: flex; justify-content: space-between; gap: 1rem; margin-inline: auto; }
+  .th__labels { position: absolute; left: 0; right: 0; top: clamp(6.5rem, 13vh, 8.5rem); z-index: 2; display: flex; justify-content: space-between; gap: 1rem; margin-inline: auto; }
+
+  .th__blob {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--fg);
+    pointer-events: none;
+    opacity: 0;
+  }
+  .th__blob-g { fill: currentColor; transform-origin: 500px 300px; transform: scale(calc(0.55 + (1 - var(--in)) * 0.9)); }
 
   .th__title {
+    position: relative;
+    z-index: 1;
     display: grid;
     justify-items: center;
     padding-inline: var(--side);
-    transform: translate3d(0, calc(var(--s) * -8vh), 0);
-    opacity: calc(1 - var(--s) * 1.2);
+    transform: translate3d(0, calc(var(--s) * -6vh), 0);
   }
   .th__svg {
     display: block;
@@ -61,20 +93,7 @@ const chars = [...title.toUpperCase()];
     letter-spacing: -0.04em;
     font-feature-settings: 'case' 1;
     fill: currentColor;
-    fill-opacity: 0;
-    stroke: currentColor;
-    stroke-width: 0.9px;
-    stroke-linejoin: round;
-    stroke-dasharray: 520;
-    stroke-dashoffset: 520;
   }
-  .th.is-go .th__svg { opacity: 1; }
-  .th.is-go .th__svg tspan {
-    animation: th-draw 1.6s cubic-bezier(0.65, 0, 0.35, 1) forwards, th-fill 0.9s var(--ease-out) forwards;
-    animation-delay: calc(var(--i) * 110ms), calc(var(--i) * 110ms + 1s);
-  }
-  @keyframes th-draw { to { stroke-dashoffset: 0; } }
-  @keyframes th-fill { to { fill-opacity: 1; stroke-opacity: 0; } }
 
   .th__accent {
     margin-top: 0.7em;
@@ -84,13 +103,12 @@ const chars = [...title.toUpperCase()];
     letter-spacing: var(--tr-h1);
     text-transform: uppercase;
     font-feature-settings: 'case' 1;
-    clip-path: inset(0 100% 0 0);
+    opacity: 0;
+    filter: blur(12px);
+    transform: translate3d(0, 0.4em, 0);
+    transition: opacity 1.2s var(--ease-out), filter 1.2s var(--ease-out), transform 1.4s var(--ease-expo);
   }
-  .th.is-go .th__accent {
-    animation: th-accent 1.2s var(--ease-expo) forwards;
-    animation-delay: calc(var(--n) * 110ms + 1.1s);
-  }
-  @keyframes th-accent { to { clip-path: inset(0 0 0 0); } }
+  .th.is-done .th__accent { opacity: calc(1 - var(--s) * 1.4); filter: blur(calc(var(--s) * 10px)); transform: none; }
 
   .th__hint { position: absolute; left: 50%; bottom: clamp(1.25rem, 4vh, 2.5rem); translate: -50% 0; display: grid; justify-items: center; gap: 0.6rem; opacity: calc(1 - var(--s) * 3); }
   .th__hint span { width: 1px; height: 36px; background: currentColor; transform-origin: top; animation: th-hint 2.4s var(--ease-in-out) infinite; }
@@ -98,9 +116,10 @@ const chars = [...title.toUpperCase()];
 
   @media (prefers-reduced-motion: reduce) {
     .th__svg { opacity: 1; }
-    .th__svg text { fill-opacity: 1; stroke: none; }
-    .th.is-go .th__svg tspan, .th.is-go .th__accent, .th__hint span { animation: none; }
-    .th__accent { clip-path: none; }
+    .th__svg text { filter: none; }
+    .th__blob { display: none; }
+    .th__accent { opacity: 1; filter: none; transform: none; transition: none; }
+    .th__hint span { animation: none; }
   }
 </style>
 
@@ -108,9 +127,30 @@ const chars = [...title.toUpperCase()];
   document.querySelectorAll<HTMLElement>('[data-th]').forEach((root) => {
     const svg = root.querySelector<SVGSVGElement>('[data-th-svg]')!;
     const text = svg.querySelector('text')!;
-    const n = text.querySelectorAll('tspan').length;
+    const blob = root.querySelector<SVGSVGElement>('.th__blob')!;
+    const q = (k: string) => root.querySelector<SVGElement>(`[data-${k}]`);
+    const turbT = q('turb-t'), dispT = q('disp-t'), blurT = q('blur-t');
+    const turbB = q('turb-b'), dispB = q('disp-b'), blurB = q('blur-b');
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    root.style.setProperty('--n', String(n));
+    let intro = reduce ? 0 : 1, sNow = 0, raf = 0, t = 0;
+
+    const paint = () => {
+      raf = 0;
+      const k = Math.max(intro, sNow);
+      if (k < 0.004) text.removeAttribute('filter');
+      else text.setAttribute('filter', 'url(#thw-t)');
+      dispT?.setAttribute('scale', (130 * k).toFixed(2));
+      blurT?.setAttribute('stdDeviation', (16 * Math.pow(k, 1.3)).toFixed(2));
+      turbT?.setAttribute('baseFrequency', `${(0.01 + 0.006 * Math.sin(t * 1.3)).toFixed(4)} ${(0.04 + 0.01 * Math.cos(t)).toFixed(4)}`);
+      svg.style.opacity = String(Math.min(1, (1 - intro) * 1.6 + 0.08) * (1 - sNow * 0.9));
+      const bo = Math.sin(Math.min(1, 1 - intro) * Math.PI) * 0.16 + sNow * 0.12;
+      blob.style.opacity = bo.toFixed(3);
+      root.style.setProperty('--in', intro.toFixed(3));
+      dispB?.setAttribute('scale', (90 + 120 * Math.max(intro, sNow)).toFixed(1));
+      blurB?.setAttribute('stdDeviation', (24 + 30 * (1 - intro)).toFixed(1));
+      turbB?.setAttribute('baseFrequency', `${(0.006 + 0.003 * Math.sin(t * 0.9)).toFixed(4)} ${(0.011 + 0.004 * Math.cos(t * 0.7)).toFixed(4)}`);
+    };
+    const queue = () => { if (!raf) raf = requestAnimationFrame(paint); };
 
     const fit = () => {
       const b = text.getBBox();
@@ -121,28 +161,35 @@ const chars = [...title.toUpperCase()];
 
     const start = () => {
       fit();
-      requestAnimationFrame(() => root.classList.add('is-go'));
-      if (reduce || scrollY > 10) return;
+      if (reduce) { root.classList.add('is-done'); paint(); return; }
+      const t0 = performance.now(), dur = 2300;
+      const step = (now: number) => {
+        t = (now - t0) / 1000;
+        const p = Math.min(1, (now - t0) / dur);
+        intro = Math.pow(1 - p, 2.4);
+        paint();
+        if (p > 0.55) root.classList.add('is-done');
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
 
+      if (scrollY > 10) return;
       let cancelled = false;
       const cancel = () => { cancelled = true; };
-      const opts = { passive: true, once: true } as const;
-      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((ev) => addEventListener(ev, cancel, opts));
-
-      const wait = n * 110 + 2300;
+      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((ev) => addEventListener(ev, cancel, { passive: true, once: true }));
       setTimeout(() => {
         if (cancelled || scrollY > 10) return;
         const target = root.getBoundingClientRect().bottom + scrollY;
-        const from = scrollY, dist = target - from, t0 = performance.now(), dur = 1400;
-        const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-        const step = (t: number) => {
+        const from = scrollY, dist = target - from, s0 = performance.now(), d = 1400;
+        const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
+        const go = (now: number) => {
           if (cancelled) return;
-          const p = Math.min(1, (t - t0) / dur);
+          const p = Math.min(1, (now - s0) / d);
           scrollTo(0, from + dist * ease(p));
-          if (p < 1) requestAnimationFrame(step);
+          if (p < 1) requestAnimationFrame(go);
         };
-        requestAnimationFrame(step);
-      }, wait);
+        requestAnimationFrame(go);
+      }, 3300);
     };
     document.fonts.ready.then(start);
     addEventListener('resize', fit);
@@ -152,10 +199,11 @@ const chars = [...title.toUpperCase()];
       const update = () => {
         ticking = false;
         const r = root.getBoundingClientRect();
-        root.style.setProperty('--s', Math.min(1, Math.max(0, -r.top / (r.height * 0.8))).toFixed(3));
+        sNow = Math.min(1, Math.max(0, -r.top / (r.height * 0.75)));
+        root.style.setProperty('--s', sNow.toFixed(3));
+        queue();
       };
       addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-      update();
     }
   });
 </script>
