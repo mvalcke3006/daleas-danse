@@ -90,7 +90,7 @@ const breadcrumb = crumbs.length
     </main>
     {footer && <Footer />}
     <Edges />
-    <div class="lightfx" aria-hidden="true"></div>
+    <div class="plumfx" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
     <div class="cur" aria-hidden="true" data-cur><span class="cur__ring"></span><span class="cur__label" data-cur-label>Voir</span></div>
 
@@ -213,7 +213,7 @@ const breadcrumb = crumbs.length
         };
         addEventListener('pointermove', (e) => {
           kx = e.clientX; ky = e.clientY;
-          if (!curOn) { curOn = true; qx = kx; qy = ky; cur.classList.add('is-on'); }
+          if (!curOn) { curOn = true; qx = kx; qy = ky; cur.classList.add('is-on'); document.documentElement.classList.add('is-pointer'); }
           curState(e.target as Element);
         }, { passive: true });
         let curPending = false;
@@ -222,8 +222,8 @@ const breadcrumb = crumbs.length
           curPending = true;
           requestAnimationFrame(() => { curPending = false; curState(document.elementFromPoint(kx, ky)); });
         }, { passive: true });
-        document.addEventListener('pointerleave', () => cur.classList.remove('is-on'));
-        document.addEventListener('pointerenter', () => cur.classList.add('is-on'));
+        document.addEventListener('pointerleave', () => { cur.classList.remove('is-on'); document.documentElement.classList.remove('is-pointer'); });
+        document.addEventListener('pointerenter', () => { cur.classList.add('is-on'); document.documentElement.classList.add('is-pointer'); });
         addEventListener('pointerdown', () => cur.classList.add('is-down'));
         addEventListener('pointerup', () => cur.classList.remove('is-down'));
 
