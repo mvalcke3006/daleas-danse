@@ -262,61 +262,6 @@ const breadcrumb = crumbs.length
         }, { passive: true });
       }
 
-      const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-      const hosts = [...document.querySelectorAll<HTMLImageElement>('main img')]
-        .filter((img) => !img.closest('.hf__logo, .float, .sc') && !img.classList.contains('bw-c'))
-        .map((img) => {
-          const host = img.parentElement!;
-          const clone = img.cloneNode() as HTMLImageElement;
-          clone.removeAttribute('srcset');
-          clone.removeAttribute('sizes');
-          clone.removeAttribute('fetchpriority');
-          clone.className = 'bw-c';
-          clone.alt = '';
-          clone.loading = 'lazy';
-          clone.setAttribute('aria-hidden', 'true');
-          return { img, host, clone, ready: false };
-        });
-      const prime = (h: (typeof hosts)[number]) => {
-        if (h.ready) return;
-        h.ready = true;
-        h.clone.src = h.img.currentSrc || h.img.src;
-        if (getComputedStyle(h.host).position === 'static') h.host.style.position = 'relative';
-        h.img.after(h.clone);
-      };
-      const paint = (h: (typeof hosts)[number], x: number, y: number) => {
-        const r = h.host.getBoundingClientRect();
-        const cx = Math.min(r.width, Math.max(0, x - r.left)), cy = Math.min(r.height, Math.max(0, y - r.top));
-        h.host.style.setProperty('--cx', `${cx.toFixed(0)}px`);
-        h.host.style.setProperty('--cy', `${cy.toFixed(0)}px`);
-        h.host.style.setProperty('--cr', `${(Math.hypot(Math.max(cx, r.width - cx), Math.max(cy, r.height - cy)) + 2).toFixed(0)}px`);
-      };
-      if (fine) {
-        hosts.forEach((h) => {
-          const near = h.host.closest('a, figure');
-          const trigger = near && near.querySelectorAll('img').length < 3 ? (near as HTMLElement) : h.host;
-          trigger.addEventListener('pointerenter', (e) => {
-            prime(h);
-            paint(h, e.clientX, e.clientY);
-            requestAnimationFrame(() => requestAnimationFrame(() => h.host.classList.add('bw-on')));
-          });
-          trigger.addEventListener('pointerleave', (e) => {
-            paint(h, e.clientX, e.clientY);
-            h.host.classList.remove('bw-on');
-          });
-        });
-      } else {
-        const center = new IntersectionObserver((entries) => entries.forEach((e) => {
-          const h = hosts.find((x) => x.host === e.target);
-          if (!h) return;
-          prime(h);
-          const r = e.boundingClientRect;
-          paint(h, r.left + r.width / 2, r.top + r.height / 2);
-          requestAnimationFrame(() => h.host.classList.toggle('bw-on', e.isIntersecting));
-        }), { rootMargin: '-38% 0px -38% 0px' });
-        hosts.filter((h) => !h.host.closest('.sph, .hf')).forEach((h) => center.observe(h.host));
-      }
-
       document.documentElement.classList.add('is-loaded');
       window.dispatchEvent(new Event('dd:ready'));
     </script>

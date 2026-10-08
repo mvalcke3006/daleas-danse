@@ -437,21 +437,3 @@ html { background: #ececeb; }
 
 .tlink:hover, a:hover .block__go, .course:hover { color: var(--plum); }
 .on-black .tlink:hover, .on-black a:hover .block__go, .block--full:hover .block__go { color: inherit; }
-
-main img, .menu__preview img { filter: var(--bw); }
-:root { --bw: grayscale(1) contrast(1.06); }
-[data-clip] img { filter: blur(10px) var(--bw); }
-[data-clip].is-in img { filter: var(--bw); }
-img.bw-c {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  filter: none !important;
-  pointer-events: none;
-  clip-path: circle(0px at var(--cx, 50%) var(--cy, 50%));
-  transition: clip-path 1s var(--ease-expo);
-}
-.bw-on > img.bw-c { clip-path: circle(var(--cr, 150%) at var(--cx, 50%) var(--cy, 50%)); }
