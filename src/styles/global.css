@@ -454,8 +454,8 @@ html { background: var(--paper); color-scheme: light; }
   box-shadow: none;
 }
 
-.tlink:hover, a:hover .block__go, .course:hover { color: var(--plum); }
-.on-black .tlink:hover, .on-black a:hover .block__go, .block--full:hover .block__go { color: inherit; }
+.tlink:hover, .block__go:hover, .course:hover { color: var(--plum); }
+.on-black .tlink:hover, .on-black .block__go:hover, .block--full .block__go:hover { color: inherit; }
 
 :is(.label, .kicker, .chip, .btn, .tlink, .h1, .h2, .h3, .h4, .xl, .rows__big) { font-feature-settings: 'case' 1; }
 :is(.xl, .rows__big, td, .slots__time, .cell__time, [data-count]) { font-variant-numeric: tabular-nums lining-nums; }
