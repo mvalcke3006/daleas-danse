@@ -2,7 +2,8 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import HeroFloat from '../components/HeroFloat.astro';
-import { announcement, schedule, weekends, season, singleClass, site, tel } from '../data/site';
+import IndexList from '../components/IndexList.astro';
+import { announcement, schedule, weekends, singleClass } from '../data/site';
 
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
 import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
@@ -67,109 +68,24 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
   </section>
 
-  <a href="/ecole/" class="block block--school">
-    <div class="wrap block__grid">
-      <div class="block__text">
-        <p class="label muted">01 — L’école</p>
-        <h2 class="h2" data-reveal>Soixante ans<br />de transmission</h2>
-        <p class="prose muted" data-reveal>De Maryse Daléas à ses filles Diane et Delphine, une histoire de famille au cœur d’Annecy.</p>
-        <span class="block__go" data-reveal>Découvrir l’école</span>
+  <section class="sommaire sec">
+    <div class="wrap">
+      <div class="sommaire__head">
+        <p class="label muted">Sommaire</p>
+        <p class="label muted">Daléas Danse — Annecy</p>
       </div>
-      <div class="block__media media dist" data-clip>
-        <Image src={team} alt="Diane et Delphine Daléas en studio" widths={[700, 1100]} sizes="(max-width: 900px) 100vw, 55vw" />
-      </div>
-    </div>
-  </a>
-
-  <section class="facts">
-    <div class="wrap facts__grid">
-      <a href="/horaires/" class="fact" data-reveal>
-        <p class="label muted">02 — Horaires</p>
-        <p class="fact__num xl"><span data-count={total}>{total}</span></p>
-        <div class="fact__foot">
-          <p class="h3">Cours par semaine</p>
-          <p class="prose muted">De l’éveil rythmique dès 2 ans ½ aux classes avancées, du lundi au vendredi.</p>
-          <span class="block__go">Voir le planning {season}</span>
-        </div>
-      </a>
-      <a href="/daleas-danse-annecy-tarifs/" class="fact" data-reveal style="--d:.08s">
-        <p class="label muted">03 — Tarifs</p>
-        <p class="fact__num xl"><small>dès</small><span data-count={singleClass}>{singleClass}</span><small>€</small></p>
-        <div class="fact__foot">
-          <p class="h3">Le cours à l’unité</p>
-          <p class="prose muted">Forfaits trimestriels ou annuels, carte 10 cours, forfait illimité.</p>
-          <span class="block__go">Voir les tarifs</span>
-        </div>
-      </a>
-    </div>
-  </section>
-
-  <a href="/stages/" class="block block--full">
-    <div class="full__media dist">
-      <Image src={duo} alt="Deux danseuses en mouvement lors d’un stage" widths={[960, 1600, 1920]} sizes="100vw" />
-    </div>
-    <div class="wrap full__content">
-      <p class="label full__label">04 — Stages</p>
-      <h2 class="full__title xl" data-reveal>Stages</h2>
-      <div class="full__row" data-reveal>
-        <p class="lead">Des chorégraphes invités chaque saison.{next && <> Prochain week-end : {next.date}, {next.teacher}.</>}</p>
-        <span class="block__go">Tous les stages</span>
-      </div>
-    </div>
-  </a>
-
-  <section class="duo-cards sec">
-    <div class="wrap duo-cards__grid">
-      <a href="/yoga-annecy/" class="tease" data-reveal>
-        <div class="tease__media media dist"><Image src={yoga} alt="Maryse Daléas en posture de yoga" widths={[500, 800]} sizes="(max-width: 900px) 100vw, 40vw" /></div>
-        <p class="label muted">05 — Yoga</p>
-        <h2 class="h3">Le Viniyoga avec Maryse</h2>
-        <span class="block__go">Le yoga</span>
-      </a>
-      <a href="/espace-daleas-location-de-salles-annecy/" class="tease tease--wide" data-reveal style="--d:.08s">
-        <div class="tease__media media dist"><Image src={studio} alt="Studio de l’Espace Daléas" widths={[700, 1100]} sizes="(max-width: 900px) 100vw, 55vw" /></div>
-        <p class="label muted">06 — Location</p>
-        <h2 class="h3">Trois studios au cœur d’Annecy</h2>
-        <span class="block__go">Louer un studio</span>
-      </a>
-    </div>
-  </section>
-
-  <a href="/galerie/" class="gal sec">
-    <div class="wrap gal__head">
-      <div>
-        <p class="label muted">07 — Galerie</p>
-        <h2 class="h2" data-reveal>Entrer dans la danse</h2>
-      </div>
-      <div class="gal__side" data-reveal>
-        <p class="prose muted">Cours, coulisses, studios et scène : toutes les photos de l’école, à parcourir en 3D.</p>
-        <span class="block__go">Ouvrir la galerie</span>
-      </div>
-    </div>
-    <div class="gal__fan" data-reveal>
-      {[team, studio, duo, gala, yoga, jazz, kids].map((img, i) => (
-        <span class="gal__item" style={`--r:${[-7, -4, -1.5, 0, 1.5, 4, 7][i]}deg; --y:${[34, 14, 4, 0, 4, 14, 34][i]}px; --i:${i}`}>
-          <Image src={img} alt="" widths={[300]} sizes="220px" />
-        </span>
-      ))}
-    </div>
-  </a>
-
-  <section class="contact sec">
-    <div class="wrap contact__grid">
-      <div>
-        <p class="label muted">08 — Contact</p>
-        <h2 class="h2" data-reveal>Une question ?<br /><em>Un appel suffit.</em></h2>
-        <a href="/contact-tel/" class="block__go contact__more">Toutes les informations</a>
-      </div>
-      <div class="pcards">
-        {site.teachers.map((t, i) => (
-          <a href={tel(t.phone)} class="pcard" data-reveal style={`--d:${i * 0.08}s`}>
-            <span class="label">{t.name} — cours & stages</span>
-            <span class="pcard__tel xl">{t.phone}</span>
-          </a>
-        ))}
-      </div>
+      <IndexList
+        items={[
+          { label: 'L’école', meta: 'Depuis 1965', href: '/ecole/', img: team, pos: '40% 45%' },
+          { label: 'Horaires', meta: `${total} cours par semaine`, href: '/horaires/', img: jazz },
+          { label: 'Tarifs', meta: `Dès ${singleClass} € le cours`, href: '/daleas-danse-annecy-tarifs/', img: kids },
+          { label: 'Stages', meta: next ? `Prochain : ${next.date}` : 'Chorégraphes invités', href: '/stages/', img: duo, pos: '45% 30%' },
+          { label: 'Yoga', meta: 'Viniyoga avec Maryse', href: '/yoga-annecy/', img: yoga },
+          { label: 'Location', meta: 'Trois studios', href: '/espace-daleas-location-de-salles-annecy/', img: studio },
+          { label: 'Galerie', meta: 'La sphère en 3D', href: '/galerie/', img: gala },
+          { label: 'Contact', meta: 'Diane & Delphine', href: '/contact-tel/', img: team, pos: '60% 45%' },
+        ]}
+      />
     </div>
   </section>
 </Base>
@@ -249,109 +165,9 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   .manif .w { opacity: 0.12; filter: blur(3px); transition: opacity 0.6s var(--ease-out), filter 0.6s var(--ease-out); }
   .manif .w.is-on { opacity: 1; filter: none; }
 
-  .block { display: block; }
-  .block__go {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    width: fit-content;
-    font-weight: 400; text-transform: uppercase;
-    font-size: 16px;
-    padding-bottom: 4px;
-    background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1.5px no-repeat;
-    transition: background-size 0.5s var(--ease-in-out);
-  }
-  .block__go::after {
-    content: '';
-    width: 8px;
-    height: 8px;
-    border-top: 1.5px solid currentColor;
-    border-right: 1.5px solid currentColor;
-    transform: rotate(45deg);
-    transition: transform 0.45s var(--ease-out);
-  }
-  a:hover .block__go::after { transform: translateX(4px) rotate(45deg); }
-  a:hover .block__go { background-size: 0 1.5px; background-position: 100% 100%; }
+  .sommaire__head { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
 
-  .block--school { padding-bottom: var(--section); }
-  .block__grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: clamp(2rem, 6vw, 6rem); align-items: center; }
-  .block__text { display: grid; gap: 1.4rem; max-width: 30rem; }
-  .block__media { aspect-ratio: 5 / 4; border-radius: 6px; }
-  .block__media :global(img), .tease__media :global(img), .full__media :global(img) { transition: transform 1.4s var(--ease-expo); }
-  .block--school:hover .block__media :global(img) { transform: scale(1.04); }
-
-  .facts { padding-bottom: var(--section); }
-  .facts__grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--ink); }
-  .fact {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding: 1.5rem clamp(1.5rem, 3vw, 3rem) 0 0;
-  }
-  .fact + .fact { padding-left: clamp(1.5rem, 3vw, 3rem); border-left: 1px solid var(--line); }
-  .fact__num {
-    display: flex;
-    align-items: baseline;
-    gap: 0.06em;
-    font-size: clamp(7rem, 17vw, 16rem);
-    line-height: 0.8;
-    margin: clamp(1rem, 3vw, 2.5rem) 0 clamp(1rem, 2vw, 1.75rem) -0.06em;
-    transition: color 0.6s var(--ease-out), transform 0.9s var(--ease-expo);
-  }
-  .fact__num small { font-size: 0.2em; letter-spacing: var(--tr-caps); }
-  .fact__num small:first-child { align-self: flex-start; margin-right: 0.3em; margin-top: 0.4em; }
-  .fact:hover .fact__num { transform: translateX(0.04em); }
-  .fact__foot { display: grid; gap: 0.9rem; max-width: 26rem; }
-
-  .block--full { position: relative; height: min(100dvh, 980px); min-height: 560px; overflow: hidden; color: #fff; background: #070707; }
-  .full__media { position: absolute; inset: 0; }
-  .full__media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
-  .block--full::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 7, 7, 0) 40%, rgba(7, 7, 7, 0.65)); }
-  .block--full:hover .full__media :global(img) { transform: scale(1.03); }
-  .full__content { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 1rem; padding-bottom: calc(clamp(70px, 13vh, 150px) + 0.5rem); }
-  .full__label { color: rgba(255, 255, 255, 0.8); }
-  .full__title { font-size: clamp(5rem, 20vw, 20rem); line-height: 0.82; }
-  .full__row { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem 3rem; flex-wrap: wrap; padding-top: 1.25rem; border-top: 1px solid rgba(255, 255, 255, 0.3); }
-  .full__row .lead { max-width: 36rem; }
-
-  .duo-cards__grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: clamp(1.5rem, 3vw, 2.5rem); align-items: end; }
-  .tease { display: grid; gap: 0.9rem; }
-  .tease__media { aspect-ratio: 4 / 5; border-radius: 6px; margin-bottom: 0.6rem; }
-  .tease--wide .tease__media { aspect-ratio: 4 / 3; }
-  .tease:hover .tease__media :global(img) { transform: scale(1.04); }
-
-  .gal { display: block; overflow: hidden; }
-  .gal__head { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem 3rem; align-items: end; }
-  .gal__head .h2 { margin-top: 1rem; }
-  .gal__side { display: grid; gap: 1.25rem; justify-items: start; max-width: 24rem; }
-  .gal__fan { display: flex; justify-content: center; margin-top: clamp(2.5rem, 6vw, 4.5rem); padding-inline: var(--side); }
-  .gal__item {
-    flex: 0 0 auto;
-    width: clamp(110px, 14vw, 240px);
-    aspect-ratio: 3 / 4;
-    margin-inline: -1.4vw;
-    overflow: hidden;
-    border-radius: 6px;
-    box-shadow: 0 0 0 5px var(--white), 0 30px 40px -30px rgba(20, 22, 23, 0.45);
-    transform: translateY(var(--y)) rotate(var(--r));
-    transition: transform 0.9s var(--ease-expo);
-    transition-delay: calc(var(--i) * 25ms);
-  }
-  .gal__item :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .gal:hover .gal__item { transform: translateY(calc(var(--y) * 0.3 - 14px)) rotate(calc(var(--r) * 1.7)); }
-
-  .contact__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: end; }
-  .contact__grid .h2 { margin: 1rem 0 1.75rem; }
-  @media (max-width: 900px) {
-    .block__grid, .duo-cards__grid, .gal__head, .contact__grid { grid-template-columns: 1fr; }
-    .block__grid .block__media { order: -1; }
-    .facts__grid { grid-template-columns: 1fr; }
-    .fact { padding-right: 0; padding-bottom: 2.5rem; }
-    .fact + .fact { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
-  }
   @media (max-width: 560px) {
     .expand { height: 160vh; }
-    .gal__item:nth-child(1), .gal__item:nth-child(2), .gal__item:nth-child(6), .gal__item:nth-child(7) { display: none; }
   }
 </style>
