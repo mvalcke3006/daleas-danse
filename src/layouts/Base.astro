@@ -34,7 +34,21 @@ const jsonLd = {
   },
   sameAs: site.socials.map((s) => s.href),
   knowsAbout: schedule.map((d) => d.name),
+  areaServed: 'Annecy',
+  priceRange: '€€',
 };
+
+const crumbs = Astro.url.pathname.split('/').filter(Boolean);
+const breadcrumb = crumbs.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${site.url}/` },
+        { '@type': 'ListItem', position: 2, name: title, item: canonical },
+      ],
+    }
+  : null;
 ---
 <!doctype html>
 <html lang="fr" class="no-js">
@@ -48,6 +62,13 @@ const jsonLd = {
     <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.jpg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="color-scheme" content="light" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Daléas Danse, école de danse à Annecy" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:site_name" content="Daléas Danse" />
@@ -57,6 +78,7 @@ const jsonLd = {
     <meta property="og:image" content={new URL(image, site.url).href} />
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    {breadcrumb && <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />}
     <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
   </head>
   <body>
@@ -69,6 +91,8 @@ const jsonLd = {
     {footer && <Footer />}
     <Edges />
     <div class="lightfx" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="cur" aria-hidden="true" data-cur><span class="cur__ring"></span><span class="cur__label" data-cur-label>Voir</span></div>
 
     <script>
       const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -96,6 +120,32 @@ const jsonLd = {
         }),
         { rootMargin: '0px 0px -8% 0px', threshold: 0.08 }
       );
+      document.querySelectorAll<HTMLElement>(':is(.h1, .h2, .xl, .statement)[data-reveal]').forEach((el) => {
+        if (reduce || el.querySelector('.w, [data-count]')) return;
+        let n = 0;
+        const walk = (node: Node) => {
+          [...node.childNodes].forEach((c) => {
+            if (c.nodeType === 3) {
+              const frag = document.createDocumentFragment();
+              (c.textContent || '').split(/(\s+)/).forEach((part) => {
+                if (!part) return;
+                if (/^\s+$/.test(part)) { frag.append(' '); return; }
+                const o = document.createElement('span');
+                o.className = 'sw';
+                const i = document.createElement('span');
+                i.className = 'sw__i';
+                i.style.setProperty('--wi', String(n++));
+                i.textContent = part;
+                o.append(i);
+                frag.append(o);
+              });
+              c.replaceWith(frag);
+            } else if (c.nodeType === 1 && (c as Element).tagName !== 'BR') walk(c);
+          });
+        };
+        walk(el);
+        el.classList.add('is-split');
+      });
       document.querySelectorAll('[data-reveal], [data-clip], [data-count]').forEach((el) => io.observe(el));
 
       const progress = [...document.querySelectorAll<HTMLElement>('[data-progress]')];
@@ -143,6 +193,50 @@ const jsonLd = {
       requestAnimationFrame(update);
 
       if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce) {
+        const cur = document.querySelector<HTMLElement>('[data-cur]')!;
+        const curLabel = document.querySelector<HTMLElement>('[data-cur-label]')!;
+        const viewSel = '.hf__p, .gal__item, .tease__media, .block__media, .full__media, .tile__img, .sph__tile, .menu__preview';
+        let kx = -100, ky = -100, qx = kx, qy = ky, curOn = false;
+        const curStep = () => {
+          qx += (kx - qx) * 0.2;
+          qy += (ky - qy) * 0.2;
+          cur.style.transform = `translate3d(${qx.toFixed(1)}px, ${qy.toFixed(1)}px, 0)`;
+          requestAnimationFrame(curStep);
+        };
+        requestAnimationFrame(curStep);
+        const curState = (t: Element | null) => {
+          const view = t?.closest(viewSel);
+          const link = t?.closest('a, button, [role="tab"], label, select');
+          cur.classList.toggle('is-view', !!view);
+          cur.classList.toggle('is-link', !view && !!link);
+          if (view) curLabel.textContent = view.closest('.sph__tile') ? 'Ouvrir' : 'Voir';
+        };
+        addEventListener('pointermove', (e) => {
+          kx = e.clientX; ky = e.clientY;
+          if (!curOn) { curOn = true; qx = kx; qy = ky; cur.classList.add('is-on'); }
+          curState(e.target as Element);
+        }, { passive: true });
+        let curPending = false;
+        addEventListener('scroll', () => {
+          if (curPending || !curOn) return;
+          curPending = true;
+          requestAnimationFrame(() => { curPending = false; curState(document.elementFromPoint(kx, ky)); });
+        }, { passive: true });
+        document.addEventListener('pointerleave', () => cur.classList.remove('is-on'));
+        document.addEventListener('pointerenter', () => cur.classList.add('is-on'));
+        addEventListener('pointerdown', () => cur.classList.add('is-down'));
+        addEventListener('pointerup', () => cur.classList.remove('is-down'));
+
+        document.querySelectorAll<HTMLElement>('.btn, .nav__pill, .chip[href], .tlink').forEach((el) => {
+          el.classList.add('mag');
+          el.addEventListener('pointermove', (e) => {
+            const r = el.getBoundingClientRect();
+            const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+            el.style.translate = `${(dx * 0.25).toFixed(1)}px ${(dy * 0.3).toFixed(1)}px`;
+          });
+          el.addEventListener('pointerleave', () => { el.style.translate = ''; });
+        });
+
         const sel = '.lit, .media, .tile__img, .gal__item, .ph__img';
         let tx = innerWidth / 2, ty = innerHeight * 0.25, cx = tx, cy = ty, running = false;
         const step = () => {
@@ -172,6 +266,52 @@ const jsonLd = {
       window.dispatchEvent(new Event('dd:ready'));
     </script>
     <style>
+      .cur {
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 120;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s var(--ease-out);
+      }
+      .cur.is-on { opacity: 1; }
+      .cur__ring {
+        position: absolute;
+        left: -18px;
+        top: -18px;
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 1px solid #fff;
+        mix-blend-mode: difference;
+        transition: scale 0.5s var(--ease-expo), background-color 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
+      }
+      .cur.is-link .cur__ring { scale: 1.7; background: #fff; }
+      .cur.is-down .cur__ring { scale: 0.7; }
+      .cur.is-view .cur__ring { opacity: 0; }
+      .cur__label {
+        position: absolute;
+        left: -44px;
+        top: -44px;
+        width: 88px;
+        height: 88px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(20, 22, 23, 0.82);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        color: #fff;
+        font-size: 12px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        scale: 0.2;
+        opacity: 0;
+        transition: scale 0.55s var(--ease-expo), opacity 0.3s var(--ease-out);
+      }
+      .cur.is-view .cur__label { scale: 1; opacity: 1; }
+      @media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) { .cur { display: none; } }
       .skip { position: fixed; top: 12px; left: 12px; z-index: 101; transform: translateY(-200%); }
       .skip:focus { transform: none; }
     </style>

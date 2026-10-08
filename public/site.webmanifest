@@ -1,0 +1,11 @@
+{
+  "name": "Daléas Danse",
+  "short_name": "Daléas",
+  "description": "École de danse privée à Annecy depuis 1965",
+  "lang": "fr",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ececeb",
+  "theme_color": "#ececeb",
+  "icons": [{ "src": "apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }]
+}

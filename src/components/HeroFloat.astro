@@ -24,12 +24,6 @@ const photos = [
 const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 520, format: 'webp' })));
 ---
 <section class="hf" data-hf aria-label="Daléas Danse">
-  <div class="hf__light" aria-hidden="true">
-    <span class="hf__beam hf__beam--l"></span>
-    <span class="hf__beam hf__beam--r"></span>
-    <span class="hf__spot"></span>
-  </div>
-
   <div class="hf__stage">
     {photos.map((p, i) => (
       <a
@@ -56,38 +50,12 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
 
 <style>
   .hf {
-    --lx: 50%;
-    --ly: 32%;
     position: relative;
     height: calc(100dvh - clamp(4.5rem, 12vh, 8rem));
     min-height: 560px;
     overflow: hidden;
     isolation: isolate;
-    background: #ededec;
   }
-
-  .hf__light { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-  .hf__spot {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(circle at var(--lx) var(--ly), rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.85) 18%, rgba(255, 255, 255, 0) 55%),
-      radial-gradient(ellipse 80% 60% at 50% 45%, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 70%);
-  }
-  .hf__beam {
-    position: absolute;
-    top: -20%;
-    width: 60%;
-    height: 140%;
-    background: conic-gradient(from 180deg at 50% 0%, transparent 0deg, rgba(255, 255, 255, 0.55) 10deg, transparent 22deg);
-    filter: blur(14px);
-    mix-blend-mode: screen;
-    transform-origin: 50% 0%;
-    animation: sweep 14s var(--ease-in-out) infinite alternate;
-  }
-  .hf__beam--l { left: -10%; --a: -18deg; --b: 12deg; }
-  .hf__beam--r { right: -10%; --a: 16deg; --b: -14deg; animation-delay: -6s; }
-  @keyframes sweep { from { transform: rotate(var(--a)); } to { transform: rotate(var(--b)); } }
 
   .hf__stage { position: absolute; inset: 0; z-index: 1; }
 
@@ -107,6 +75,8 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
   .hf__p.is-front { z-index: 3; }
   .hf.is-in .hf__p { opacity: 1; scale: 1; filter: none; }
   .hf.is-in .hf__p.is-back { opacity: 0.8; filter: blur(2.5px) saturate(0.85); }
+  .hf.is-ready .hf__p { transition-delay: 0s; transition-duration: 0.5s, 0.7s, 0.45s; }
+  .hf.is-in .hf__p:hover { opacity: 1; filter: none; z-index: 5; }
   .hf__pin {
     display: block;
     width: 100%;
@@ -116,9 +86,9 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
     rotate: var(--r);
     box-shadow: 0 30px 50px -30px rgba(20, 22, 23, 0.45);
     will-change: transform;
-    transition: scale 0.6s var(--ease-expo);
+    transition: scale 0.6s var(--ease-expo), rotate 0.6s var(--ease-expo), box-shadow 0.6s var(--ease-out);
   }
-  .hf__p:hover .hf__pin { scale: 1.06; }
+  .hf__p:hover .hf__pin { scale: 1.14; rotate: 0deg; box-shadow: 0 40px 70px -30px rgba(20, 22, 23, 0.55); }
   .hf__pin img { width: 100%; height: 100%; object-fit: cover; }
 
   .hf__center {
@@ -168,7 +138,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
     .hf__p:nth-child(5), .hf__p:nth-child(7) { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .hf__beam, .hf__word, .hf__logo img { animation: none; }
+    .hf__word, .hf__logo img { animation: none; }
     .hf__p { transition: none; }
   }
 </style>
@@ -180,22 +150,40 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
     const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
     const logoBox = root.querySelector<HTMLElement>('[data-hf-logo]')!;
     const logoImg = logoBox.querySelector('img')!;
+    const words = [...root.querySelectorAll<HTMLElement>('.hf__word')];
     const items = [...root.querySelectorAll<HTMLElement>('.hf__p')].map((el, i) => ({
+      el,
       pin: el.querySelector<HTMLElement>('.hf__pin')!,
       d: Number(el.dataset.depth),
       ph: i * 1.7,
+      cx: 0,
+      cy: 0,
+      ax: 0,
+      ay: 0,
     }));
+    const measure = () => {
+      const r = root.getBoundingClientRect();
+      items.forEach((it) => {
+        const b = it.el.getBoundingClientRect();
+        it.cx = b.left + b.width / 2 - r.left;
+        it.cy = b.top + b.height / 2 - r.top + Math.max(0, -r.top);
+      });
+    };
+    addEventListener('resize', measure);
 
     requestAnimationFrame(() => root.classList.add('is-in'));
+    setTimeout(() => { root.classList.add('is-ready'); measure(); }, 2400);
 
-    let mx = 0, my = 0, cmx = 0, cmy = 0, visible = true;
+    let mx = 0, my = 0, cmx = 0, cmy = 0, visible = true, px = -9999, py = -9999;
     if (fine) {
       root.addEventListener('pointermove', (e) => {
         const r = root.getBoundingClientRect();
         mx = (e.clientX - r.left) / r.width - 0.5;
         my = (e.clientY - r.top) / r.height - 0.5;
+        px = e.clientX - r.left;
+        py = e.clientY - r.top;
       }, { passive: true });
-      root.addEventListener('pointerleave', () => { mx = 0; my = -0.15; });
+      root.addEventListener('pointerleave', () => { mx = 0; my = -0.15; px = py = -9999; });
     }
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; }).observe(root);
 
@@ -207,23 +195,34 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
         cmy += (my - cmy) * 0.06;
         const scroll = Math.max(0, -root.getBoundingClientRect().top);
 
-        root.style.setProperty('--lx', `${(50 + cmx * 70).toFixed(2)}%`);
-        root.style.setProperty('--ly', `${(32 + cmy * 60).toFixed(2)}%`);
         logoBox.style.setProperty('--sx', `${(-cmx * 40).toFixed(1)}px`);
         logoBox.style.setProperty('--sy', `${(18 - cmy * 30).toFixed(1)}px`);
 
         const fl = reduce ? 0 : 1;
         logoImg.style.transform =
-          `translateY(${(Math.sin(t * 0.9) * 7 * fl - scroll * 0.12).toFixed(1)}px) ` +
-          `rotateX(${(-cmy * 9).toFixed(2)}deg) rotateY(${(cmx * 14).toFixed(2)}deg) ` +
-          `rotateZ(${(Math.sin(t * 0.6) * 1.6 * fl).toFixed(2)}deg)`;
+          `translate3d(${(cmx * 30 * fl).toFixed(1)}px, ${(cmy * 18 * fl + Math.sin(t * 0.9) * 7 * fl - scroll * 0.12).toFixed(1)}px, 0) ` +
+          `rotateX(${(-cmy * 18 * fl).toFixed(2)}deg) rotateY(${(cmx * 28 * fl).toFixed(2)}deg) ` +
+          `rotateZ(${(Math.sin(t * 0.6) * 1.8 * fl + cmx * 5 * fl).toFixed(2)}deg)`;
 
-        items.forEach(({ pin, d, ph }) => {
+        words.forEach((w, i) => {
+          const dir = i === 0 ? -1 : 1;
+          w.style.transform = `translate3d(${(-cmx * 46 * fl + dir * Math.abs(cmx) * 18 * fl).toFixed(1)}px, ${(-cmy * 26 * fl).toFixed(1)}px, 0)`;
+        });
+
+        items.forEach((it) => {
+          const { pin, d, ph } = it;
           const fx = Math.sin(t * 0.5 + ph) * 10 * fl;
           const fy = Math.cos(t * 0.6 + ph) * 12 * fl;
-          const px = -cmx * d * 70;
-          const py = -cmy * d * 50 - scroll * d * 0.35;
-          pin.style.transform = `translate3d(${(fx + px).toFixed(1)}px, ${(fy + py).toFixed(1)}px, 0)`;
+          const ox = -cmx * d * 120;
+          const oy = -cmy * d * 80 - scroll * d * 0.35;
+          const dx = px - it.cx, dy = py - (it.cy - scroll);
+          const dist = Math.hypot(dx, dy);
+          const pull = fl && dist < 260 ? (1 - dist / 260) * 0.16 : 0;
+          it.ax += (dx * pull - it.ax) * 0.12;
+          it.ay += (dy * pull - it.ay) * 0.12;
+          const rx = (-cmy * 22 * d * fl).toFixed(2);
+          const ry = (cmx * 28 * d * fl).toFixed(2);
+          pin.style.transform = `perspective(700px) translate3d(${(fx + ox + it.ax).toFixed(1)}px, ${(fy + oy + it.ay).toFixed(1)}px, 0) rotateX(${rx}deg) rotateY(${ry}deg)`;
         });
       }
       requestAnimationFrame(tick);
