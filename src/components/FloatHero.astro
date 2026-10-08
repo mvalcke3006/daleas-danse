@@ -114,14 +114,20 @@ const max = Math.max(...photos.map((p) => p.value || 0), 1);
   }
   .fh__title em { font-style: italic; font-weight: 300; font-size: 0.42em; letter-spacing: var(--tr-h1); margin-top: 0.25em; }
   @keyframes fh-in { from { opacity: 0; filter: blur(16px); transform: translateY(24px); } }
-  :is(.fh--deck, .fh--orbit, .fh--bars, .fh--days, .fh--window) .fh__center { color: #fff; mix-blend-mode: difference; }
+  .fh--bars .fh__center { top: 30%; }
+  .fh--days .fh__center { top: 27%; }
+  .fh--deck .fh__center { top: 27%; }
+  .fh--orbit .fh__title, .fh--deck .fh__title, .fh--days .fh__title, .fh--bars .fh__title { font-size: clamp(3rem, 9.5vw, 10.5rem); }
+  .fh--window .fh__center { left: var(--side); top: auto; bottom: clamp(5.5rem, 13vh, 8.5rem); translate: none; place-items: start; padding-inline: 0; }
+  .fh--window .fh__title { justify-items: start; text-align: left; }
 
   .fh__hint { position: absolute; left: 50%; bottom: clamp(1.25rem, 4vh, 2.5rem); z-index: 6; translate: -50% 0; display: grid; justify-items: center; gap: 0.6rem; }
   .fh__hint span { width: 1px; height: 36px; background: currentColor; transform-origin: top; animation: hint 2.4s var(--ease-in-out) infinite; }
   @keyframes hint { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
-  .fh--deck .fh__p, .fh--orbit .fh__p { left: 50%; top: 52%; }
-  .fh--deck .fh__p { width: clamp(150px, 19vw, 300px); }
+  .fh--deck .fh__p { left: 50%; top: 68%; }
+  .fh--orbit .fh__p { left: 50%; top: 50%; }
+  .fh--deck .fh__p { width: clamp(150px, 17vw, 270px); }
   .fh--deck .fh__p.is-back .fh__pin, .fh--orbit .fh__p.is-back .fh__pin { filter: none; }
   .fh--orbit .fh__p { width: clamp(100px, 13vw, 220px); }
   .fh--orbit .fh__p.is-far .fh__pin { filter: blur(2.5px) saturate(0.85); }
@@ -135,7 +141,7 @@ const max = Math.max(...photos.map((p) => p.value || 0), 1);
     bottom: 0;
     left: calc(var(--side) + (100% - 2 * var(--side)) * (var(--i) + 0.5) / var(--n));
     width: calc((100% - 2 * var(--side)) / var(--n) - clamp(8px, 1.4vw, 20px));
-    height: calc(14vh + var(--h) * 56vh);
+    height: calc(9vh + var(--h) * 34vh);
     aspect-ratio: auto !important;
     translate: -50% 0;
     scale: 1 0;
@@ -166,7 +172,7 @@ const max = Math.max(...photos.map((p) => p.value || 0), 1);
   .fh--days .fh__p.is-hot .fh__pin { filter: none; scale: 1.08; }
 
   .fh__win { position: absolute; inset: 0; z-index: 1; }
-  .fh__bg { position: absolute; inset: -4%; width: 108%; height: 108%; object-fit: cover; filter: blur(18px) saturate(0.6); opacity: 0.35; }
+  .fh__bg { position: absolute; inset: -4%; width: 108%; height: 108%; object-fit: cover; filter: blur(22px) saturate(0.5); opacity: 0.22; }
   .fh__lens {
     position: absolute;
     inset: 0;
@@ -252,8 +258,8 @@ const max = Math.max(...photos.map((p) => p.value || 0), 1);
           const ty = fine && inside ? my + 0.5 : 0.5 + Math.cos(t * 0.33) * 0.12;
           lx += (tx - lx) * 0.08;
           ly += (ty - ly) * 0.08;
-          const w = 0.36, h = 0.46;
-          const L = Math.max(0, Math.min(1 - w, lx - w / 2)), T = Math.max(0, Math.min(1 - h, ly - h / 2));
+          const w = 0.34, h = 0.38;
+          const L = Math.max(0.02, Math.min(0.98 - w, lx - w / 2)), T = Math.max(0.15, Math.min(0.22, ly - h / 2));
           lens.style.setProperty('--l', `${(L * 100).toFixed(2)}%`);
           lens.style.setProperty('--r', `${((1 - L - w) * 100).toFixed(2)}%`);
           lens.style.setProperty('--t', `${(T * 100).toFixed(2)}%`);
@@ -284,13 +290,13 @@ const max = Math.max(...photos.map((p) => p.value || 0), 1);
             it.el.style.zIndex = String(10 - Math.round(Math.abs(k)));
           } else if (v === 'orbit') {
             const a = (i / n) * Math.PI * 2 + t * 0.14 + cmx * 0.9;
-            const rx = Math.min(innerWidth * 0.38, 560), ry = Math.min(innerHeight * 0.3, 260);
+            const rx = Math.min(innerWidth * 0.42, 640), ry = Math.min(innerHeight * 0.32, 300);
             const z = Math.sin(a);
             const depth = (z + 1) / 2;
             const x = Math.cos(a) * rx;
-            const y = z * ry * 0.55 + cmy * 60 * (depth - 0.5) - scroll * 0.3;
+            const y = z * ry + cmy * 40 - scroll * 0.3;
             pin.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${(0.6 + depth * 0.55).toFixed(3)})`;
-            it.el.style.zIndex = String(depth > 0.5 ? 6 : 1);
+            it.el.style.zIndex = '1';
             it.el.classList.toggle('is-far', depth < 0.35);
             it.el.style.opacity = String((0.45 + depth * 0.55).toFixed(2));
           } else if (v === 'wall') {
