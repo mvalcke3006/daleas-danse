@@ -51,7 +51,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
 <style>
   .hf {
     position: relative;
-    height: calc(100dvh - clamp(4.5rem, 12vh, 8rem));
+    height: 100dvh;
     min-height: 560px;
     overflow: hidden;
     isolation: isolate;
@@ -116,6 +116,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
   .hf__word--r { justify-self: start; }
   @keyframes word-in { from { opacity: 0; filter: blur(14px); transform: translateY(20px); } }
   .hf__logo {
+    translate: -3.5% 0;
     --sx: 0px;
     --sy: 18px;
     height: clamp(260px, min(64vh, 50vw), 620px);

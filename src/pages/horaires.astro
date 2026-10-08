@@ -1,189 +1,256 @@
 ---
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
 import { schedule, days, season } from '../data/site';
-import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
 
 const toMin = (t: string) => {
   const [h, m] = t.split('h').map(Number);
   return h * 60 + (m || 0);
 };
-const byDay = days.map((day) => ({
-  day,
-  items: schedule
-    .flatMap((d) => d.slots.filter((s) => s.day === day).map((s) => ({ ...s, disc: d })))
-    .sort((a, b) => toMin(a.start) - toMin(b.start)),
-}));
+const START = 12 * 60;
+const END = 22 * 60;
+const hours = Array.from({ length: (END - START) / 60 + 1 }, (_, i) => 12 + i);
+
+const byDay = days.map((day) => {
+  const items = schedule
+    .flatMap((d) => d.slots.filter((s) => s.day === day).map((s) => ({ ...s, disc: d, a: toMin(s.start), b: toMin(s.end) })))
+    .sort((x, y) => x.a - y.a);
+  const lanes: number[] = [];
+  const placed = items.map((it) => {
+    let lane = lanes.findIndex((end) => end <= it.a);
+    if (lane === -1) { lane = lanes.length; lanes.push(it.b); } else lanes[lane] = it.b;
+    return { ...it, lane };
+  });
+  return { day, items: placed.map((it) => ({ ...it, lanes: Math.max(1, lanes.length) })) };
+});
 const total = schedule.reduce((n, d) => n + d.slots.length, 0);
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 <Base
   title="Horaires des cours"
   description={`Horaires ${season} des cours de danse Daléas à Annecy : éveil rythmique, initiation jazz, jazz ados et adultes, moderne, classe chorégraphique.`}
 >
-  <PageHero kicker={`Planning ${season}`} accent="cours réguliers" image={jazz} pos="50% 45%">
-    Horaires<br /><em>{total} cours par semaine</em>
-    <Fragment slot="sub">De l’éveil rythmique dès 2 ans ½ jusqu’aux classes avancées.</Fragment>
-  </PageHero>
-
-  <section class="planning wrap" data-planning>
-    <div class="controls" data-reveal>
-      <div class="controls__group" role="tablist" aria-label="Affichage">
-        <button class="chip" role="tab" aria-selected="true" data-view="disc">Par cours</button>
-        <button class="chip" role="tab" aria-selected="false" data-view="day">Par jour</button>
-      </div>
-      <span class="controls__sep" aria-hidden="true"></span>
-      <div class="controls__group" role="group" aria-label="Filtrer par discipline">
-        <button class="chip" aria-pressed="true" data-filter="all">Tous</button>
-        {schedule.map((d) => <button class="chip" aria-pressed="false" data-filter={d.id}>{d.name}</button>)}
+  <section class="hh wrap">
+    <div class="hh__top">
+      <p class="label muted">Planning {season}</p>
+      <p class="label muted" data-today-label>Du lundi au vendredi</p>
+    </div>
+    <h1 class="hh__t" data-reveal>Horaires</h1>
+    <div class="hh__row">
+      <p class="lead">{total} cours par semaine, de l’éveil rythmique dès 2 ans ½ aux classes avancées.</p>
+      <div class="hh__filters" role="group" aria-label="Mettre en avant une discipline">
+        <button class="hf-chip" aria-pressed="true" data-filter="all">Tout</button>
+        {schedule.map((d) => <button class="hf-chip" aria-pressed="false" data-filter={d.id}>{d.name}</button>)}
       </div>
     </div>
+  </section>
 
-    <div data-panel="disc">
-      {schedule.map((d, i) => (
-        <article class="disc" id={d.id} data-disc={d.id}>
-          <header class="disc__head">
-            <p class="label muted">{String(i + 1).padStart(2, '0')} — {d.audience}</p>
-            <h2 class="h2 disc__name">{d.name}</h2>
-            <p class="prose muted disc__desc">{d.description}</p>
-          </header>
-          <ul class="rows slots">
-            {d.slots.map((s) => (
-              <li>
-                <span class="label">{s.level}</span>
-                <span class="slots__day">{s.day}</span>
-                <span class="slots__time">{s.start} – {s.end}</span>
-              </li>
-            ))}
-          </ul>
-        </article>
-      ))}
+  <section class="agenda wrap" data-agenda style={`--rows:${hours.length - 1}`}>
+    <div class="agenda__hours" aria-hidden="true">
+      {hours.map((h) => <span style={`--h:${h - 12}`}>{pad(h)}h</span>)}
     </div>
-
-    <div class="week" data-panel="day" hidden>
-      {byDay.map(({ day, items }) => (
-        <div class="week__col">
-          <h2 class="label week__day">{day}</h2>
-          <ul>
-            {items.map((it) => (
-              <li class="cell" data-disc={it.disc.id}>
-                <span class="cell__time">{it.start} – {it.end}</span>
-                <span class="label">{it.disc.name}</span>
-                <span class="label muted">{it.level}</span>
-              </li>
-            ))}
-          </ul>
+    {byDay.map(({ day, items }, di) => (
+      <div class="agenda__col" data-day={di + 1}>
+        <p class="agenda__day"><span>{day}</span><em>Aujourd’hui</em></p>
+        <div class="agenda__track">
+          {hours.slice(0, -1).map((h) => <i class="agenda__line" style={`--h:${h - 12}`} />)}
+          {items.map((it) => (
+            <a
+              href={`#${it.disc.id}`}
+              class="ev"
+              data-disc={it.disc.id}
+              style={`--t:${(it.a - START) / 60}; --len:${(it.b - it.a) / 60}; --lane:${it.lane}; --lanes:${it.lanes}`}
+            >
+              <span class="ev__time">{it.start} – {it.end}</span>
+              <span class="ev__name">{it.disc.name}</span>
+              <span class="ev__lvl">{it.level}</span>
+            </a>
+          ))}
         </div>
-      ))}
-    </div>
-
-    <div class="notes">
-      <p class="prose muted">Pas de cours pendant les vacances scolaires et les jours fériés.<br />Cours dispensés de septembre à juin.</p>
-      <div class="ctas">
-        <a href="/daleas-danse-annecy-tarifs/" class="btn">Voir les tarifs</a>
-        <a href="/contact-tel/" class="tlink">Une question</a>
       </div>
+    ))}
+    <div class="agenda__now" data-now aria-hidden="true"><span data-now-t></span></div>
+  </section>
+
+  <section class="days wrap" aria-label="Planning par jour">
+    {byDay.map(({ day, items }, di) => (
+      <div class="days__d" data-day={di + 1}>
+        <p class="days__name">{day}</p>
+        <ul>
+          {items.map((it) => (
+            <li data-disc={it.disc.id}><span class="days__time">{it.start} – {it.end}</span><span>{it.disc.name}</span><span class="muted">{it.level}</span></li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </section>
+
+  <section class="discs wrap sec">
+    <p class="label muted discs__h">Les disciplines</p>
+    <ul class="discs__list">
+      {schedule.map((d, i) => (
+        <li id={d.id} data-disc={d.id}>
+          <span class="label muted">{pad(i + 1)}</span>
+          <span class="discs__name">{d.name}</span>
+          <span class="label">{d.audience}</span>
+          <span class="prose muted">{d.description}</span>
+        </li>
+      ))}
+    </ul>
+    <div class="ctas discs__cta">
+      <p class="prose muted">Pas de cours pendant les vacances scolaires et les jours fériés. Cours de septembre à juin.</p>
+      <a href="/daleas-danse-annecy-tarifs/" class="btn">Voir les tarifs</a>
     </div>
   </section>
 </Base>
 
 <style>
-  .planning { padding-bottom: var(--section); }
-  .controls {
-    position: sticky;
-    top: 88px;
-    z-index: 5;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 6px 10px;
-    width: fit-content;
-    max-width: 100%;
-    margin: 0 auto clamp(3rem, 6vw, 5rem);
-    padding: 6px;
-    border-radius: 28px;
-    background: color-mix(in srgb, var(--white) 72%, transparent);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-    box-shadow: 0 18px 40px -28px rgba(20, 22, 23, 0.45);
+  .hh { padding-top: clamp(7.5rem, 15vh, 10rem); }
+  .hh__top { display: flex; justify-content: space-between; gap: 1rem; }
+  .hh__t {
+    margin: clamp(1rem, 2vw, 2rem) 0 clamp(1.5rem, 3vw, 2.5rem) -0.06em;
+    font-size: clamp(4rem, 17vw, 17rem);
+    font-weight: 200;
+    line-height: 0.8;
+    letter-spacing: var(--tr-display);
+    text-transform: uppercase;
   }
-  .controls__group { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
-  .controls__sep { width: 1px; height: 22px; background: var(--line); }
-  .controls .chip { border-radius: 999px; background: transparent; padding: 9px 14px; transition: background-color 0.3s var(--ease-out), color 0.3s var(--ease-out); }
-  .controls .chip[aria-selected='true'], .controls .chip[aria-pressed='true'] { background: var(--ink); color: var(--white); }
+  .hh__row { display: grid; grid-template-columns: minmax(0, 26rem) minmax(0, 1fr); gap: 1.5rem clamp(2rem, 5vw, 5rem); align-items: end; padding-bottom: 1.25rem; border-bottom: 1px solid var(--ink); }
+  .hh__filters { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px 18px; }
+  .hf-chip {
+    padding: 4px 0;
+    font-size: 12px;
+    letter-spacing: var(--tr-caps);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: color 0.3s var(--ease-out), background-size 0.5s var(--ease-expo);
+  }
+  .hf-chip:hover { color: var(--plum); }
+  .hf-chip[aria-pressed='true'] { color: var(--fg); background-size: 100% 1px; }
 
-  [data-disc].is-off { display: none; }
-
-  .disc {
+  .agenda {
+    --hh: clamp(56px, 7vh, 76px);
+    position: relative;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
-    gap: 2rem clamp(2rem, 6vw, 6rem);
-    padding: clamp(2.5rem, 5vw, 4rem) 0;
-    scroll-margin-top: 10rem;
-    animation: fade 0.7s var(--ease-out) both;
+    grid-template-columns: 3.5rem repeat(5, minmax(0, 1fr));
+    column-gap: 6px;
+    padding-top: 1.5rem;
+    padding-bottom: var(--section);
   }
-  .disc + .disc { border-top: 1px solid var(--line); }
-  .disc__head { display: flex; flex-direction: column; gap: 0.9rem; }
-  .disc__name { margin: 0; }
-  .disc__desc { max-width: 24rem; }
-  .slots { --rc: minmax(0, 1.3fr) minmax(0, 0.7fr) minmax(0, 0.9fr); }
-  .slots__day, .slots__time { font-size: 17px; font-weight: 300; text-transform: uppercase; letter-spacing: var(--tr-caps-l); }
-  .slots__time { text-align: right; font-variant-numeric: tabular-nums; }
+  .agenda__hours { position: relative; margin-top: 3rem; height: calc(var(--rows) * var(--hh)); }
+  .agenda__hours span { position: absolute; top: calc(var(--h) * var(--hh)); left: 0; translate: 0 -50%; font-size: 11px; letter-spacing: var(--tr-caps); color: var(--fg-muted); font-variant-numeric: tabular-nums; }
+  .agenda__day { height: 3rem; display: flex; align-items: flex-start; gap: 8px; font-size: 12px; letter-spacing: var(--tr-caps); text-transform: uppercase; }
+  .agenda__day em { display: none; font-style: normal; color: var(--fg-muted); }
+  .agenda__col.is-today .agenda__day em { display: inline; }
+  .agenda__col.is-today .agenda__day span { text-decoration: underline; text-underline-offset: 5px; text-decoration-thickness: 1px; }
+  .agenda__track { position: relative; height: calc(var(--rows) * var(--hh)); border-left: 1px solid var(--line); }
+  .agenda__col.is-today .agenda__track { background: color-mix(in srgb, var(--fg) 4%, transparent); }
+  .agenda__line { position: absolute; left: 0; right: 0; top: calc(var(--h) * var(--hh)); border-top: 1px solid var(--line); }
 
-  .week { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
-  .week[hidden] { display: none; }
-  .week__day { margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--ink); }
-  .week ul { display: grid; gap: 6px; }
-  .cell {
+  .ev {
+    position: absolute;
+    top: calc(var(--t) * var(--hh) + 2px);
+    height: calc(var(--len) * var(--hh) - 4px);
+    left: calc(var(--lane) * 100% / var(--lanes) + 4px);
+    width: calc(100% / var(--lanes) - 6px);
     display: flex;
     flex-direction: column;
-    gap: 2px;
-    padding: 12px;
-    border-radius: 6px;
-    background: var(--surface);
-    animation: fade 0.6s var(--ease-out) both;
+    gap: 1px;
+    padding: 6px 8px;
+    overflow: hidden;
+    border-radius: 3px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 11px;
+    line-height: 1.25;
+    transition: background-color 0.3s var(--ease-out), opacity 0.4s var(--ease-out), transform 0.5s var(--ease-expo);
   }
-  .cell__time { font-size: 17px; font-weight: 300; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
+  .ev__time { font-variant-numeric: tabular-nums; opacity: 0.7; letter-spacing: 0.02em; }
+  .ev__name { text-transform: uppercase; letter-spacing: var(--tr-caps); }
+  .ev__lvl { opacity: 0.7; }
+  .ev:hover { background: var(--plum); color: #fff; z-index: 2; transform: scale(1.03); }
+  .agenda.is-filtered .ev:not(.is-on) { opacity: 0.12; }
 
-  @keyframes fade { from { opacity: 0; transform: translateY(8px); } }
-
-  .notes { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem 3rem; margin-top: clamp(3rem, 6vw, 5rem); padding-top: 1.5rem; border-top: 1px solid var(--ink); }
-
-  @media (max-width: 1000px) {
-    .week { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 2.5rem; }
+  .agenda__now {
+    position: absolute;
+    left: calc(3.5rem + 6px);
+    right: var(--side);
+    height: 0;
+    border-top: 1px solid var(--fg);
+    display: none;
+    pointer-events: none;
   }
-  @media (max-width: 700px) {
-    .controls { position: static; border-radius: 18px; }
-    .controls__sep { display: none; }
-    .disc { grid-template-columns: 1fr; }
-    .slots { --rc: 1fr auto; }
-    .slots li .label { grid-column: 1 / -1; }
-    .week { grid-template-columns: 1fr; }
-  }
-  @media (max-width: 700px) {
-    .slots > li { grid-template-columns: 1fr auto; }
+  .agenda__now.is-on { display: block; }
+  .agenda__now span { position: absolute; left: -3.5rem; top: 0; translate: 0 -50%; padding: 1px 4px; border-radius: 2px; background: var(--fg); color: var(--paper); font-size: 10px; letter-spacing: 0.04em; font-variant-numeric: tabular-nums; }
+
+  .days { display: none; }
+  .days__d { padding: 1.25rem 0; border-top: 1px solid var(--line); }
+  .days__d.is-today .days__name::after { content: ' — aujourd’hui'; color: var(--fg-muted); }
+  .days__name { margin-bottom: 0.75rem; font-size: 1.75rem; font-weight: 300; text-transform: uppercase; letter-spacing: var(--tr-h2); }
+  .days li { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0 1rem; padding: 0.5rem 0; font-size: 14px; }
+  .days li .muted { grid-column: 2; font-size: 13px; }
+  .days__time { grid-row: span 2; font-variant-numeric: tabular-nums; }
+  .days.is-filtered li:not(.is-on) { display: none; }
+
+  .discs__h { margin-bottom: 1rem; }
+  .discs__list { border-top: 1px solid var(--ink); }
+  .discs__list li { display: grid; grid-template-columns: 3rem minmax(0, 1.1fr) minmax(0, 0.6fr) minmax(0, 1.3fr); gap: 0.5rem 1.5rem; align-items: baseline; padding: 1.1rem 0; border-bottom: 1px solid var(--line); scroll-margin-top: 8rem; }
+  .discs__name { font-size: clamp(1.4rem, 2.4vw, 2.2rem); font-weight: 300; line-height: 1.05; letter-spacing: var(--tr-h2); text-transform: uppercase; }
+  .discs__list li:target { background: color-mix(in srgb, var(--fg) 5%, transparent); }
+  .discs__cta { justify-content: space-between; margin-top: 2.5rem; }
+
+  @media (max-width: 900px) {
+    .hh__row { grid-template-columns: 1fr; }
+    .hh__filters { justify-content: flex-start; }
+    .agenda { display: none; }
+    .days { display: block; padding-top: 1rem; }
+    .discs__list li { grid-template-columns: 2.5rem 1fr; }
+    .discs__list li > :nth-child(n + 3) { grid-column: 2; }
   }
 </style>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-planning]')!;
-  const tabs = root.querySelectorAll<HTMLButtonElement>('[data-view]');
-  const chips = root.querySelectorAll<HTMLButtonElement>('[data-filter]');
-  const panels = root.querySelectorAll<HTMLElement>('[data-panel]');
-
-  const setView = (v: string) => {
-    tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.view === v)));
-    panels.forEach((p) => (p.hidden = p.dataset.panel !== v));
-  };
+  const agenda = document.querySelector<HTMLElement>('[data-agenda]')!;
+  const daysList = document.querySelector<HTMLElement>('.days')!;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.hf-chip')];
   const setFilter = (f: string) => {
     chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === f)));
-    root.querySelectorAll<HTMLElement>('[data-disc]').forEach((el) => {
-      el.classList.toggle('is-off', f !== 'all' && el.dataset.disc !== f);
+    [agenda, daysList].forEach((root) => {
+      root.classList.toggle('is-filtered', f !== 'all');
+      root.querySelectorAll<HTMLElement>('[data-disc]').forEach((el) => el.classList.toggle('is-on', el.dataset.disc === f));
     });
   };
-  tabs.forEach((t) => t.addEventListener('click', () => setView(t.dataset.view!)));
   chips.forEach((c) => c.addEventListener('click', () => setFilter(c.dataset.filter!)));
-
+  agenda.querySelectorAll<HTMLElement>('.ev').forEach((ev) => {
+    ev.addEventListener('click', (e) => {
+      e.preventDefault();
+      setFilter(ev.dataset.disc!);
+      document.getElementById(ev.dataset.disc!)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  });
   const hash = location.hash.slice(1);
-  if (hash && root.querySelector(`[data-filter="${CSS.escape(hash)}"]`)) setFilter(hash);
+  if (hash && chips.some((c) => c.dataset.filter === hash)) setFilter(hash);
+
+  const parts = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris', hour12: false }).formatToParts(new Date());
+  const get = (t: string) => parts.find((p) => p.type === t)?.value || '';
+  const order = ['lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi'];
+  const dIdx = order.indexOf(get('weekday').toLowerCase()) + 1;
+  if (dIdx > 0) {
+    document.querySelectorAll(`[data-day="${dIdx}"]`).forEach((el) => el.classList.add('is-today'));
+    const label = document.querySelector('[data-today-label]');
+    if (label) label.textContent = `Aujourd’hui : ${get('weekday')}`;
+    const mins = Number(get('hour')) * 60 + Number(get('minute'));
+    const now = document.querySelector<HTMLElement>('[data-now]')!;
+    if (mins >= 12 * 60 && mins <= 22 * 60) {
+      const track = agenda.querySelector<HTMLElement>('.agenda__track')!;
+      const place = () => {
+        const top = track.offsetTop + ((mins - 720) / 60) * (track.offsetHeight / 10);
+        now.style.top = `${top}px`;
+      };
+      now.querySelector('[data-now-t]')!.textContent = `${get('hour')}h${get('minute')}`;
+      now.classList.add('is-on');
+      place();
+      addEventListener('resize', place);
+    }
+  }
 </script>
