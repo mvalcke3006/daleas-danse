@@ -106,7 +106,7 @@ const word = title.toUpperCase();
     opacity: 0;
     filter: blur(12px);
     transform: translate3d(0, 0.4em, 0);
-    transition: opacity 1.2s var(--ease-out), filter 1.2s var(--ease-out), transform 1.4s var(--ease-expo);
+    transition: opacity 0.7s var(--ease-out), filter 0.7s var(--ease-out), transform 0.9s var(--ease-expo);
   }
   .th.is-done .th__accent { opacity: calc(1 - var(--s) * 1.4); filter: blur(calc(var(--s) * 10px)); transform: none; }
 
@@ -162,13 +162,13 @@ const word = title.toUpperCase();
     const start = () => {
       fit();
       if (reduce) { root.classList.add('is-done'); paint(); return; }
-      const t0 = performance.now(), dur = 2300;
+      const t0 = performance.now(), dur = 1300;
       const step = (now: number) => {
         t = (now - t0) / 1000;
         const p = Math.min(1, (now - t0) / dur);
         intro = Math.pow(1 - p, 2.4);
         paint();
-        if (p > 0.55) root.classList.add('is-done');
+        if (p > 0.45) root.classList.add('is-done');
         if (p < 1) requestAnimationFrame(step);
       };
       requestAnimationFrame(step);
@@ -180,7 +180,7 @@ const word = title.toUpperCase();
       setTimeout(() => {
         if (cancelled || scrollY > 10) return;
         const target = root.getBoundingClientRect().bottom + scrollY;
-        const from = scrollY, dist = target - from, s0 = performance.now(), d = 1400;
+        const from = scrollY, dist = target - from, s0 = performance.now(), d = 900;
         const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
         const go = (now: number) => {
           if (cancelled) return;
@@ -189,7 +189,7 @@ const word = title.toUpperCase();
           if (p < 1) requestAnimationFrame(go);
         };
         requestAnimationFrame(go);
-      }, 3300);
+      }, 1700);
     };
     document.fonts.ready.then(start);
     addEventListener('resize', fit);
