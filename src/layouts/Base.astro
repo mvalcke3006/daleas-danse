@@ -264,7 +264,7 @@ const breadcrumb = crumbs.length
 
       const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
       const hosts = [...document.querySelectorAll<HTMLImageElement>('main img')]
-        .filter((img) => !img.closest('.hf__logo, .float') && !img.classList.contains('bw-c'))
+        .filter((img) => !img.closest('.hf__logo, .float, .sc') && !img.classList.contains('bw-c'))
         .map((img) => {
           const host = img.parentElement!;
           const clone = img.cloneNode() as HTMLImageElement;

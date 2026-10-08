@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import HeroFloat from '../components/HeroFloat.astro';
+import ScrollScene from '../components/ScrollScene.astro';
 import { announcement, schedule, weekends, season, singleClass, site, tel } from '../data/site';
 
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
@@ -44,23 +45,25 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
   </div>
 
-  <section class="expand" data-progress aria-label="Le spectacle de l’école">
-    <div class="expand__sticky">
-      <div class="expand__frame">
-        <Image src={gala} alt="Les élèves de l’école réunis sur scène pour le spectacle de fin d’année" widths={[960, 1280]} sizes="100vw" />
-      </div>
-      {announcement.show && (
-        <div class="expand__caption">
-          <a href="/contact-tel/" class="chip">{announcement.eyebrow} — {announcement.title}</a>
-        </div>
-      )}
-    </div>
-  </section>
+  <ScrollScene
+    image={gala}
+    alt="Les élèves de l’école réunis sur scène pour le spectacle de fin d’année"
+    lines={['Une fois par an,', 'toutes les classes', 'montent sur scène']}
+    label="Le spectacle de fin d’année"
+    pos="50% 40%"
+  >
+    {announcement.show
+      ? <a href="/contact-tel/" class="chip scene__chip">{announcement.eyebrow} — {announcement.title}</a>
+      : <p class="label">Le spectacle de fin d’année</p>}
+  </ScrollScene>
 
   <section class="hub-intro">
     <div class="wrap">
       <p class="kicker">Bienvenue</p>
-      <h2 class="h1 hub-intro__title" data-reveal>Une école de danse,<br /><em>tout un univers</em></h2>
+      <p class="manif" data-words>
+        {'Depuis 1965, l’école Daléas fait danser Annecy. Maryse a ouvert la voie, Diane et Delphine la prolongent : la technique, le rythme, la scène'.split(' ').map((w) => <><span class="w">{w}</span>{' '}</>)}
+        <em>{'— et avant tout le plaisir de bouger.'.split(' ').map((w) => <><span class="w">{w}</span>{' '}</>)}</em>
+      </p>
     </div>
   </section>
 
@@ -78,21 +81,25 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     </div>
   </a>
 
-  <section class="pair">
-    <div class="wrap pair__grid">
-      <a href="/horaires/" class="card on-paper" data-reveal>
+  <section class="facts">
+    <div class="wrap facts__grid">
+      <a href="/horaires/" class="fact" data-reveal>
         <p class="label muted">02 — Horaires</p>
-        <p class="card__num card__big xl">{total}</p>
-        <p class="h3">cours par semaine</p>
-        <p class="prose muted">De l’éveil rythmique dès 2 ans ½ aux classes avancées, du lundi au vendredi.</p>
-        <span class="block__go">Voir le planning {season}</span>
+        <p class="fact__num xl"><span data-count={total}>{total}</span></p>
+        <div class="fact__foot">
+          <p class="h3">Cours par semaine</p>
+          <p class="prose muted">De l’éveil rythmique dès 2 ans ½ aux classes avancées, du lundi au vendredi.</p>
+          <span class="block__go">Voir le planning {season}</span>
+        </div>
       </a>
-      <a href="/daleas-danse-annecy-tarifs/" class="card on-black stage" data-reveal style="--d:.08s">
+      <a href="/daleas-danse-annecy-tarifs/" class="fact" data-reveal style="--d:.08s">
         <p class="label muted">03 — Tarifs</p>
-        <p class="card__num card__big xl"><small>dès</small>{singleClass}€</p>
-        <p class="h3">le cours à l’unité</p>
-        <p class="prose muted">Forfaits trimestriels ou annuels, carte 10 cours, forfait illimité.</p>
-        <span class="block__go">Voir les tarifs</span>
+        <p class="fact__num xl"><small>dès</small><span data-count={singleClass}>{singleClass}</span><small>€</small></p>
+        <div class="fact__foot">
+          <p class="h3">Le cours à l’unité</p>
+          <p class="prose muted">Forfaits trimestriels ou annuels, carte 10 cours, forfait illimité.</p>
+          <span class="block__go">Voir les tarifs</span>
+        </div>
       </a>
     </div>
   </section>
@@ -211,26 +218,21 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   .marq__w:nth-child(4n + 3) { font-style: italic; font-weight: 300; }
   .marq__dot { width: clamp(10px, 1.1vw, 16px); aspect-ratio: 1; border-radius: 50%; background: var(--ink); flex-shrink: 0; }
 
-  .expand { --p: 0; position: relative; height: 190vh; }
-  .expand__sticky { position: sticky; top: 0; height: 100dvh; overflow: hidden; }
-  .expand__frame {
-    position: absolute;
-    inset: 0;
-    clip-path: inset(calc((1 - var(--p)) * 18%) calc((1 - var(--p)) * 24%) round calc((1 - var(--p)) * 10px));
-    background: var(--black);
-  }
-  .expand__frame :global(img) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transform: scale(calc(1.2 - var(--p) * 0.2));
-    filter: blur(calc((1 - var(--p)) * 6px)) var(--bw);
-  }
-  .expand__caption { position: absolute; left: var(--side); bottom: calc(clamp(70px, 13vh, 150px) + 0.5rem); opacity: clamp(0, calc((var(--p) - 0.6) * 4), 1); }
-  .expand__caption .chip { --chip-bg: var(--white); color: var(--ink); font-size: 14px; padding: 11px 16px; border-radius: 999px; }
+  .scene__chip { --chip-bg: var(--white); color: var(--ink); font-size: 14px; padding: 11px 16px; border-radius: 999px; box-shadow: 0 14px 30px -18px rgba(20, 22, 23, 0.5); }
 
-  .hub-intro { padding: var(--section) 0 clamp(2rem, 5vw, 4rem); }
-  .hub-intro__title { margin-top: 1.25rem; max-width: 16ch; }
+  .hub-intro { padding: var(--section) 0; }
+  .manif {
+    margin-top: 1.75rem;
+    max-width: 24ch;
+    font-size: clamp(2rem, 4.6vw, 4.6rem);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+  }
+  .manif em { font-style: italic; }
+  .manif .w { opacity: 0.12; filter: blur(3px); transition: opacity 0.6s var(--ease-out), filter 0.6s var(--ease-out); }
+  .manif .w.is-on { opacity: 1; filter: none; }
+  .manif em .w.is-on { color: var(--plum); }
 
   .block { display: block; }
   .block__go {
@@ -263,19 +265,29 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   .block__media :global(img), .tease__media :global(img), .full__media :global(img) { transition: transform 1.4s var(--ease-expo); }
   .block--school:hover .block__media :global(img) { transform: scale(1.04); }
 
-  .pair { padding-bottom: var(--section); }
-  .pair__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .card {
+  .facts { padding-bottom: var(--section); }
+  .facts__grid { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--ink); }
+  .fact {
+    position: relative;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    min-height: clamp(380px, 52vh, 560px);
-    transition: transform 0.6s var(--ease-expo);
+    gap: 1.25rem;
+    padding: 1.5rem clamp(1.5rem, 3vw, 3rem) 0 0;
   }
-  .card:hover { transform: translateY(-6px); }
-  .card__big { font-size: clamp(6rem, 13vw, 12rem); margin-top: auto; line-height: 0.85; }
-  .card__big small { font-size: 0.28em; margin-right: 0.15em; vertical-align: 0.35em; }
-  .card .prose { max-width: 26rem; }
+  .fact + .fact { padding-left: clamp(1.5rem, 3vw, 3rem); border-left: 1px solid var(--line); }
+  .fact__num {
+    display: flex;
+    align-items: baseline;
+    gap: 0.06em;
+    font-size: clamp(7rem, 17vw, 16rem);
+    line-height: 0.8;
+    margin: clamp(1rem, 3vw, 2.5rem) 0 clamp(1rem, 2vw, 1.75rem) -0.06em;
+    transition: color 0.6s var(--ease-out), transform 0.9s var(--ease-expo);
+  }
+  .fact__num small { font-size: 0.2em; letter-spacing: 0.02em; }
+  .fact__num small:first-child { align-self: flex-start; margin-right: 0.3em; margin-top: 0.4em; }
+  .fact:hover .fact__num { color: var(--plum); transform: translateX(0.04em); }
+  .fact__foot { display: grid; gap: 0.9rem; max-width: 26rem; }
 
   .block--full { position: relative; height: min(100dvh, 980px); min-height: 560px; overflow: hidden; color: var(--white); background: var(--black); }
   .full__media { position: absolute; inset: 0; }
@@ -317,13 +329,13 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   .contact__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: end; }
   .contact__grid .h2 { margin: 1rem 0 1.75rem; }
   @media (max-width: 900px) {
-    .block__grid, .pair__grid, .duo-cards__grid, .gal__head, .contact__grid { grid-template-columns: 1fr; }
+    .block__grid, .duo-cards__grid, .gal__head, .contact__grid { grid-template-columns: 1fr; }
     .block__grid .block__media { order: -1; }
-    .card { min-height: 0; }
-    .card__big { margin-top: 1.5rem; }
+    .facts__grid { grid-template-columns: 1fr; }
+    .fact { padding-right: 0; padding-bottom: 2.5rem; }
+    .fact + .fact { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); }
   }
   @media (max-width: 560px) {
-    .expand { height: 160vh; }
     .gal__item:nth-child(1), .gal__item:nth-child(2), .gal__item:nth-child(6), .gal__item:nth-child(7) { display: none; }
   }
 </style>
