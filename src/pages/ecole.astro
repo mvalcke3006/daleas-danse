@@ -1,10 +1,9 @@
 ---
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import FloatHero from '../components/FloatHero.astro';
+import TitleHero from '../components/TitleHero.astro';
 import ados from '../assets/img/cours-ados-nb.jpg';
 import adultes from '../assets/img/cours-adultes-nb.jpg';
-import coursEcole from '../assets/img/cours-ecole-adultes.jpg';
 import eveil from '../assets/img/cours-eveil.jpg';
 import SectionHead from '../components/SectionHead.astro';
 import { schedule, season } from '../data/site';
@@ -33,19 +32,7 @@ const story = [
   description="Daléas Danse, école de danse privée fondée en 1965 à Annecy par Maryse Daléas, rejointe par ses filles Diane et Delphine, diplômées d’État en danse jazz."
   image="/og/ecole.jpg"
 >
-  <FloatHero
-    variant="deck"
-    title="L’école"
-    accent="une histoire de famille"
-    left="Annecy"
-    right="Depuis 1965"
-    photos={[
-      { src: eveil, ratio: '4/5', pos: '45% 40%' },
-      { src: coursEcole, ratio: '4/5', pos: '35% 50%' },
-      { src: adultes, ratio: '4/5', pos: '40% 40%' },
-      { src: ados, ratio: '4/5', pos: '55% 45%' },
-    ]}
-  />
+  <TitleHero title="L’école" accent="une histoire de famille" left="Annecy" right="Depuis 1965" />
 
   <section class="gen wrap">
     <div class="gen__top">

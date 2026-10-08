@@ -1,11 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import FloatHero from '../components/FloatHero.astro';
-import eveil from '../assets/img/cours-eveil.jpg';
-import sp1 from '../assets/img/spectacle-1.jpg';
-import sp2 from '../assets/img/spectacle-2.jpg';
-import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
-import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+import TitleHero from '../components/TitleHero.astro';
 import { site, tel, sms } from '../data/site';
 const address = `${site.address.street}, ${site.address.zip} ${site.address.city}`;
 ---
@@ -14,20 +9,7 @@ const address = `${site.address.street}, ${site.address.zip} ${site.address.city
   description="Pour toute demande sur les cours de danse et les stages, contactez Diane ou Delphine Daléas par téléphone. Espace Daléas, 2bis rue Louis Chaumontel, Annecy."
   image="/og/contact.jpg"
 >
-  <FloatHero
-    variant="orbit"
-    title="Contact"
-    accent="un appel suffit"
-    left="Diane & Delphine"
-    right="Annecy"
-    photos={[
-      { src: team, ratio: '4/3', pos: '40% 45%' },
-      { src: kids, ratio: '3/4', pos: '55% 40%' },
-      { src: sp2, ratio: '4/3', pos: '50% 45%' },
-      { src: eveil, ratio: '3/4', pos: '45% 40%' },
-      { src: sp1, ratio: '4/3', pos: '50% 40%' },
-    ]}
-  />
+  <TitleHero title="Contact" accent="un appel suffit" left="Diane & Delphine" right="Annecy" />
 
   <section class="ct wrap">
     <div class="ct__top">

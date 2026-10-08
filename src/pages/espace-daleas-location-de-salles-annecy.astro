@@ -1,7 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import FloatHero from '../components/FloatHero.astro';
+import TitleHero from '../components/TitleHero.astro';
 import creatif from '../assets/img/espace-activites-creatives.jpg';
 import { site, sms } from '../data/site';
 import studio from '../assets/img/espacedaleas-salle1.jpg';
@@ -22,16 +22,7 @@ const fields = [
   description="L’Espace Daléas propose ses 3 studios à la location, en plein centre d’Annecy, pour les professeurs de disciplines artistiques et bien-être ainsi que les répétitions."
   image="/og/location.jpg"
 >
-  <FloatHero
-    variant="window"
-    title="Location"
-    accent="trois studios à Annecy"
-    left="Espace Daléas"
-    right="Location de salles"
-    photos={[
-      { src: studio, pos: '40% 50%' },
-    ]}
-  />
+  <TitleHero title="Location" accent="trois studios à Annecy" left="Espace Daléas" right="Location de salles" />
 
   <section class="lo">
     <div class="lo__media">

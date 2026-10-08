@@ -1,11 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import FloatHero from '../components/FloatHero.astro';
-import alain from '../assets/img/stage-alain-gruttadauria.jpg';
-import fred from '../assets/img/stage-frederic-jean-baptiste.jpg';
-import laure from '../assets/img/stage-laure-demolliere.jpg';
-import pascal from '../assets/img/stage-pascal-loussouarn.jpg';
+import TitleHero from '../components/TitleHero.astro';
 import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
 import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
 import { weekends, summerCamp, site, tel } from '../data/site';
@@ -23,20 +19,7 @@ const ete = summerCamp.dates.match(/(\d+)\D+(\d+)\s+([a-zéû]+)/i);
   description="Stages de danse à Annecy : week-ends avec des chorégraphes invités et stage d’été de 4 jours, en modern jazz, moderne et contemporain. Ouverts aux danseurs intermédiaires, avancés et professionnels."
   image="/og/stages.jpg"
 >
-  <FloatHero
-    variant="wall"
-    title="Stages"
-    accent="chorégraphes invités"
-    left="Association Danse Découverte"
-    right="Week-ends & été"
-    photos={[
-      { src: alain, x: 15, y: 33, w: 13, r: -6, d: 0.9, ratio: '3/4', pos: '50% 30%' },
-      { src: laure, x: 84, y: 30, w: 12, r: 5, d: 0.95, ratio: '3/4', pos: '50% 35%' },
-      { src: fred, x: 12, y: 76, w: 11, r: 4, d: 0.5, ratio: '3/4', pos: '50% 30%' },
-      { src: pascal, x: 88, y: 76, w: 11, r: -5, d: 0.55, ratio: '3/4', pos: '50% 35%' },
-      { src: duo, x: 66, y: 88, w: 13, r: 3, d: 0.4, ratio: '4/3', pos: '45% 30%' },
-    ]}
-  />
+  <TitleHero title="Stages" accent="chorégraphes invités" left="Association Danse Découverte" right="Week-ends & été" />
 
   <section class="st wrap">
     <div class="st__top">

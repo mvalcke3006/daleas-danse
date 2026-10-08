@@ -1,11 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import FloatHero from '../components/FloatHero.astro';
-import sp1 from '../assets/img/spectacle-1.jpg';
-import sp2 from '../assets/img/spectacle-2.jpg';
-import sp3 from '../assets/img/spectacle-3.jpg';
-import sp5 from '../assets/img/spectacle-5.jpg';
-import gala from '../assets/img/daleasdanse-slide4.jpg';
+import TitleHero from '../components/TitleHero.astro';
 import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
 import {
   season, membership, kidsPricing, mainPricing, unlimited, singleClass, card10, pricingRules,
@@ -27,20 +22,7 @@ const first = mainPricing.rows[0];
   description={`Tarifs ${season} de l’école Daléas Danse à Annecy : forfaits trimestriels et annuels, carte 10 cours, cours à l’unité, forfait illimité.`}
   image="/og/tarifs.jpg"
 >
-  <FloatHero
-    variant="bars"
-    title="Tarifs"
-    accent="à votre rythme"
-    left={`Saison ${season}`}
-    right="Du cours à l’unité à l’illimité"
-    photos={[
-      { src: sp1, d: 0.2, pos: '50% 40%', label: 'le cours', value: 18 },
-      { src: sp2, d: 0.4, pos: '50% 45%', label: 'carte 10 cours', value: 160 },
-      { src: sp3, d: 0.6, pos: '50% 50%', label: '1 cours / an', value: 370 },
-      { src: sp5, d: 0.8, pos: '45% 60%', label: '2 cours / an', value: 630 },
-      { src: gala, d: 1, pos: '50% 40%', label: 'illimité', value: 995 },
-    ]}
-  />
+  <TitleHero title="Tarifs" accent="à votre rythme" left={`Saison ${season}`} right="Du cours à l’unité à l’illimité" />
 
   <section class="calc wrap" data-calc data-prices={JSON.stringify(data)}>
     <div class="calc__top">

@@ -1,11 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
-import FloatHero from '../components/FloatHero.astro';
-import enfants from '../assets/img/cours-enfants-bleu.jpg';
-import rouge from '../assets/img/cours-modern-jazz-rouge.jpg';
-import studioClass from '../assets/img/cours-studio-nb.jpg';
+import TitleHero from '../components/TitleHero.astro';
 import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
-import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
 import { schedule, days, season } from '../data/site';
 
 const toMin = (t: string) => {
@@ -36,21 +32,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   description={`Horaires ${season} des cours de danse Daléas à Annecy : éveil rythmique, initiation jazz, jazz ados et adultes, moderne, classe chorégraphique.`}
   image="/og/horaires.jpg"
 >
-  <FloatHero
-    variant="days"
-    cols={['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']}
-    title="Horaires"
-    accent={`${total} cours par semaine`}
-    left={`Planning ${season}`}
-    right="Du lundi au vendredi"
-    photos={[
-      { src: enfants, y: 62, d: 0.6, ratio: '3/4', pos: '60% 50%' },
-      { src: rouge, y: 74, d: 0.9, ratio: '3/4', pos: '40% 45%' },
-      { src: studioClass, y: 60, d: 0.5, ratio: '3/4', pos: '75% 50%' },
-      { src: jazz, y: 72, d: 0.8, ratio: '3/4', pos: '50% 50%' },
-      { src: kids, y: 63, d: 0.7, ratio: '3/4', pos: '55% 40%' },
-    ]}
-  />
+  <TitleHero title="Horaires" accent={`${total} cours par semaine`} left={`Planning ${season}`} right="Du lundi au vendredi" />
 
   <section class="hh wrap">
     <div class="hh__top">
