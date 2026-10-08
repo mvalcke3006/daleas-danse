@@ -281,7 +281,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
     themeT.textContent = label;
     themeT.dataset.t = label;
     themeBtn.setAttribute('aria-label', dark ? 'Passer en thème clair' : 'Passer en thème sombre');
-    meta?.setAttribute('content', dark ? '#0b0b0b' : '#ececeb');
+    meta?.setAttribute('content', dark ? '#000000' : '#ffffff');
   };
   syncTheme();
   themeBtn.addEventListener('click', () => {

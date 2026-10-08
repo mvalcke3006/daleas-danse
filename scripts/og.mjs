@@ -61,8 +61,8 @@ const html = (c) => `<!doctype html><html><head><meta charset="utf-8"><style>
 @font-face { font-family: Inter; font-style: italic; src: url('file://${join(root, 'public/fonts/inter-italic.woff2')}') format('woff2'); font-weight: 100 900; }
 * { box-sizing: border-box; margin: 0; }
 html, body { width: 1200px; height: 630px; overflow: hidden; }
-body { position: relative; background: #ececeb; color: #141617; font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; }
-.spot { position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, #fff 0%, rgba(255,255,255,.8) 22%, rgba(255,255,255,0) 60%), radial-gradient(ellipse 80% 75% at 50% 45%, rgba(20,22,23,0) 55%, rgba(20,22,23,.1) 100%); }
+body { position: relative; background: #fff; color: #000; font-family: Inter, sans-serif; -webkit-font-smoothing: antialiased; }
+.spot { display: none; }
 .lab { position: absolute; top: 38px; font-size: 13px; letter-spacing: .09em; text-transform: uppercase; color: #5b5b5b; z-index: 5; }
 .l { left: 48px; } .r { right: 48px; }
 .p { position: absolute; transform: translate(-50%, -50%); }
@@ -104,7 +104,7 @@ for (const c of cards) {
 }
 await rm(tmp, { recursive: true, force: true });
 
-const paper = { r: 236, g: 236, b: 235, alpha: 1 };
+const paper = { r: 255, g: 255, b: 255, alpha: 1 };
 const icon = async (size, file, pad = 0.12) => {
   const inner = Math.round(size * (1 - pad * 2));
   const mark = await sharp(join(root, 'src/assets/img/daleas-figure.png')).resize({ height: inner, fit: 'inside' }).toBuffer();
