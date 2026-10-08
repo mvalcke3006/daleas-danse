@@ -187,7 +187,6 @@ const breadcrumb = crumbs.length
           lastVa = va;
           rootStyle.setProperty('--va', va.toFixed(3));
           rootStyle.setProperty('--vs', (Math.sign(vel) * va).toFixed(3));
-          document.documentElement.classList.toggle('is-fast', va > 0.12);
         }
         requestAnimationFrame(update);
       };
