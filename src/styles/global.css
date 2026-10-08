@@ -276,6 +276,39 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   position: relative;
   box-shadow: var(--shx, 0px) var(--shy, 22px) 46px -26px rgba(20, 22, 23, 0.45);
 }
+:is(.lit, .media, .tile__img, .gal__item, .ph__img)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--px, 50%) var(--py, 30%), rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0) 46%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out);
+}
+:is(.lit, .media, .tile__img, .gal__item, .ph__img):hover::after { opacity: 1; }
+
+.lightfx {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  background: radial-gradient(circle 75vmax at var(--mx, 50vw) var(--my, 25vh), rgba(20, 22, 23, 0) 0%, rgba(20, 22, 23, 0.11) 100%);
+  mix-blend-mode: multiply;
+}
+.lightfx::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle 28vmax at var(--mx, 50vw) var(--my, 25vh), rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 70%);
+  mix-blend-mode: screen;
+}
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  .lightfx { display: none; }
+}
+
 .plumfx {
   position: fixed;
   inset: 0;
@@ -296,9 +329,32 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   isolation: isolate;
   overflow: hidden;
 }
+.on-black.stage::before, .on-black.stage::after, .on-cream.stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
 .on-black.stage { background-color: var(--black); }
+.on-black.stage::after {
+  background: radial-gradient(circle 38vmax at var(--mx, 50vw) var(--my, 30vh), rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 65%) fixed;
+}
+.on-black.stage::before {
+  inset: -20% -10% auto;
+  height: 140%;
+  background:
+    conic-gradient(from 180deg at 18% 0%, transparent 0deg, rgba(255, 255, 255, 0.14) 9deg, transparent 20deg),
+    conic-gradient(from 180deg at 82% 0%, transparent 0deg, rgba(255, 255, 255, 0.12) 9deg, transparent 20deg);
+  filter: blur(14px);
+  animation: stage-sweep 16s var(--ease-in-out) infinite alternate;
+}
 .on-cream.stage { background-color: var(--cream); }
+.on-cream.stage::after {
+  background: radial-gradient(circle 42vmax at var(--mx, 50vw) var(--my, 30vh), rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 60%) fixed;
+}
 @keyframes stage-sweep { from { transform: translateX(-4%) rotate(-2deg); } to { transform: translateX(4%) rotate(2deg); } }
+@media (prefers-reduced-motion: reduce) { .stage::before { animation: none; } }
 
 html { background: #ececeb; }
 .bglight { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: #ececeb; }
