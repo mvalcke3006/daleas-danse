@@ -1,7 +1,11 @@
 ---
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
+import FloatHero from '../components/FloatHero.astro';
+import ados from '../assets/img/cours-ados-nb.jpg';
+import adultes from '../assets/img/cours-adultes-nb.jpg';
+import coursEcole from '../assets/img/cours-ecole-adultes.jpg';
+import eveil from '../assets/img/cours-eveil.jpg';
 import SectionHead from '../components/SectionHead.astro';
 import { schedule, season } from '../data/site';
 
@@ -19,38 +23,50 @@ const hover = await Promise.all(
 const pad = (n: number) => String(n).padStart(2, '0');
 
 const story = [
-  { n: 'I', y: '1965', t: 'La fondation', p: 'Maryse Daléas, formée trois ans au centre Irène Popard à Paris, fonde son école de danse à Annecy. Elle y enseigne seule pendant trente ans.' },
-  { n: 'II', y: '1992', t: 'Diane', p: 'Diplômée d’État en danse jazz, Diane rejoint l’enseignement aux côtés de sa mère.' },
-  { n: 'III', y: '1995', t: 'Delphine', p: 'Diplômée d’État en danse jazz à son tour, Delphine complète le trio. Aujourd’hui, Diane et Delphine enseignent aux petits comme aux grands.' },
+  { n: 'Maryse', y: '1965', t: 'La fondation', p: 'Maryse Daléas, formée trois ans au centre Irène Popard à Paris, fonde son école de danse à Annecy. Elle y enseigne seule pendant trente ans.' },
+  { n: 'Diane', y: '1992', t: 'La transmission', p: 'Diplômée d’État en danse jazz, Diane rejoint l’enseignement aux côtés de sa mère.' },
+  { n: 'Delphine', y: '1995', t: 'Le trio', p: 'Diplômée d’État en danse jazz à son tour, Delphine complète le trio. Aujourd’hui, Diane et Delphine enseignent aux petits comme aux grands.' },
 ];
 ---
 <Base
   title="L’école"
   description="Daléas Danse, école de danse privée fondée en 1965 à Annecy par Maryse Daléas, rejointe par ses filles Diane et Delphine, diplômées d’État en danse jazz."
+  image="/og/ecole.jpg"
 >
-  <PageHero kicker="L’école" accent="Annecy, depuis 1965" image={team} pos="40% 45%">
-    Une histoire<br /><em>de famille</em>
-    <Fragment slot="sub">Au fil des années, les élèves construisent leurs bases en Modern’Jazz. Une fois le vocabulaire maîtrisé, ados et adultes peuvent rejoindre le Moderne.</Fragment>
-  </PageHero>
+  <FloatHero
+    variant="deck"
+    title="L’école"
+    accent="une histoire de famille"
+    left="Annecy"
+    right="Depuis 1965"
+    photos={[
+      { src: eveil, ratio: '4/5', pos: '45% 40%' },
+      { src: coursEcole, ratio: '4/5', pos: '35% 50%' },
+      { src: adultes, ratio: '4/5', pos: '40% 40%' },
+      { src: ados, ratio: '4/5', pos: '55% 45%' },
+    ]}
+  />
 
-  <section class="story sec">
-    <div class="wrap">
-      <SectionHead n="01" label="Histoire">Trois générations,<br /><em>une seule école</em></SectionHead>
+  <section class="gen wrap">
+    <div class="gen__top">
+      <p class="label muted">L’école</p>
+      <p class="label muted">Annecy, depuis 1965</p>
     </div>
-    <div class="wrap story__grid">
+    <ol class="gen__list">
       {story.map((s, i) => (
-        <article class="step" data-speed={[0.04, -0.05, 0.07][i]}>
-          <p class="step__y xl">{s.y}</p>
-          <p class="label muted">{s.t}</p>
-          <p class="prose">{s.p}</p>
-        </article>
+        <li class="gen__row" style={`--i:${i}`} data-reveal>
+          <span class="gen__y">{s.y} — {s.t}</span>
+          <span class="gen__name">{s.n}</span>
+          <span class="gen__txt prose muted">{s.p}</span>
+        </li>
       ))}
-    </div>
+    </ol>
+    <p class="gen__lead lead" data-reveal>Au fil des années, les élèves construisent leurs bases en Modern’Jazz. Une fois le vocabulaire maîtrisé, ados et adultes peuvent rejoindre le Moderne.</p>
   </section>
 
   <section class="years on-black sec stage">
     <div class="wrap">
-      <p class="label muted">02 — En chiffres</p>
+      <p class="label muted">En chiffres</p>
       <div class="years__head">
         <p class="years__big xl" data-count="60">60</p>
         <p class="h2">ans de danse<br />à Annecy</p>
@@ -66,7 +82,7 @@ const story = [
 
   <section class="courses sec">
     <div class="wrap">
-      <SectionHead n="03" label="Les disciplines">Six disciplines,<br /><em>un seul parcours</em></SectionHead>
+      <SectionHead label="Les disciplines">Six disciplines,<br /><em>un seul parcours</em></SectionHead>
       <ul class="courses__list">
         {schedule.map((d, i) => (
           <li>
@@ -89,9 +105,31 @@ const story = [
 </Base>
 
 <style>
-  .story__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 4rem); }
-  .step { display: grid; align-content: start; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--ink); }
-  .step__y { font-size: clamp(4rem, 7vw, 6.5rem); }
+  .gen { padding-block: var(--section); }
+  .gen__top { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--ink); }
+  .gen__list { margin-top: clamp(2rem, 5vw, 4rem); display: grid; gap: clamp(1.5rem, 4vw, 3.5rem); }
+  .gen__row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 22rem);
+    grid-template-areas: 'y y' 'name txt';
+    align-items: end;
+    gap: 0.4rem clamp(1.5rem, 3vw, 3rem);
+    margin-left: calc(var(--i) * clamp(0px, 14vw, 16rem));
+  }
+  .gen__y { grid-area: y; font-size: 12px; letter-spacing: var(--tr-caps); text-transform: uppercase; color: var(--fg-muted); }
+  .gen__name {
+    grid-area: name;
+    font-size: clamp(3.4rem, 11.5vw, 11.5rem);
+    font-weight: 200;
+    line-height: 0.8;
+    letter-spacing: var(--tr-display);
+    text-transform: uppercase;
+    transition: letter-spacing 0.9s var(--ease-expo);
+  }
+  .gen__row:nth-child(2) .gen__name { font-style: italic; font-weight: 300; }
+  .gen__row:hover .gen__name { letter-spacing: 0.01em; }
+  .gen__txt { grid-area: txt; padding-bottom: 0.6rem; }
+  .gen__lead { max-width: 34rem; margin: clamp(3rem, 6vw, 5rem) 0 0 auto; }
 
   .years__head { display: flex; align-items: flex-end; gap: clamp(1.5rem, 4vw, 3rem); margin: 1.5rem 0 3.5rem; flex-wrap: wrap; }
   .years__big { font-size: clamp(9rem, 28vw, 24rem); line-height: 0.8; }
@@ -137,7 +175,7 @@ const story = [
   .float img { width: 100%; height: 100%; object-fit: cover; }
 
   @media (max-width: 900px) {
-    .story__grid { grid-template-columns: 1fr; }
+    .gen__row { grid-template-columns: 1fr; grid-template-areas: 'y' 'name' 'txt'; margin-left: calc(var(--i) * 6vw); }
     .years__stats { grid-template-columns: 1fr 1fr; row-gap: 1.5rem; }
     .years__stats li + li:nth-child(3) { padding-left: 0; border-left: 0; }
     .course { grid-template-columns: 2.2rem 1fr 1.5rem; row-gap: 0.35rem; }

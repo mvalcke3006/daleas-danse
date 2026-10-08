@@ -11,16 +11,20 @@ interface Props {
   image?: string;
   footer?: boolean;
 }
-const { title, description, image = '/og.jpg', footer = true } = Astro.props;
+const { title, description, image = '/og/accueil.jpg', footer = true } = Astro.props;
+const origin = (process.env.SITE_URL || site.url).replace(/\/$/, '');
+const ogImage = `${origin}${image}`;
+const ogAlt = title === site.name ? 'Daléas Danse, école de danse à Annecy depuis 1965' : `${title} — Daléas Danse, Annecy`;
 const fullTitle = title === site.name ? `${site.name} — École de danse à Annecy depuis 1965` : `${title} — ${site.name}`;
-const canonical = new URL(Astro.url.pathname, site.url).href;
+const canonical = `${origin}${Astro.url.pathname}`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'DanceSchool',
   name: 'Daléas Danse',
-  url: site.url,
-  logo: `${site.url}/logo.png`,
+  url: `${origin}/`,
+  logo: `${origin}/icon-512.png`,
+  image: `${origin}/og/accueil.jpg`,
   email: site.email,
   telephone: `+33${site.teachers[0].phone.replace(/\s/g, '').slice(1)}`,
   foundingDate: '1965',
@@ -44,7 +48,7 @@ const breadcrumb = crumbs.length
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${site.url}/` },
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${origin}/` },
         { '@type': 'ListItem', position: 2, name: title, item: canonical },
       ],
     }
@@ -60,7 +64,7 @@ const breadcrumb = crumbs.length
     <link rel="canonical" href={canonical} />
     <meta name="theme-color" content="#ececeb" />
     <link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="icon" href="/favicon.jpg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <link rel="sitemap" href="/sitemap.xml" />
@@ -68,15 +72,21 @@ const breadcrumb = crumbs.length
     <meta name="color-scheme" content="light" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Daléas Danse, école de danse à Annecy" />
+    <meta property="og:image:alt" content={ogAlt} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="fr_FR" />
     <meta property="og:site_name" content="Daléas Danse" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(image, site.url).href} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:secure_url" content={ogImage} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogAlt} />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     {breadcrumb && <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />}
     <script is:inline>document.documentElement.classList.replace('no-js', 'js');try{if(localStorage.getItem('dd-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>

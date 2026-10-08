@@ -1,96 +1,168 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
-import SectionHead from '../components/SectionHead.astro';
+import FloatHero from '../components/FloatHero.astro';
+import alain from '../assets/img/stage-alain-gruttadauria.jpg';
+import fred from '../assets/img/stage-frederic-jean-baptiste.jpg';
+import laure from '../assets/img/stage-laure-demolliere.jpg';
+import pascal from '../assets/img/stage-pascal-loussouarn.jpg';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
 import { weekends, summerCamp, site, tel } from '../data/site';
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
-import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
-import gala from '../assets/img/daleasdanse-slide4.jpg';
 
-const shots = [
-  { img: duo, pos: '45% 30%', title: 'Stage d’été', cap: summerCamp.dates },
-  { img: team, pos: '40% 50%', title: 'Modern Jazz & Moderne', cap: 'Intermédiaires, avancés, professionnels' },
-  { img: gala, pos: '60% 40%', title: 'Week-ends', cap: 'Chorégraphes invités' },
-];
+const split = (d: string) => {
+  const m = d.match(/^(.+?)\s+([a-zéèêûô]+)\s+(\d{4})$/i);
+  return m ? { days: m[1], month: m[2], year: m[3] } : { days: d, month: '', year: '' };
+};
+const we = weekends.map((w) => ({ ...w, ...split(w.date) }));
+const ete = summerCamp.dates.match(/(\d+)\D+(\d+)\s+([a-zéû]+)/i);
 ---
 <Base
   title="Stages de danse"
   description="Stages de danse à Annecy : week-ends avec des chorégraphes invités et stage d’été de 4 jours, en modern jazz, moderne et contemporain. Ouverts aux danseurs intermédiaires, avancés et professionnels."
+  image="/og/stages.jpg"
 >
-  <PageHero kicker="Association Danse Découverte" accent="stages de danse" image={duo} pos="50% 28%">
-    Stages<br /><em>chorégraphes invités</em>
-    <Fragment slot="sub">Modern jazz, moderne, contemporain. Ouverts aux danseurs intermédiaires, avancés et professionnels.</Fragment>
-  </PageHero>
+  <FloatHero
+    variant="wall"
+    title="Stages"
+    accent="chorégraphes invités"
+    left="Association Danse Découverte"
+    right="Week-ends & été"
+    photos={[
+      { src: alain, x: 15, y: 33, w: 13, r: -6, d: 0.9, ratio: '3/4', pos: '50% 30%' },
+      { src: laure, x: 84, y: 30, w: 12, r: 5, d: 0.95, ratio: '3/4', pos: '50% 35%' },
+      { src: fred, x: 12, y: 76, w: 11, r: 4, d: 0.5, ratio: '3/4', pos: '50% 30%' },
+      { src: pascal, x: 88, y: 76, w: 11, r: -5, d: 0.55, ratio: '3/4', pos: '50% 35%' },
+      { src: duo, x: 66, y: 88, w: 13, r: 3, d: 0.4, ratio: '4/3', pos: '45% 30%' },
+    ]}
+  />
 
-  <section class="wrap">
-    <div class="shots">
-      {shots.map((s, i) => (
-        <figure class="tile" data-reveal style={`--d:${i * 0.06}s`}>
-          <div class="tile__img">
-            {i === 0 && summerCamp.past && <span class="chip tile__tag">Édition {summerCamp.year} terminée</span>}
-            <Image src={s.img} alt="" widths={[400, 700]} sizes="(max-width: 700px) 100vw, 33vw" style={`object-position:${s.pos}`} loading="eager" />
+  <section class="st wrap">
+    <div class="st__top">
+      <p class="label muted">Association Danse Découverte</p>
+      <p class="label muted">Modern jazz — Moderne — Contemporain</p>
+    </div>
+
+    <div class="posters">
+      {we.map((w) => (
+        <article class="poster poster--ink" data-tilt>
+          <div class="poster__in">
+            <p class="poster__k">Week-end<br />chorégraphe invitée</p>
+            <p class="poster__date">{w.days}</p>
+            <p class="poster__month">{w.month} {w.year}</p>
+            <p class="poster__name">{w.teacher}</p>
+            <div class="poster__foot">
+              <span>{w.style}</span>
+              <span>{w.note}</span>
+            </div>
           </div>
-          <figcaption class="tile__cap label"><p>{s.title}</p><p class="muted">{s.cap}</p></figcaption>
-        </figure>
+        </article>
       ))}
+
+      <article class="poster poster--photo" data-tilt>
+        <Image src={duo} alt="Deux danseuses en mouvement lors du stage d’été" widths={[600, 1000]} sizes="(max-width: 900px) 100vw, 45vw" class="poster__img" />
+        <div class="poster__in">
+          <p class="poster__k">Stage d’été<br />{summerCamp.edition}</p>
+          <p class="poster__date">{ete ? `${ete[1]}—${ete[2]}` : 'Été'}</p>
+          <p class="poster__month">{ete ? ete[3] : ''} {summerCamp.year}</p>
+          <ul class="poster__team">
+            {summerCamp.team.map((g) => <li><span>{g.style}</span><span>{g.names.join(', ')}</span></li>)}
+          </ul>
+          {summerCamp.past && <p class="poster__stamp">Édition terminée</p>}
+        </div>
+      </article>
     </div>
   </section>
 
-  <section class="wrap sec">
-    <SectionHead n="01" label="Week-ends">Chorégraphes<br /><em>invités</em>
-      <Fragment slot="aside">Chaque saison, l’école invite des danseurs et chorégraphes pour un week-end de travail intensif. D’autres invités seront annoncés au fil de l’année.</Fragment>
-    </SectionHead>
-    <ul class="rows we" data-reveal>
-      {weekends.map((w) => (
-        <li>
-          <span class="label muted">{w.style}</span>
-          <span class="rows__big">{w.date}</span>
-          <span class="we__who"><span class="prose">{w.teacher}</span><span class="label muted">{w.note}</span></span>
-        </li>
-      ))}
-    </ul>
-  </section>
-
-  <section class="on-black sec stage">
-    <div class="wrap">
-      <SectionHead n="02" label="Été">{summerCamp.edition}
-        <Fragment slot="aside">
-          <p>Chaque année depuis plus de trente ans, quatre jours de danse au cœur d’Annecy. {summerCamp.dates}.</p>
-          {summerCamp.past
-            ? <p class="label">Les dates de la prochaine édition seront annoncées ici.</p>
-            : <a href={summerCamp.registrationPdf} class="btn" target="_blank" rel="noopener">S’inscrire</a>}
-        </Fragment>
-      </SectionHead>
-      <ul class="rows team" data-reveal>
-        {summerCamp.team.map((g) => (
-          <li>
-            <span class="label muted">{g.style}</span>
-            <span class="rows__big">{g.names.join(', ')}</span>
-          </li>
-        ))}
-      </ul>
+  <section class="st-text wrap sec">
+    <p class="st-text__lead" data-reveal>Chaque saison, l’école invite des danseurs et chorégraphes pour des week-ends de travail intensif. Et chaque été, depuis plus de trente ans, quatre jours de danse au cœur d’Annecy.</p>
+    <div class="st-text__side">
+      <p class="prose muted">Ouverts aux danseurs intermédiaires, avancés et professionnels. D’autres invités seront annoncés au fil de l’année.</p>
+      {summerCamp.past
+        ? <p class="label">Les dates de la prochaine édition seront annoncées ici.</p>
+        : <a href={summerCamp.registrationPdf} class="btn" target="_blank" rel="noopener">S’inscrire au stage d’été</a>}
     </div>
   </section>
 
-  <section class="wrap sec">
-    <SectionHead n="03" label="Contact">Une question<br /><em>sur un stage ?</em></SectionHead>
-    <div class="pcards cols">
-      {site.teachers.map((t, i) => (
-        <a href={tel(t.phone)} class="pcard" data-reveal style={`--d:${i * 0.08}s`}>
-          <span class="label">{t.name}</span>
-          <span class="pcard__tel xl">{t.phone}</span>
-        </a>
+  <section class="wrap st-call">
+    <p class="label muted">Une question sur un stage</p>
+    <div class="st-call__list">
+      {site.teachers.map((t) => (
+        <a href={tel(t.phone)} class="st-call__a"><span class="label">{t.name}</span><span class="st-call__n">{t.phone}</span></a>
       ))}
     </div>
   </section>
 </Base>
 
 <style>
-  .shots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(10px, 1.5vw, 20px); }
-  .shots .tile__img { border-radius: 6px; }
-  .we { --rc: 12rem minmax(0, 1fr) minmax(0, 0.8fr); }
-  .we__who { display: grid; gap: 0.25rem; }
-  .team { --rc: 12rem minmax(0, 1fr); }
-  @media (max-width: 700px) { .shots { grid-template-columns: 1fr; } }
+  .st { padding-top: var(--section); }
+  .st__top { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--ink); }
+
+  .posters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1rem, 3vw, 3rem); padding-top: clamp(2rem, 4vw, 3.5rem); perspective: 1400px; }
+  .poster {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    border-radius: 4px;
+    overflow: hidden;
+    transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+    transition: transform 0.8s var(--ease-expo);
+    box-shadow: 0 40px 70px -40px rgba(20, 22, 23, 0.55);
+  }
+  .poster--ink { background: var(--ink); color: var(--paper); }
+  .poster--photo { color: #fff; background: #111; }
+  .poster :global(.poster__img) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 45% 30%; }
+  .poster--photo::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(7, 7, 7, 0.25), rgba(7, 7, 7, 0.05) 40%, rgba(7, 7, 7, 0.75)); }
+  .poster__in { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; padding: clamp(1.25rem, 2.5vw, 2.25rem); }
+  .poster__k { font-size: 12px; line-height: 1.5; letter-spacing: var(--tr-caps); text-transform: uppercase; }
+  .poster__date { margin-top: auto; font-size: clamp(4rem, 10vw, 10.5rem); font-weight: 200; line-height: 0.82; letter-spacing: var(--tr-display); font-variant-numeric: tabular-nums; }
+  .poster__month { margin-top: 0.5rem; font-size: clamp(1.4rem, 2.6vw, 2.4rem); font-weight: 200; line-height: 1; letter-spacing: var(--tr-h2); text-transform: uppercase; }
+  .poster__name { margin-top: clamp(1.25rem, 3vw, 2.5rem); font-size: clamp(1.3rem, 2.2vw, 2rem); font-weight: 300; line-height: 1.1; text-transform: uppercase; letter-spacing: var(--tr-h3); }
+  .poster__foot { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1rem; padding-top: 0.75rem; border-top: 1px solid currentColor; font-size: 12px; letter-spacing: var(--tr-caps); text-transform: uppercase; opacity: 0.8; }
+  .poster__team { margin-top: clamp(1.25rem, 3vw, 2rem); border-top: 1px solid rgba(255, 255, 255, 0.5); }
+  .poster__team li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.25); font-size: 13px; }
+  .poster__team li span:first-child { font-size: 11px; letter-spacing: var(--tr-caps); text-transform: uppercase; opacity: 0.75; }
+  .poster__stamp {
+    position: absolute;
+    right: clamp(1.25rem, 2.5vw, 2.25rem);
+    top: clamp(1.25rem, 2.5vw, 2.25rem);
+    padding: 6px 10px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 11px;
+    letter-spacing: var(--tr-caps);
+    text-transform: uppercase;
+    rotate: 6deg;
+  }
+
+  .st-text { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 2rem clamp(2rem, 6vw, 6rem); align-items: end; }
+  .st-text__lead { font-size: clamp(1.5rem, 2.8vw, 2.6rem); font-weight: 300; line-height: 1.2; letter-spacing: var(--tr-h2); }
+  .st-text__side { display: grid; gap: 1.25rem; justify-items: start; }
+
+  .st-call { padding-bottom: var(--section); }
+  .st-call__list { display: grid; grid-template-columns: 1fr 1fr; margin-top: 1rem; border-top: 1px solid var(--ink); }
+  .st-call__a { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--line); transition: color 0.3s var(--ease-out); }
+  .st-call__a + .st-call__a { padding-left: clamp(1rem, 3vw, 3rem); border-left: 1px solid var(--line); }
+  .st-call__a:not(:last-child) { padding-right: clamp(1rem, 3vw, 3rem); }
+  .st-call__n { font-size: clamp(1.4rem, 2.6vw, 2.4rem); font-weight: 200; letter-spacing: var(--tr-h2); font-variant-numeric: tabular-nums; }
+  .st-call__a:hover { color: var(--plum); }
+
+  @media (max-width: 900px) {
+    .posters, .st-text, .st-call__list { grid-template-columns: 1fr; }
+    .st-call__a + .st-call__a { padding-left: 0; border-left: 0; }
+  }
 </style>
+
+<script>
+  if (matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((p) => {
+      p.addEventListener('pointermove', (e) => {
+        const r = p.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+        p.style.setProperty('--ry', `${(x * 8).toFixed(2)}deg`);
+        p.style.setProperty('--rx', `${(-y * 6).toFixed(2)}deg`);
+      });
+      p.addEventListener('pointerleave', () => { p.style.removeProperty('--ry'); p.style.removeProperty('--rx'); });
+    });
+  }
+</script>

@@ -1,56 +1,137 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
-import SectionHead from '../components/SectionHead.astro';
+import FloatHero from '../components/FloatHero.astro';
+import creatif from '../assets/img/espace-activites-creatives.jpg';
 import { site, sms } from '../data/site';
 import studio from '../assets/img/espacedaleas-salle1.jpg';
 
 const features = [
-  ['3 studios', 'Pour activités artistiques et de bien-être, yoga, répétitions.'],
+  ['Trois studios', 'Pour activités artistiques et de bien-être, yoga, répétitions.'],
   ['Un grand vestiaire', 'Avec douches et toutes les commodités nécessaires.'],
   ['À l’heure ou au week-end', 'Location hebdomadaire ou ponctuelle, stages de week-end selon disponibilités.'],
+];
+const fields = [
+  { k: 'act', label: 'Activité', opts: ['un cours de yoga', 'un cours de pilates', 'un cours de danse', 'une répétition', 'un stage', 'une autre activité'] },
+  { k: 'freq', label: 'Fréquence', opts: ['chaque semaine', 'ponctuellement', 'le temps d’un week-end'] },
+  { k: 'when', label: 'Moment', opts: ['le matin', 'à midi', 'l’après-midi', 'en soirée', 'le week-end'] },
 ];
 ---
 <Base
   title="Location de salles"
   description="L’Espace Daléas propose ses 3 studios à la location, en plein centre d’Annecy, pour les professeurs de disciplines artistiques et bien-être ainsi que les répétitions."
+  image="/og/location.jpg"
 >
-  <PageHero kicker="Espace Daléas" accent="location de salles" image={studio} pos="50% 50%">
-    Location<br /><em>trois studios à Annecy</em>
-    <Fragment slot="sub">Pour les professeurs de disciplines artistiques et de bien-être, et pour vos répétitions.</Fragment>
-  </PageHero>
+  <FloatHero
+    variant="window"
+    title="Location"
+    accent="trois studios à Annecy"
+    left="Espace Daléas"
+    right="Location de salles"
+    photos={[
+      { src: studio, pos: '40% 50%' },
+    ]}
+  />
 
+  <section class="lo">
+    <div class="lo__media">
+      <Image src={creatif} alt="Activités créatives à l’Espace Daléas" widths={[800, 1400]} sizes="(max-width: 900px) 100vw, 50vw" loading="eager" />
+      <p class="lo__cap label">{site.address.venue} — {site.address.street}, {site.address.city}</p>
+    </div>
 
-  <section class="wrap sec">
-    <SectionHead n="01" label="L’espace">Au cœur<br /><em>d’Annecy</em>
-      <Fragment slot="aside">{site.address.venue}, {site.address.street}, {site.address.zip} {site.address.city}.</Fragment>
-    </SectionHead>
-    <ul class="cols" style="--n:3">
-      {features.map(([k, v], i) => (
-        <li class="card on-paper lit feat" data-reveal style={`--d:${i * 0.06}s`}>
-          <p class="label muted">{String(i + 1).padStart(2, '0')}</p>
-          <p class="h3 feat__k">{k}</p>
-          <p class="prose muted">{v}</p>
-        </li>
-      ))}
-    </ul>
-  </section>
+    <div class="lo__body">
+      <p class="label muted">Location de salles</p>
+      <p class="lo__t"><span class="lo__n">3</span><span>studios<br /><em>à louer</em></span></p>
 
-  <section class="on-black sec stage">
-    <div class="wrap">
-      <SectionHead n="02" label="Réserver">Par écrit,<br /><em>tout simplement</em>
-        <Fragment slot="aside">Précisez l’activité, les créneaux et la fréquence souhaités.</Fragment>
-      </SectionHead>
-      <div class="ctas" data-reveal>
-        <a href={sms(site.rentalPhone)} class="btn">SMS — {site.rentalPhone}</a>
-        <a href={`mailto:${site.email}?subject=Location%20de%20salle`} class="tlink">E-mail</a>
-        <a href={site.links.espace} class="tlink" target="_blank" rel="noopener">espacedaleas.fr</a>
-      </div>
+      <ul class="lo__feats">
+        {features.map(([k, v], i) => (
+          <li data-reveal style={`--d:${i * 0.06}s`}><span class="label muted">{String(i + 1).padStart(2, '0')}</span><span class="lo__fk">{k}</span><span class="prose muted">{v}</span></li>
+        ))}
+      </ul>
+
+      <form class="msg" data-msg data-to={site.rentalPhone} data-mail={site.email} onsubmit="return false">
+        <p class="label muted">Composer sa demande</p>
+        <p class="msg__text">
+          Bonjour, je souhaite louer un studio pour
+          {fields.map((f, i) => (
+            <>
+              <label class="msg__sel">
+                <span class="sr-only">{f.label}</span>
+                <select data-k={f.k}>{f.opts.map((o) => <option>{o}</option>)}</select>
+              </label>{i < fields.length - 1 ? (i === 0 ? ', ' : ', de préférence ') : '.'}
+            </>
+          ))}
+        </p>
+        <div class="ctas msg__send">
+          <a href={sms(site.rentalPhone)} class="btn" data-sms>Envoyer par SMS</a>
+          <a href={`mailto:${site.email}`} class="tlink" data-mail-link>Par e-mail</a>
+          <span class="label muted">{site.rentalPhone}</span>
+        </div>
+      </form>
     </div>
   </section>
 </Base>
 
 <style>
-  .feat { min-height: clamp(220px, 28vh, 300px); }
-  .feat__k { margin-top: auto; }
+  .lo { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); min-height: 100dvh; }
+  .lo__media { position: sticky; top: 0; height: 100dvh; overflow: hidden; }
+  .lo__media :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; }
+  .lo__cap { position: absolute; left: var(--side); bottom: 1.5rem; color: #fff; text-shadow: 0 1px 12px rgba(0, 0, 0, 0.4); }
+
+  .lo__body { display: flex; flex-direction: column; gap: clamp(2rem, 5vh, 3.5rem); padding: var(--section) var(--side) var(--section) clamp(2rem, 5vw, 5rem); }
+  .lo__t { display: flex; align-items: flex-end; gap: 0.15em; font-size: clamp(2.4rem, 5vw, 5rem); font-weight: 200; line-height: 0.95; letter-spacing: var(--tr-display); text-transform: uppercase; }
+  .lo__t em { font-weight: 300; }
+  .lo__n { font-size: 3.4em; line-height: 0.72; letter-spacing: -0.06em; font-variant-numeric: tabular-nums; }
+
+  .lo__feats { border-top: 1px solid var(--ink); }
+  .lo__feats li { display: grid; grid-template-columns: 2.5rem minmax(0, 1fr); gap: 0.25rem 1rem; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  .lo__feats li .prose { grid-column: 2; }
+  .lo__fk { font-size: clamp(1.1rem, 1.6vw, 1.4rem); font-weight: 300; text-transform: uppercase; letter-spacing: var(--tr-h3); }
+
+  .msg { display: grid; gap: 1.25rem; padding: clamp(1.25rem, 2.5vw, 2rem); border-radius: 4px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); }
+  .msg__text { font-size: clamp(1.3rem, 2.1vw, 1.9rem); font-weight: 300; line-height: 1.6; letter-spacing: var(--tr-lead); }
+  .msg__sel { position: relative; display: inline-block; }
+  .msg__sel select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0 1.1em 0 0;
+    border: 0;
+    border-bottom: 1px solid currentColor;
+    border-radius: 0;
+    background: transparent;
+    color: var(--fg);
+    font: inherit;
+    letter-spacing: inherit;
+    cursor: pointer;
+    transition: color 0.3s var(--ease-out);
+  }
+  .msg__sel::after { content: ''; position: absolute; right: 0.15em; top: 50%; width: 0.38em; height: 0.38em; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor; transform: translateY(-75%) rotate(45deg); pointer-events: none; }
+  .msg__sel select:hover { color: var(--plum); }
+  .msg__sel select:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+  .msg__sel option { color: #141617; }
+  .msg__send { margin-top: 0.5rem; }
+
+  @media (max-width: 900px) {
+    .lo { grid-template-columns: 1fr; }
+    .lo__media { position: relative; height: 60vh; }
+    .lo__body { padding: 3rem var(--side) var(--section); }
+  }
 </style>
+
+<script>
+  const form = document.querySelector<HTMLElement>('[data-msg]');
+  if (form) {
+    const selects = [...form.querySelectorAll<HTMLSelectElement>('select')];
+    const smsLink = form.querySelector<HTMLAnchorElement>('[data-sms]')!;
+    const mailLink = form.querySelector<HTMLAnchorElement>('[data-mail-link]')!;
+    const to = `+33${(form.dataset.to || '').replace(/\s/g, '').slice(1)}`;
+    const build = () => {
+      const v = Object.fromEntries(selects.map((s) => [s.dataset.k, s.value]));
+      const text = `Bonjour, je souhaite louer un studio de l’Espace Daléas pour ${v.act}, ${v.freq}, de préférence ${v.when}. Merci de me dire quelles sont vos disponibilités.`;
+      smsLink.href = `sms:${to}?&body=${encodeURIComponent(text)}`;
+      mailLink.href = `mailto:${form.dataset.mail}?subject=${encodeURIComponent('Location de studio')}&body=${encodeURIComponent(text)}`;
+    };
+    selects.forEach((s) => s.addEventListener('change', build));
+    build();
+  }
+</script>

@@ -1,5 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
+import FloatHero from '../components/FloatHero.astro';
+import enfants from '../assets/img/cours-enfants-bleu.jpg';
+import rouge from '../assets/img/cours-modern-jazz-rouge.jpg';
+import studioClass from '../assets/img/cours-studio-nb.jpg';
+import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
 import { schedule, days, season } from '../data/site';
 
 const toMin = (t: string) => {
@@ -28,13 +34,29 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <Base
   title="Horaires des cours"
   description={`Horaires ${season} des cours de danse Daléas à Annecy : éveil rythmique, initiation jazz, jazz ados et adultes, moderne, classe chorégraphique.`}
+  image="/og/horaires.jpg"
 >
+  <FloatHero
+    variant="days"
+    cols={['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']}
+    title="Horaires"
+    accent={`${total} cours par semaine`}
+    left={`Planning ${season}`}
+    right="Du lundi au vendredi"
+    photos={[
+      { src: enfants, y: 36, d: 0.6, ratio: '3/4', pos: '60% 50%' },
+      { src: rouge, y: 64, d: 0.9, ratio: '3/4', pos: '40% 45%' },
+      { src: studioClass, y: 40, d: 0.5, ratio: '3/4', pos: '75% 50%' },
+      { src: jazz, y: 66, d: 0.8, ratio: '3/4', pos: '50% 50%' },
+      { src: kids, y: 42, d: 0.7, ratio: '3/4', pos: '55% 40%' },
+    ]}
+  />
+
   <section class="hh wrap">
     <div class="hh__top">
-      <p class="label muted">Planning {season}</p>
+      <p class="label muted">Le planning</p>
       <p class="label muted" data-today-label>Du lundi au vendredi</p>
     </div>
-    <h1 class="hh__t" data-reveal>Horaires</h1>
     <div class="hh__row">
       <p class="lead">{total} cours par semaine, de l’éveil rythmique dès 2 ans ½ aux classes avancées.</p>
       <div class="hh__filters" role="group" aria-label="Mettre en avant une discipline">
@@ -104,7 +126,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 </Base>
 
 <style>
-  .hh { padding-top: clamp(7.5rem, 15vh, 10rem); }
+  .hh { padding-top: var(--section); }
+  .hh__top + .hh__row { margin-top: 1rem; }
   .hh__top { display: flex; justify-content: space-between; gap: 1rem; }
   .hh__t {
     margin: clamp(1rem, 2vw, 2rem) 0 clamp(1.5rem, 3vw, 2.5rem) -0.06em;

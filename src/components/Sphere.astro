@@ -1,13 +1,26 @@
 ---
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
-import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
-import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
 import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
 import studio from '../assets/img/espacedaleas-salle1.jpg';
-import gala from '../assets/img/daleasdanse-slide4.jpg';
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
 import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+import enfants from '../assets/img/cours-enfants-bleu.jpg';
+import studioClass from '../assets/img/cours-studio-nb.jpg';
+import ados from '../assets/img/cours-ados-nb.jpg';
+import adultes from '../assets/img/cours-adultes-nb.jpg';
+import creatif from '../assets/img/espace-activites-creatives.jpg';
+import alain from '../assets/img/stage-alain-gruttadauria.jpg';
+import fred from '../assets/img/stage-frederic-jean-baptiste.jpg';
+import laure from '../assets/img/stage-laure-demolliere.jpg';
+import pascal from '../assets/img/stage-pascal-loussouarn.jpg';
+import coursEcole from '../assets/img/cours-ecole-adultes.jpg';
+import eveil from '../assets/img/cours-eveil.jpg';
+import rouge from '../assets/img/cours-modern-jazz-rouge.jpg';
+import sp1 from '../assets/img/spectacle-1.jpg';
+import sp2 from '../assets/img/spectacle-2.jpg';
+import sp3 from '../assets/img/spectacle-3.jpg';
+import sp5 from '../assets/img/spectacle-5.jpg';
 
 const base = import.meta.env.BASE_URL;
 
@@ -15,26 +28,26 @@ type T = { src: ImageMetadata; r: string; pos: string; title: string; cap: strin
 const H = 'horaires/', S = 'stages/', Y = 'yoga-annecy/', L = 'espace-daleas-location-de-salles-annecy/', C = 'contact-tel/';
 
 const all: T[] = [
-  { src: kids, r: '3/4', pos: '50% 40%', title: 'Initiation jazz', cap: '6 – 9 ans', href: H },
-  { src: duo, r: '1/1', pos: '45% 30%', title: 'Stages', cap: 'Chorégraphes invités', href: S },
-  { src: jazz, r: '3/4', pos: '50% 50%', title: 'Jazz ados', cap: 'Du 1er au 3e degré', href: H },
+  { src: sp1, r: '16/10', pos: '50% 40%', title: 'Spectacle', cap: 'Toutes les classes sur scène', href: H },
+  { src: eveil, r: '3/4', pos: '45% 40%', title: 'Éveil rythmique', cap: '2 ans ½ – 5 ans', href: H },
+  { src: alain, r: '3/4', pos: '50% 30%', title: 'Alain Gruttadauria', cap: 'Modern Jazz, stage d’été', href: S },
   { src: studio, r: '4/3', pos: '30% 50%', title: 'Espace Daléas', cap: 'Trois studios à louer', href: L },
+  { src: rouge, r: '3/4', pos: '40% 45%', title: 'Modern’Jazz', cap: 'Les plus jeunes', href: H },
+  { src: sp2, r: '1/1', pos: '50% 45%', title: 'Spectacle', cap: 'Fin d’année', href: H },
   { src: yoga, r: '3/4', pos: '50% 35%', title: 'Yoga', cap: 'Viniyoga avec Maryse', href: Y },
-  { src: gala, r: '16/10', pos: '50% 40%', title: 'Spectacle', cap: 'Toutes les classes sur scène', href: H },
+  { src: ados, r: '4/3', pos: '55% 45%', title: 'Jazz ados', cap: 'Du 1er au 3e degré', href: H },
+  { src: laure, r: '3/4', pos: '50% 35%', title: 'Laure Demollière', cap: 'Moderne, week-end', href: S },
   { src: team, r: '4/5', pos: '35% 50%', title: 'Diane & Delphine', cap: 'Diplômées d’État en jazz', href: C },
-  { src: kids, r: '1/1', pos: '70% 20%', title: 'Éveil rythmique', cap: '2 ans ½ – 5 ans', href: H },
-  { src: duo, r: '3/4', pos: '58% 20%', title: 'Moderne', cap: 'Ados & adultes', href: H },
-  { src: studio, r: '3/4', pos: '72% 50%', title: 'Location', cap: 'Centre-ville d’Annecy', href: L },
-  { src: jazz, r: '1/1', pos: '80% 30%', title: 'Jazz adultes', cap: 'Débutants à avancés', href: H },
-  { src: gala, r: '1/1', pos: '25% 30%', title: 'Classe chorégraphique', cap: 'Inter & avancés', href: H },
-  { src: team, r: '1/1', pos: '62% 40%', title: 'Contact', cap: 'Par téléphone', href: C },
-  { src: yoga, r: '1/1', pos: '50% 80%', title: 'Yoga', cap: 'Matin, midi, soir', href: Y },
-  { src: kids, r: '4/5', pos: '20% 60%', title: 'Initiation jazz', cap: 'Les premières bases', href: H },
-  { src: duo, r: '4/3', pos: '50% 50%', title: 'Stage d’été', cap: '32e édition', href: S },
-  { src: jazz, r: '4/5', pos: '20% 70%', title: 'Jazz ados', cap: 'Classe junior', href: H },
-  { src: studio, r: '1/1', pos: '55% 60%', title: 'Espace Daléas', cap: 'Vestiaire & douches', href: L },
-  { src: gala, r: '3/4', pos: '78% 40%', title: 'Spectacle', cap: 'Fin d’année', href: H },
-  { src: team, r: '3/4', pos: '70% 50%', title: 'L’équipe', cap: 'Trois générations', href: C },
+  { src: sp3, r: '16/10', pos: '50% 50%', title: 'Spectacle', cap: 'Classe chorégraphique', href: H },
+  { src: enfants, r: '1/1', pos: '60% 50%', title: 'Initiation jazz', cap: '6 – 9 ans', href: H },
+  { src: creatif, r: '4/3', pos: '50% 50%', title: 'Activités créatives', cap: 'À l’Espace Daléas', href: L },
+  { src: fred, r: '3/4', pos: '50% 30%', title: 'Frédéric Jean-Baptiste', cap: 'Organic Dance Movement', href: S },
+  { src: adultes, r: '1/1', pos: '40% 40%', title: 'Moderne', cap: 'Ados & adultes', href: H },
+  { src: duo, r: '4/3', pos: '45% 30%', title: 'Stage d’été', cap: '32e édition', href: S },
+  { src: coursEcole, r: '3/4', pos: '35% 50%', title: 'Jazz adultes', cap: 'Débutants à avancés', href: H },
+  { src: sp5, r: '1/1', pos: '45% 60%', title: 'Spectacle', cap: 'Sur la scène', href: H },
+  { src: pascal, r: '3/4', pos: '50% 35%', title: 'Pascal Loussouarn', cap: 'Chorégraphe invité', href: S },
+  { src: studioClass, r: '4/3', pos: '75% 50%', title: 'En studio', cap: 'Cours réguliers', href: H },
 ];
 const tiles = all;
 const groupOf = (t: T) =>

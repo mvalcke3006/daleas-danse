@@ -1,17 +1,19 @@
 ---
 import { getImage } from 'astro:assets';
 import fullLogo from '../assets/img/logo-emblem.png';
-import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
-import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
-import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
 import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
-import studio from '../assets/img/espacedaleas-salle1.jpg';
 import gala from '../assets/img/daleasdanse-slide4.jpg';
 import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
+import eveil from '../assets/img/cours-eveil.jpg';
+import studioClass from '../assets/img/cours-studio-nb.jpg';
+import sp2 from '../assets/img/spectacle-2.jpg';
+import sp5 from '../assets/img/spectacle-5.jpg';
+import alain from '../assets/img/stage-alain-gruttadauria.jpg';
+import creatif from '../assets/img/espace-activites-creatives.jpg';
 import { navigation, site, tel } from '../data/site';
 
 const path = Astro.url.pathname;
-const previews = [gala, team, jazz, kids, duo, yoga, studio, gala, team];
+const previews = [gala, eveil, studioClass, sp2, alain, yoga, creatif, sp5, team];
 const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640, format: 'webp' })));
 const mark = await getImage({ src: fullLogo, width: 164, format: 'webp' });
 const pad = (n: number) => String(n).padStart(2, '0');

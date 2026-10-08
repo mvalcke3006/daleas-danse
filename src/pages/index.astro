@@ -5,13 +5,16 @@ import HeroFloat from '../components/HeroFloat.astro';
 import IndexList from '../components/IndexList.astro';
 import { announcement, schedule, weekends, singleClass } from '../data/site';
 
-import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
 import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
 import studio from '../assets/img/espacedaleas-salle1.jpg';
 import gala from '../assets/img/daleasdanse-slide4.jpg';
 import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
-import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
-import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
+import eveil from '../assets/img/cours-eveil.jpg';
+import studioClass from '../assets/img/cours-studio-nb.jpg';
+import sp2 from '../assets/img/spectacle-2.jpg';
+import sp5 from '../assets/img/spectacle-5.jpg';
+import alain from '../assets/img/stage-alain-gruttadauria.jpg';
+import creatif from '../assets/img/espace-activites-creatives.jpg';
 
 const next = weekends[0];
 const total = schedule.reduce((n, d) => n + d.slots.length, 0);
@@ -78,14 +81,14 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
       </div>
       <IndexList
         items={[
-          { label: 'L’école', meta: 'Depuis 1965', href: '/ecole/', img: team, pos: '40% 45%' },
-          { label: 'Horaires', meta: `${total} cours par semaine`, href: '/horaires/', img: jazz },
-          { label: 'Tarifs', meta: `Dès ${singleClass} € le cours`, href: '/daleas-danse-annecy-tarifs/', img: kids },
-          { label: 'Stages', meta: next ? `Prochain : ${next.date}` : 'Chorégraphes invités', href: '/stages/', img: duo, pos: '45% 30%' },
+          { label: 'L’école', meta: 'Depuis 1965', href: '/ecole/', img: eveil, pos: '45% 40%' },
+          { label: 'Horaires', meta: `${total} cours par semaine`, href: '/horaires/', img: studioClass, pos: '75% 50%' },
+          { label: 'Tarifs', meta: `Dès ${singleClass} € le cours`, href: '/daleas-danse-annecy-tarifs/', img: sp2 },
+          { label: 'Stages', meta: next ? `Prochain : ${next.date}` : 'Chorégraphes invités', href: '/stages/', img: alain, pos: '50% 30%' },
           { label: 'Yoga', meta: 'Viniyoga avec Maryse', href: '/yoga-annecy/', img: yoga },
-          { label: 'Location', meta: 'Trois studios', href: '/espace-daleas-location-de-salles-annecy/', img: studio },
-          { label: 'Galerie', meta: 'La sphère en 3D', href: '/galerie/', img: gala },
-          { label: 'Contact', meta: 'Diane & Delphine', href: '/contact-tel/', img: team, pos: '60% 45%' },
+          { label: 'Location', meta: 'Trois studios', href: '/espace-daleas-location-de-salles-annecy/', img: creatif },
+          { label: 'Galerie', meta: 'La sphère en 3D', href: '/galerie/', img: sp5 },
+          { label: 'Contact', meta: 'Diane & Delphine', href: '/contact-tel/', img: team, pos: '40% 45%' },
         ]}
       />
     </div>

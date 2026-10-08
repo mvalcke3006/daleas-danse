@@ -1,7 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import PageHero from '../components/PageHero.astro';
-import SectionHead from '../components/SectionHead.astro';
+import FloatHero from '../components/FloatHero.astro';
 import { site } from '../data/site';
 import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
 
@@ -15,39 +15,44 @@ const path = [
 <Base
   title="Cours de yoga à Annecy"
   description="Maryse Daléas enseigne le Viniyoga depuis 1967 et continue de partager son savoir dans ses cours dispensés à l’Espace Daléas d’Annecy."
+  image="/og/yoga.jpg"
 >
-  <PageHero kicker="Viniyoga avec" accent="Maryse Daléas" image={yoga} pos="50% 35%">
-    Yoga<br /><em>le corps, le souffle</em>
-    <Fragment slot="sub">Séances le matin, à midi, l’après-midi ou le soir, à l’Espace Daléas.</Fragment>
-  </PageHero>
-
-  <section class="wrap sec">
-    <SectionHead n="01" label="La pratique">Trouver<br /><em>un bon contrôle de soi</em></SectionHead>
-    <div class="cols">
-      <p class="lead" data-reveal>
-        Le yoga est un ensemble de techniques qui, par un travail sur le corps, sur le souffle et sur la pensée,
-        avec l’aide de la relaxation, permet de trouver un bon contrôle de soi.
-      </p>
-      <p class="prose muted" data-reveal style="--d:.1s">
-        Un état de bien-être, ou tout simplement une meilleure santé. Jeunes, moins jeunes, souples ou raides :
-        venez participer à une séance.
-      </p>
+  <FloatHero
+    title="Yoga"
+    left="Viniyoga"
+    right="Avec Maryse Daléas"
+    variant="breath"
+    photos={[
+      { src: yoga, x: 80, y: 64, w: 17, r: 3, d: 0.9, ratio: '4/5', pos: '50% 35%' },
+    ]}
+  >
+    <div class="br">
+      <div class="br__circle" aria-hidden="true">
+        <span class="br__ring"></span>
+        <span class="br__ring br__ring--2"></span>
+        <span class="br__word br__word--in">Inspirez</span>
+        <span class="br__word br__word--out">Expirez</span>
+      </div>
+      <h1 class="br__t">Yoga</h1>
     </div>
-  </section>
+  </FloatHero>
 
-  <section class="on-black sec stage">
-    <div class="wrap">
-      <SectionHead n="02" label="Parcours">Maryse Daléas,<br /><em>depuis 1967</em></SectionHead>
-      <ul class="rows path" data-reveal>
-        {path.map(([k, v], i) => (
-          <li>
-            <span class="label muted">{String(i + 1).padStart(2, '0')}</span>
-            <span class="rows__big">{k}</span>
-            <span class="prose muted">{v}</span>
-          </li>
+  <section class="yo wrap sec">
+    <div class="yo__photo" data-clip>
+      <Image src={yoga} alt="Maryse Daléas assise sur un tapis de yoga" widths={[500, 900]} sizes="(max-width: 900px) 100vw, 40vw" />
+    </div>
+    <div class="yo__text">
+      <p class="label muted">La pratique</p>
+      <p class="yo__lead" data-reveal>Un ensemble de techniques qui, par un travail sur le corps, le souffle et la pensée, avec l’aide de la relaxation, permet de trouver un bon contrôle de soi.</p>
+      <p class="prose muted" data-reveal>Un état de bien-être, ou tout simplement une meilleure santé. Jeunes, moins jeunes, souples ou raides : venez participer à une séance.</p>
+
+      <p class="label muted yo__h">Le parcours de Maryse</p>
+      <ol class="yo__path">
+        {path.map(([k, v]) => (
+          <li data-reveal><span class="yo__k">{k}</span><span class="prose muted">{v}</span></li>
         ))}
-      </ul>
-      <div class="ctas path__cta" data-reveal>
+      </ol>
+      <div class="ctas yo__cta">
         <a href={site.links.yoga} class="btn" target="_blank" rel="noopener">Horaires & infos yoga</a>
       </div>
     </div>
@@ -55,5 +60,66 @@ const path = [
 </Base>
 
 <style>
-  .path__cta { margin-top: clamp(3rem, 6vw, 5rem); }
+  .br { position: relative; display: grid; place-items: center; }
+  .br__circle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: min(66vmin, 600px);
+    aspect-ratio: 1;
+    translate: -50% -50%;
+    display: grid;
+    place-items: end center;
+    padding-bottom: 14%;
+  }
+  .br__ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px solid var(--fg);
+    animation: breathe 10s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  }
+  .br__ring--2 { border-color: var(--line); animation-delay: -0.6s; inset: -6%; }
+  @keyframes breathe {
+    0% { transform: scale(0.42); }
+    40% { transform: scale(1); }
+    48% { transform: scale(1); }
+    100% { transform: scale(0.42); }
+  }
+  .br__word {
+    position: absolute;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: 10s linear infinite;
+  }
+  .br__word--in { animation-name: w-in; }
+  .br__word--out { animation-name: w-out; }
+  @keyframes w-in { 0%, 36% { opacity: 1; } 42%, 100% { opacity: 0; } }
+  @keyframes w-out { 0%, 44% { opacity: 0; } 50%, 94% { opacity: 1; } 100% { opacity: 0; } }
+
+  .br__t { position: relative; font-size: clamp(3.2rem, 12.5vw, 13.5rem); font-weight: 200; line-height: 0.86; letter-spacing: var(--tr-display); text-transform: uppercase; }
+
+  .yo { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 2.5rem clamp(2rem, 6vw, 6rem); align-items: start; }
+  .yo__photo { position: sticky; top: 7rem; aspect-ratio: 4 / 5; border-radius: 4px; overflow: hidden; }
+  .yo__photo :global(img) { width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+  .yo__text { display: grid; gap: 1.25rem; }
+  .yo__lead { font-size: clamp(1.4rem, 2.4vw, 2.2rem); font-weight: 300; line-height: 1.25; letter-spacing: var(--tr-h2); }
+  .yo__h { margin-top: 2rem; }
+  .yo__path { border-top: 1px solid var(--ink); }
+  .yo__path li { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 0.4rem 1.5rem; align-items: baseline; padding: 1rem 0; border-bottom: 1px solid var(--line); }
+  .yo__k { font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 300; text-transform: uppercase; letter-spacing: var(--tr-h3); }
+  .yo__cta { margin-top: 1.5rem; }
+
+  @media (max-width: 900px) {
+    .yo { grid-template-columns: 1fr; }
+    .yo__photo { position: relative; top: 0; }
+    .yo__path li { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .br__ring { animation: none; transform: scale(0.8); }
+    .br__word { animation: none; }
+    .br__word--in { opacity: 1; }
+  }
 </style>
