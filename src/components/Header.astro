@@ -11,46 +11,65 @@ import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
 import { navigation, site, tel } from '../data/site';
 
 const path = Astro.url.pathname;
-const previews = [team, jazz, kids, duo, yoga, studio, gala, team];
+const previews = [gala, team, jazz, kids, duo, yoga, studio, gala, team];
 const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640, format: 'webp' })));
 const mark = await getImage({ src: fullLogo, width: 164, format: 'webp' });
+const pad = (n: number) => String(n).padStart(2, '0');
+const quick = navigation.filter((n) => ['/ecole/', '/horaires/', '/stages/', '/contact-tel/'].includes(n.href));
+const links = [{ label: 'Accueil', href: '/' }, ...navigation];
+const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
-<header class="nav">
-  <a href="/" class="nav__brand lit" aria-label="Daléas Danse, accueil" data-mark>
-    <span class="nav__mark" data-mark-in><img src={mark.src} alt="" width="164" height="236" /></span>
+<header class="nav" data-nav>
+  <a href="/" class="nav__brand" aria-label="Daléas Danse, accueil">
+    <img src={mark.src} alt="" width="164" height="236" />
   </a>
-  <div class="nav__right">
-    <a href="/horaires/" class="nav__pill nav__quick">Horaires</a>
-    <button class="nav__pill nav__menu" aria-expanded="false" aria-controls="menu" data-menu-btn>
-      <span data-menu-txt>Menu</span>
-      <span class="nav__dots" aria-hidden="true"><i></i><i></i></span>
-    </button>
-  </div>
+
+  <p class="nav__meta" aria-hidden="true">
+    <span>École de danse</span>
+    <span>Annecy <span class="nav__clock" data-clock>—</span></span>
+  </p>
+
+  <nav class="nav__links" aria-label="Accès rapide">
+    {quick.map((n, i) => (
+      <a href={n.href} class:list={['nav__link', isCurrent(n.href) && 'is-current']} aria-current={isCurrent(n.href) ? 'page' : undefined}>
+        <sup>{pad(i + 1)}</sup><span class="roll"><span class="roll__in" data-t={n.label}>{n.label}</span></span>
+      </a>
+    ))}
+  </nav>
+
+  <button class="nav__theme" data-theme-btn aria-label="Passer en thème sombre">
+    <span class="nav__dot" aria-hidden="true"></span>
+    <span class="roll"><span class="roll__in" data-t="Sombre" data-theme-t>Sombre</span></span>
+  </button>
+
+  <button class="nav__menu" aria-expanded="false" aria-controls="menu" data-menu-btn>
+    <span class="roll"><span class="roll__in" data-t="Menu" data-menu-txt>Menu</span></span>
+    <span class="nav__plus" aria-hidden="true"></span>
+  </button>
 </header>
 
 <div class="menu on-black" id="menu" data-menu aria-hidden="true">
   <div class="menu__inner">
     <nav class="menu__nav" aria-label="Menu principal">
-      <a href="/" class:list={['menu__link', path === '/' && 'is-current']} style="--i:0" data-preview="0">Accueil</a>
-      {navigation.map((n, i) => (
+      {links.map((n, i) => (
         <a
           href={n.href}
-          class:list={['menu__link', path.startsWith(n.href) && 'is-current']}
-          style={`--i:${i + 1}`}
+          class:list={['menu__link', isCurrent(n.href) && 'is-current']}
+          style={`--i:${i}`}
           data-preview={i}
-          aria-current={path.startsWith(n.href) ? 'page' : undefined}
-        >{n.label}</a>
+          aria-current={isCurrent(n.href) ? 'page' : undefined}
+        ><sup>{pad(i)}</sup>{n.label}</a>
       ))}
     </nav>
-    <div class="menu__side">
-      <div class="menu__preview" aria-hidden="true">
-        {shots.map((s, i) => <img src={s.src} alt="" loading="lazy" class:list={[i === 0 && 'is-on']} data-shot={i} />)}
-      </div>
-      <div class="menu__info">
-        <p class="kicker">Nous joindre</p>
-        {site.teachers.map((t) => <a href={tel(t.phone)} class="menu__tel">{t.name} — {t.phone}</a>)}
-        <p class="muted">{site.address.street}, {site.address.city}</p>
-      </div>
+    <div class="menu__preview" aria-hidden="true">
+      {shots.map((s, i) => <img src={s.src} alt="" loading="lazy" class:list={[i === 0 && 'is-on']} data-shot={i} />)}
+    </div>
+    <div class="menu__foot">
+      {site.teachers.map((t) => (
+        <a href={tel(t.phone)} class="menu__info"><span class="label muted">{t.name}</span><span>{t.phone}</span></a>
+      ))}
+      <p class="menu__info"><span class="label muted">Adresse</span><span>{site.address.street}, {site.address.city}</span></p>
+      <p class="menu__info"><span class="label muted">Suivre</span><span>{site.socials.map((s, i) => <>{i > 0 && ' — '}<a href={s.href} target="_blank" rel="noopener">{s.label}</a></>)}</span></p>
     </div>
   </div>
 </div>
@@ -60,103 +79,131 @@ const mark = await getImage({ src: fullLogo, width: 164, format: 'webp' });
     position: fixed;
     inset: 0 0 auto 0;
     z-index: 60;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: clamp(12px, 2vw, 22px) max(var(--side), calc((100vw - var(--max)) / 2 + var(--side))) 0;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    align-items: start;
+    padding: clamp(14px, 2vw, 24px) max(var(--side), calc((100vw - var(--max)) / 2 + var(--side))) 0;
+    color: #fff;
+    mix-blend-mode: difference;
     pointer-events: none;
     transition: transform 0.7s var(--ease-expo);
   }
-  .nav.is-hidden { transform: translateY(-140%); }
-  .nav__right { display: flex; gap: 8px; }
-  .nav__pill {
-    pointer-events: auto;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    height: 48px;
-    padding: 0 20px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.92);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-    box-shadow: 0 0 0 1px rgba(20, 22, 23, 0.06), 0 12px 30px -18px rgba(20, 22, 23, 0.4);
-    color: var(--ink);
-    font-size: 15px;
-    font-weight: 400; text-transform: uppercase;
-    transition: transform 0.4s var(--ease-out), translate 0.6s var(--ease-expo), background-color 0.3s var(--ease-out), color 0.3s var(--ease-out);
+  .nav.is-hidden { transform: translateY(-160%); }
+  .nav > * { pointer-events: auto; }
+
+  .nav__brand { grid-column: 1 / span 2; justify-self: start; display: block; width: fit-content; }
+  .nav__brand img {
+    display: block;
+    height: clamp(52px, 5vw, 68px);
+    width: auto;
+    filter: invert(1);
+    transition: transform 0.8s var(--ease-expo);
   }
-  .nav__pill:active { transform: scale(0.96); }
-  .nav__brand {
-    pointer-events: auto;
-    display: grid;
-    place-items: center;
-    width: clamp(64px, 6vw, 84px);
-    height: clamp(64px, 6vw, 84px);
-    overflow: hidden;
+  .nav__brand:hover img { transform: rotate(-8deg) scale(1.04); }
+
+  .nav__meta,
+  .nav__link,
+  .nav__theme,
+  .nav__menu {
+    font-size: 12px;
+    line-height: 1.35;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: var(--tr-caps);
+    font-feature-settings: 'case' 1, 'tnum' 1;
+  }
+  .nav__meta { grid-column: 3 / span 3; display: grid; padding-top: 2px; pointer-events: none; }
+  .nav__clock { font-variant-numeric: tabular-nums; }
+  .nav__clock :global(i) { font-style: normal; animation: tick 2s steps(1) infinite; }
+  @keyframes tick { 50% { opacity: 0.2; } }
+
+  .nav__links { grid-column: 6 / span 4; display: flex; flex-wrap: wrap; gap: 4px clamp(1rem, 2.4vw, 2.5rem); padding-top: 2px; }
+  .nav__link { display: inline-flex; align-items: flex-start; gap: 4px; }
+  .nav__link sup { font-size: 8.5px; letter-spacing: 0.04em; line-height: 1; opacity: 0.55; transform: translateY(1px); }
+  .nav__link.is-current .roll__in { text-decoration: line-through; text-decoration-thickness: 1px; }
+
+  .nav__theme { grid-column: 10 / span 1; justify-self: end; display: inline-flex; align-items: center; gap: 8px; padding-top: 2px; }
+  .nav__dot {
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.94);
-    -webkit-backdrop-filter: blur(14px);
-    backdrop-filter: blur(14px);
-    perspective: 400px;
-    transition: scale 0.5s var(--ease-expo);
+    box-shadow: inset 0 0 0 1px currentColor;
+    background: linear-gradient(90deg, currentColor 50%, transparent 50%);
+    transition: transform 0.8s var(--ease-expo);
   }
-  .nav__brand:hover { scale: 1.06; }
-  .nav__mark { display: block; height: calc(clamp(64px, 6vw, 84px) * 0.8); aspect-ratio: 164 / 236; transition: transform 0.6s var(--ease-expo); will-change: transform; }
-  .nav__mark img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(calc(var(--shx, 0px) * 0.15) calc(var(--shy, 22px) * 0.12) 3px rgba(20, 22, 23, 0.3)); }
-  .nav__quick:hover { background: var(--plum); color: var(--white); }
-  .nav__menu { background: var(--ink); color: var(--white); padding-right: 16px; }
-  .nav__menu:hover { background: var(--plum); }
-  .nav__dots { display: grid; gap: 4px; width: 16px; }
-  .nav__dots i { display: block; height: 1.5px; background: currentColor; transition: transform 0.5s var(--ease-expo); }
-  .nav__menu[aria-expanded='true'] .nav__dots i:first-child { transform: translateY(2.75px) rotate(45deg); }
-  .nav__menu[aria-expanded='true'] .nav__dots i:last-child { transform: translateY(-2.75px) rotate(-45deg); }
-  .nav__menu[aria-expanded='true'] { background: var(--white); color: var(--ink); }
+  .nav__theme:hover .nav__dot { transform: rotate(180deg); }
+  :global(html[data-theme='dark']) .nav__dot { transform: rotate(180deg); }
+  :global(html[data-theme='dark']) .nav__theme:hover .nav__dot { transform: rotate(360deg); }
+  .nav__menu { grid-column: 11 / span 2; justify-self: end; display: inline-flex; align-items: center; gap: 10px; padding-top: 2px; }
+  .nav__plus { position: relative; width: 11px; height: 11px; transition: transform 0.7s var(--ease-expo); }
+  .nav__plus::before, .nav__plus::after { content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: currentColor; }
+  .nav__plus::after { transform: rotate(90deg); }
+  .nav__menu:hover .nav__plus { transform: rotate(90deg); }
+  .nav__menu[aria-expanded='true'] .nav__plus { transform: rotate(45deg); }
+
+  .roll { display: inline-block; overflow: hidden; vertical-align: top; height: 1.35em; }
+  .roll__in { display: block; position: relative; transition: transform 0.6s var(--ease-expo); }
+  .roll__in::after { content: attr(data-t); position: absolute; left: 0; top: 100%; }
+  a:hover .roll__in, button:hover .roll__in { transform: translateY(-100%); }
 
   .menu {
     position: fixed;
     inset: 0;
     z-index: 55;
     visibility: hidden;
-    clip-path: circle(0% at calc(100% - 60px) 40px);
+    clip-path: inset(0 0 100% 0);
     transition: clip-path 0.9s var(--ease-expo), visibility 0s linear 0.9s;
   }
-  .menu.is-open { visibility: visible; clip-path: circle(150% at calc(100% - 60px) 40px); transition: clip-path 0.9s var(--ease-expo); }
+  .menu.is-open { visibility: visible; clip-path: inset(0 0 0 0); transition: clip-path 0.9s var(--ease-expo); }
   .menu__inner {
     height: 100dvh;
     display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: clamp(2rem, 5vw, 5rem);
-    max-width: 1600px;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: 1fr auto;
+    column-gap: clamp(1rem, 2vw, 2rem);
+    max-width: var(--max);
     margin-inline: auto;
-    padding: clamp(6rem, 12vh, 8rem) var(--side) clamp(1.5rem, 4vh, 2.5rem);
+    padding: clamp(6.5rem, 14vh, 9rem) var(--side) clamp(1.25rem, 3vh, 2rem);
     overflow-y: auto;
   }
-  .menu__nav { display: flex; flex-direction: column; justify-content: safe center; }
+  .menu__nav { grid-column: 3 / span 6; display: flex; flex-direction: column; justify-content: safe center; }
   .menu__link {
-    font-family: var(--text);
-    font-weight: 200;
-    letter-spacing: -0.03em;
-    font-size: clamp(2rem, min(6vw, 7vh), 5.6rem);
-    line-height: 1.02;
-    text-transform: uppercase;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
     width: fit-content;
+    font-weight: 200;
+    font-size: clamp(2rem, min(5.6vw, 6.6vh), 5.4rem);
+    line-height: 1.04;
+    letter-spacing: var(--tr-h1);
+    text-transform: uppercase;
+    font-feature-settings: 'case' 1;
     color: var(--fg-muted);
     opacity: 0;
     transform: translateY(40%);
-    filter: blur(6px);
-    transition: opacity 0.6s var(--ease-out), transform 0.9s var(--ease-expo), filter 0.6s var(--ease-out), color 0.3s;
+    transition: opacity 0.6s var(--ease-out), transform 0.9s var(--ease-expo), color 0.4s var(--ease-out), letter-spacing 0.8s var(--ease-expo);
   }
+  .menu__link sup { font-size: 11px; font-weight: 400; letter-spacing: var(--tr-caps); line-height: 1; margin-top: 0.9em; opacity: 0.6; }
   .menu.is-open .menu__link {
     opacity: 1;
     transform: none;
-    filter: none;
-    transition-delay: calc(var(--i) * 45ms + 180ms), calc(var(--i) * 45ms + 180ms), calc(var(--i) * 45ms + 180ms), 0s;
+    transition-delay: calc(var(--i) * 40ms + 200ms), calc(var(--i) * 40ms + 200ms), 0s, 0s;
   }
-  .menu__link:hover, .menu__link.is-current { color: var(--white); }
-  .menu__link:hover { transform: translateX(0.15em); }
-  .menu__side { display: flex; flex-direction: column; justify-content: space-between; gap: 2rem; padding-block: 1rem; }
-  .menu__preview { position: relative; aspect-ratio: 4 / 5; max-height: 58vh; border-radius: 6px; overflow: hidden; background: #151515; }
+  .menu__nav:hover .menu__link { color: color-mix(in srgb, var(--fg) 28%, transparent); }
+  .menu__nav .menu__link:hover, .menu__link.is-current { color: var(--fg); }
+  .menu__nav .menu__link:hover { letter-spacing: 0.01em; }
+
+  .menu__preview {
+    grid-column: 9 / span 4;
+    align-self: center;
+    position: relative;
+    aspect-ratio: 4 / 5;
+    max-height: 62vh;
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--placeholder);
+  }
   .menu__preview img {
     position: absolute;
     inset: 0;
@@ -165,38 +212,112 @@ const mark = await getImage({ src: fullLogo, width: 164, format: 'webp' });
     object-fit: cover;
     opacity: 0;
     transform: scale(1.08);
-    filter: blur(14px) grayscale(0.2);
-    transition: opacity 0.6s var(--ease-out), transform 1.2s var(--ease-expo), filter 0.6s var(--ease-out);
+    transition: opacity 0.6s var(--ease-out), transform 1.2s var(--ease-expo);
   }
-  .menu__preview img.is-on { opacity: 1; transform: none; filter: none; }
-  .menu__info { display: grid; gap: 0.4rem; }
-  .menu__info .kicker { margin-bottom: 0.5rem; }
-  .menu__tel { font-size: 1.15rem; font-weight: 400; text-transform: uppercase; }
-  .menu__tel:hover { text-decoration: underline; text-underline-offset: 4px; }
+  .menu__preview img.is-on { opacity: 1; transform: none; }
 
-  @media (max-width: 900px) {
-    .menu__inner { grid-template-columns: 1fr; grid-template-rows: 1fr auto; }
-    .menu__preview { display: none; }
-    .menu__link { font-size: clamp(2rem, min(11vw, 6.6vh), 4.2rem); }
+  .menu__foot {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: clamp(1rem, 2vw, 2rem);
+    padding-top: 1rem;
+    border-top: 1px solid var(--rule);
   }
-  @media (max-width: 560px) {
-    .nav__quick { display: none; }
-    .nav__brand { width: 60px; height: 60px; }
-    .nav__mark { height: 44px; }
-    .nav__pill { height: 44px; }
+  .menu__info { display: grid; gap: 0.2rem; font-size: 14px; letter-spacing: var(--tr-body); }
+  .menu__info a:hover, a.menu__info:hover span:last-child { text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; }
+
+  @media (max-width: 1100px) {
+    .nav__links { display: none; }
+    .nav__meta { grid-column: 4 / span 4; }
+    .nav__theme { grid-column: 9 / span 2; }
+  }
+  @media (max-width: 900px) {
+    .menu__nav { grid-column: 1 / -1; }
+    .menu__preview { display: none; }
+    .menu__link { font-size: clamp(2rem, min(10.5vw, 6.4vh), 4.2rem); }
+    .menu__foot { grid-template-columns: 1fr 1fr; row-gap: 1rem; }
+  }
+  @media (max-width: 600px) {
+    .nav__meta { display: none; }
+    .nav__theme { grid-column: 5 / span 4; }
+    .nav__menu { grid-column: 9 / span 4; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .nav__clock :global(i) { animation: none; }
   }
 </style>
 
 <script>
-  const nav = document.querySelector<HTMLElement>('.nav')!;
+  const nav = document.querySelector<HTMLElement>('[data-nav]')!;
   const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]')!;
   const txt = document.querySelector<HTMLElement>('[data-menu-txt]')!;
   const menu = document.querySelector<HTMLElement>('[data-menu]')!;
   const shots = [...menu.querySelectorAll<HTMLElement>('[data-shot]')];
+  const clock = document.querySelector<HTMLElement>('[data-clock]');
+
+  if (clock) {
+    const fmt = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' });
+    const draw = () => {
+      const [h, m] = fmt.format(new Date()).split(':');
+      clock.innerHTML = `${h}<i>:</i>${m}`;
+    };
+    draw();
+    setInterval(draw, 15000);
+  }
+
+  const themeBtn = document.querySelector<HTMLButtonElement>('[data-theme-btn]')!;
+  const themeT = document.querySelector<HTMLElement>('[data-theme-t]')!;
+  const root = document.documentElement;
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const syncTheme = () => {
+    const dark = root.dataset.theme === 'dark';
+    const label = dark ? 'Clair' : 'Sombre';
+    themeT.textContent = label;
+    themeT.dataset.t = label;
+    themeBtn.setAttribute('aria-label', dark ? 'Passer en thème clair' : 'Passer en thème sombre');
+    meta?.setAttribute('content', dark ? '#0b0b0b' : '#ececeb');
+  };
+  syncTheme();
+  themeBtn.addEventListener('click', () => {
+    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    const apply = () => {
+      if (next === 'dark') root.dataset.theme = 'dark';
+      else delete root.dataset.theme;
+      try { localStorage.setItem('dd-theme', next); } catch {}
+      syncTheme();
+    };
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => { ready: Promise<void>; finished: Promise<void> } };
+    if (!doc.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) { apply(); return; }
+    root.classList.add('is-theming');
+    const vt = doc.startViewTransition(apply);
+    vt.ready.then(() => {
+      const ease = 'cubic-bezier(0.65, 0, 0.35, 1)';
+      root.animate(
+        [
+          { filter: 'blur(0px) contrast(1)', transform: 'scale(1)', opacity: 1 },
+          { filter: 'blur(18px) contrast(1.25)', transform: 'scale(1.035, 1.015) skewX(-0.6deg)', opacity: 1, offset: 0.55 },
+          { filter: 'blur(30px) contrast(1.4)', transform: 'scale(1.06, 1.02) skewX(-1deg)', opacity: 0 },
+        ],
+        { duration: 1000, easing: ease, fill: 'forwards', pseudoElement: '::view-transition-old(root)' }
+      );
+      root.animate(
+        [
+          { filter: 'blur(30px) contrast(1.4)', transform: 'scale(0.96, 1.03) skewX(1deg)', opacity: 0 },
+          { filter: 'blur(14px) contrast(1.15)', transform: 'scale(0.985, 1.01) skewX(0.4deg)', opacity: 0.6, offset: 0.45 },
+          { filter: 'blur(0px) contrast(1)', transform: 'none', opacity: 1 },
+        ],
+        { duration: 1000, easing: ease, fill: 'forwards', pseudoElement: '::view-transition-new(root)' }
+      );
+    });
+    vt.finished.finally(() => root.classList.remove('is-theming'));
+  });
 
   const setOpen = (open: boolean) => {
     btn.setAttribute('aria-expanded', String(open));
-    txt.textContent = open ? 'Fermer' : 'Menu';
+    const label = open ? 'Fermer' : 'Menu';
+    txt.textContent = label;
+    txt.dataset.t = label;
     menu.classList.toggle('is-open', open);
     menu.setAttribute('aria-hidden', String(!open));
     document.documentElement.style.overflow = open ? 'hidden' : '';
@@ -204,21 +325,7 @@ const mark = await getImage({ src: fullLogo, width: 164, format: 'webp' });
   };
   btn.addEventListener('click', () => setOpen(btn.getAttribute('aria-expanded') !== 'true'));
   document.addEventListener('keydown', (e) => e.key === 'Escape' && setOpen(false));
-  const markLink = document.querySelector<HTMLElement>('[data-mark]');
-  const markIn = document.querySelector<HTMLElement>('[data-mark-in]');
-  if (markLink && markIn && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    markLink.addEventListener('pointermove', (e) => {
-      const r = markLink.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width - 0.5;
-      const y = (e.clientY - r.top) / r.height - 0.5;
-      markIn.style.transition = 'transform 0.15s var(--ease-out)';
-      markIn.style.transform = `translate(${x * 8}px, ${y * 6}px) rotateY(${x * 40}deg) rotateX(${-y * 30}deg) rotateZ(${x * 8}deg)`;
-    });
-    markLink.addEventListener('pointerleave', () => {
-      markIn.style.transition = '';
-      markIn.style.transform = '';
-    });
-  }
+
   menu.querySelectorAll<HTMLElement>('.menu__link').forEach((a) => {
     a.addEventListener('pointerenter', () => {
       const n = Number(a.dataset.preview);

@@ -102,7 +102,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     margin: 0 auto clamp(3rem, 6vw, 5rem);
     padding: 6px;
     border-radius: 28px;
-    background: rgba(255, 255, 255, 0.72);
+    background: color-mix(in srgb, var(--white) 72%, transparent);
     -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     box-shadow: 0 18px 40px -28px rgba(20, 22, 23, 0.45);
@@ -127,7 +127,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
   .disc__name { margin: 0; }
   .disc__desc { max-width: 24rem; }
   .slots { --rc: minmax(0, 1.3fr) minmax(0, 0.7fr) minmax(0, 0.9fr); }
-  .slots__day, .slots__time { font-size: 17px; font-weight: 300; text-transform: uppercase; letter-spacing: 0.02em; }
+  .slots__day, .slots__time { font-size: 17px; font-weight: 300; text-transform: uppercase; letter-spacing: var(--tr-caps-l); }
   .slots__time { text-align: right; font-variant-numeric: tabular-nums; }
 
   .week { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
@@ -140,7 +140,7 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     gap: 2px;
     padding: 12px;
     border-radius: 6px;
-    background: rgba(255, 255, 255, 0.55);
+    background: var(--surface);
     animation: fade 0.6s var(--ease-out) both;
   }
   .cell__time { font-size: 17px; font-weight: 300; margin-bottom: 6px; font-variant-numeric: tabular-nums; }

@@ -37,6 +37,9 @@ const all: T[] = [
   { src: team, r: '3/4', pos: '70% 50%', title: 'L’équipe', cap: 'Trois générations', href: C },
 ];
 const tiles = all;
+const groupOf = (t: T) =>
+  t.href === H ? 'Cours' : t.href === S ? 'Stages' : t.href === Y ? 'Yoga' : t.href === L ? 'Studios' : 'L’équipe';
+const groups = ['Cours', 'Stages', 'Yoga', 'Studios', 'L’équipe'];
 
 const imgs = await Promise.all(
   tiles.map((t) => getImage({ src: t.src, width: Math.min(t.src.width, 360), format: 'webp' }))
@@ -51,12 +54,29 @@ const imgs = await Promise.all(
         style={`aspect-ratio:${t.r}`}
         data-title={t.title}
         data-cap={t.cap}
+        data-group={groupOf(t)}
         aria-label={`${t.title} — ${t.cap}`}
         draggable="false"
       >
         <img src={imgs[i].src} alt="" style={`object-position:${t.pos}`} draggable="false" loading={i < 10 ? 'eager' : 'lazy'} />
       </a>
     ))}
+  </div>
+
+  <div class="sph__ui">
+    <p class="sph__count label" aria-live="polite"><span data-cur-n>01</span> / {String(tiles.length).padStart(2, '0')}</p>
+    <div class="sph__caption" aria-hidden="true">
+      <p class="sph__ct" data-cap-t>{tiles[0].title}</p>
+      <p class="label muted" data-cap-c>{tiles[0].cap}</p>
+    </div>
+    <div class="sph__ctrls">
+      <button class="sph__btn" data-prev aria-label="Photo précédente"><span aria-hidden="true">←</span></button>
+      <button class="sph__btn sph__btn--play" data-play aria-label="Mettre en pause la rotation" aria-pressed="true"><span class="roll"><span class="roll__in" data-t="Pause" data-play-t>Pause</span></span></button>
+      <button class="sph__btn" data-next aria-label="Photo suivante"><span aria-hidden="true">→</span></button>
+    </div>
+    <div class="sph__filters" role="group" aria-label="Centrer sur un thème">
+      {groups.map((g) => <button class="sph__chip" data-group={g}>{g}</button>)}
+    </div>
   </div>
 
   <div class="sph__tip" data-tip aria-hidden="true">
@@ -74,6 +94,8 @@ const imgs = await Promise.all(
 <style>
   .sph {
     position: relative;
+    z-index: 0;
+    isolation: isolate;
     height: 100dvh;
     min-height: 560px;
     background: transparent;
@@ -92,11 +114,50 @@ const imgs = await Promise.all(
     width: var(--u);
     margin-left: calc(var(--u) / -2);
     margin-top: calc(var(--u) / -2);
-    background: #f1f1f1;
+    background: var(--placeholder);
     will-change: transform, opacity;
     opacity: 0;
   }
   .sph__tile img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .sph__tile { transition: box-shadow 0.5s var(--ease-out); }
+  .sph__tile.is-focus { box-shadow: 0 24px 50px -24px rgba(20, 22, 23, 0.6); }
+
+  .sph__ui { position: absolute; inset: 0; z-index: 200; pointer-events: none; }
+  .sph__ui > * { pointer-events: auto; }
+  .sph__count { position: absolute; left: var(--side); top: clamp(6rem, 14vh, 8rem); font-feature-settings: 'tnum' 1; }
+  .sph__caption { position: absolute; left: var(--side); top: calc(clamp(6rem, 14vh, 8rem) + 1.75rem); display: grid; gap: 0.35rem; pointer-events: none; }
+  .sph__ct { font-size: clamp(1.6rem, 3vw, 2.8rem); font-weight: 300; line-height: 1; letter-spacing: var(--tr-h2); text-transform: uppercase; transition: opacity 0.3s var(--ease-out), transform 0.5s var(--ease-expo); }
+  .sph__caption.is-swap .sph__ct { opacity: 0; transform: translateY(8px); }
+  .sph__ctrls { position: absolute; right: var(--side); top: clamp(6rem, 14vh, 8rem); display: flex; align-items: center; gap: 6px; }
+  .sph__btn {
+    display: inline-grid;
+    place-items: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    box-shadow: inset 0 0 0 1px var(--line);
+    font-size: 12px;
+    letter-spacing: var(--tr-caps);
+    text-transform: uppercase;
+    transition: background-color 0.3s var(--ease-out), color 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  }
+  .sph__btn span[aria-hidden] { font-size: 16px; line-height: 1; transition: transform 0.5s var(--ease-expo); }
+  .sph__btn:hover { background: var(--plum); color: var(--white); box-shadow: none; }
+  [data-prev]:hover span[aria-hidden] { transform: translateX(-3px); }
+  [data-next]:hover span[aria-hidden] { transform: translateX(3px); }
+  .sph__filters { position: absolute; left: 50%; bottom: clamp(3.5rem, 8vh, 5rem); translate: -50% 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 18px; width: max-content; max-width: calc(100% - 2 * var(--side)); }
+  .sph__chip {
+    padding: 6px 0;
+    font-size: 12px;
+    letter-spacing: var(--tr-caps);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat;
+    transition: color 0.3s var(--ease-out), background-size 0.5s var(--ease-expo);
+  }
+  .sph__chip:hover { color: var(--plum); }
+  .sph__chip.is-on { color: var(--ink); background-size: 100% 1px; }
 
 
   .sph__tip {
@@ -109,7 +170,7 @@ const imgs = await Promise.all(
     gap: 1px;
     padding: 8px 12px;
     border-radius: 10px;
-    background: rgba(255, 255, 255, 0.94);
+    background: color-mix(in srgb, var(--white) 94%, transparent);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05), 0 10px 24px -14px rgba(0, 0, 0, 0.35);
@@ -135,6 +196,8 @@ const imgs = await Promise.all(
   .sph__foot .r { text-align: right; }
   @media (max-width: 640px) {
     .sph__hint { display: none; }
+    .sph__ctrls { top: auto; bottom: calc(clamp(3.5rem, 8vh, 5rem) + 3rem); right: 50%; translate: 50% 0; }
+    .sph__count, .sph__caption { top: clamp(5.5rem, 12vh, 7rem); }
     .sph__tile { --u: clamp(40px, 12vw, 60px); }
     }
 </style>
@@ -156,6 +219,14 @@ const imgs = await Promise.all(
       return [Math.cos(th) * r, y, Math.sin(th) * r];
     });
 
+    const curN = root.querySelector<HTMLElement>('[data-cur-n]')!;
+    const capBox = root.querySelector<HTMLElement>('.sph__caption')!;
+    const capT = root.querySelector<HTMLElement>('[data-cap-t]')!;
+    const capC = root.querySelector<HTMLElement>('[data-cap-c]')!;
+    const playBtn = root.querySelector<HTMLButtonElement>('[data-play]')!;
+    const playT = root.querySelector<HTMLElement>('[data-play-t]')!;
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('.sph__chip')];
+    let auto = !reduce, focus = -1, aimY = 0, aimX = -0.18, aiming = false, fz = 0;
     let ry = 0.4, rx = -0.18, vy = 0.0016, vx = 0;
     let open = reduce ? 1 : 0;
     let hovering = false, dragging = false, moved = 0, visible = true;
@@ -172,14 +243,21 @@ const imgs = await Promise.all(
 
     const frame = () => {
       if (visible) {
-        const target = hovering ? 0.0002 : 0.0016;
-        if (!dragging) {
+        const target = hovering || !auto ? 0 : 0.0016;
+        fz += ((focus >= 0 && !auto ? 1 : 0) - fz) * 0.08;
+        if (aiming && !dragging) {
+          const dy = aimY - ry;
+          ry += dy * 0.08;
+          rx += (aimX - rx) * 0.08;
+          vy = 0; vx = 0;
+          if (Math.abs(dy) < 0.0008) aiming = false;
+        } else if (!dragging) {
           vy += (target - vy) * 0.04;
           vx *= 0.94;
           rx += vx;
-          rx += (-0.18 - rx) * 0.01;
+          if (auto) rx += (-0.18 - rx) * 0.01;
         }
-        if (!reduce) ry += vy;
+        if (!reduce && !aiming) ry += vy;
         const sY = Math.sin(ry), cY = Math.cos(ry), sX = Math.sin(rx), cX = Math.cos(rx);
         const f = R * 3.2;
         for (let i = 0; i < n; i++) {
@@ -192,14 +270,66 @@ const imgs = await Promise.all(
           const s = f / (f - z2 * rr);
           const depth = (z2 + 1) / 2;
           const el = tiles[i];
-          el.style.transform = `translate3d(${(x1 * rr * s).toFixed(1)}px, ${(y2 * rr * s).toFixed(1)}px, 0) scale(${(s * (0.62 + depth * 0.38)).toFixed(3)})`;
-          el.style.opacity = String((open * (0.25 + depth * 0.75)).toFixed(3));
-          el.style.zIndex = String(Math.round(depth * 100));
+          const isF = i === focus;
+          const zf = isF ? 1 + fz * 2.6 : 1;
+          const dim = focus >= 0 && !isF ? 1 - fz * 0.6 : 1;
+          el.style.transform = `translate3d(${(x1 * rr * s).toFixed(1)}px, ${(y2 * rr * s).toFixed(1)}px, 0) scale(${(s * (0.62 + depth * 0.38) * zf).toFixed(3)})`;
+          el.style.opacity = String((open * (0.25 + depth * 0.75) * dim).toFixed(3));
+          el.style.zIndex = String(isF && fz > 0.05 ? 150 : Math.round(depth * 100));
         }
       }
       requestAnimationFrame(frame);
     };
     requestAnimationFrame(frame);
+
+    const showCap = (i: number) => {
+      curN.textContent = String(i + 1).padStart(2, '0');
+      capBox.classList.add('is-swap');
+      setTimeout(() => {
+        capT.textContent = tiles[i].dataset.title || '';
+        capC.textContent = tiles[i].dataset.cap || '';
+        capBox.classList.remove('is-swap');
+      }, 220);
+    };
+    const center = (i: number) => {
+      const n2 = tiles.length;
+      i = ((i % n2) + n2) % n2;
+      focus = i;
+      const [x0, y0, z0] = pts[i];
+      let target = Math.atan2(x0, z0);
+      const turns = Math.round((ry - target) / (Math.PI * 2));
+      target += turns * Math.PI * 2;
+      aimY = target;
+      aimX = Math.max(-1, Math.min(1, Math.atan2(y0, Math.hypot(x0, z0))));
+      aiming = true;
+      setAuto(false);
+      tiles.forEach((t, k) => t.classList.toggle('is-focus', k === i));
+      chips.forEach((c) => c.classList.toggle('is-on', c.dataset.group === tiles[i].dataset.group));
+      showCap(i);
+    };
+    const setAuto = (on: boolean) => {
+      auto = on;
+      playBtn.setAttribute('aria-pressed', String(on));
+      playBtn.setAttribute('aria-label', on ? 'Mettre en pause la rotation' : 'Relancer la rotation');
+      const label = on ? 'Pause' : 'Rotation';
+      playT.textContent = label;
+      playT.dataset.t = label;
+      if (on) { focus = -1; tiles.forEach((t) => t.classList.remove('is-focus')); chips.forEach((c) => c.classList.remove('is-on')); }
+    };
+    root.querySelector('[data-next]')!.addEventListener('click', () => center(focus + 1));
+    root.addEventListener('pointerdown', (e) => { if (!(e.target as Element).closest('.sph__ui, .sph__tile') && focus >= 0) { setAuto(true); } });
+    root.querySelector('[data-prev]')!.addEventListener('click', () => center(focus < 0 ? tiles.length - 1 : focus - 1));
+    playBtn.addEventListener('click', () => setAuto(!auto));
+    chips.forEach((c) => c.addEventListener('click', () => {
+      const list = tiles.map((t, k) => (t.dataset.group === c.dataset.group ? k : -1)).filter((k) => k >= 0);
+      const cur = list.indexOf(focus);
+      center(list[(cur + 1) % list.length]);
+    }));
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') center(focus + 1);
+      if (e.key === 'ArrowLeft') center(focus < 0 ? tiles.length - 1 : focus - 1);
+    });
+    if (reduce) setAuto(false);
 
     const reveal = () => {
       if (reduce) return;
@@ -216,7 +346,8 @@ const imgs = await Promise.all(
 
     root.addEventListener('pointerdown', (e) => {
       if (e.pointerType === 'touch') return;
-      dragging = true; moved = 0; lastX = e.clientX; lastY = e.clientY;
+      if ((e.target as Element).closest('.sph__ui')) return;
+      dragging = true; aiming = false; moved = 0; lastX = e.clientX; lastY = e.clientY;
       root.classList.add('is-drag');
     });
     addEventListener('pointermove', (e) => {

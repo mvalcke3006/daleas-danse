@@ -33,7 +33,7 @@ const { kicker, accent, image, pos = '50% 40%' } = Astro.props;
 <style>
   .ph { padding-top: clamp(7.5rem, 14vh, 10rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
   .ph__top { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
-  .ph__title { margin-top: clamp(1.5rem, 3vw, 2.5rem); font-size: clamp(2.3rem, 8.4vw, 8.5rem); font-weight: 200; letter-spacing: -0.045em; line-height: 0.95; max-width: 16ch; }
+  .ph__title { margin-top: clamp(1.5rem, 3vw, 2.5rem); font-size: clamp(2.3rem, 8.4vw, 8.5rem); font-weight: 200; letter-spacing: var(--tr-display); line-height: 0.95; max-width: 16ch; }
   .ph__sub { margin-top: 1.75rem; max-width: 36rem; }
   .ph__media { margin: clamp(2.5rem, 5vw, 4rem) var(--side) 0; rotate: -1.2deg; }
   .ph__media.is-in { rotate: -1.2deg; }

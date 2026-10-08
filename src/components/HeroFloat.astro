@@ -106,7 +106,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
     font-size: clamp(2.4rem, 8.6vw, 10.5rem);
     font-weight: 200;
     line-height: 1;
-    letter-spacing: -0.04em;
+    letter-spacing: var(--tr-display);
     text-transform: uppercase;
     animation: word-in 1.6s var(--ease-expo) 0.2s backwards;
   }
@@ -129,6 +129,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
     animation: logo-in 1.8s var(--ease-expo) 0.05s backwards;
   }
   @keyframes logo-in { from { opacity: 0; filter: blur(18px); } }
+  :global(html[data-theme='dark']) .hf__logo img { filter: invert(0.92) drop-shadow(var(--sx) var(--sy) 16px rgba(0, 0, 0, 0.6)); }
 
   @media (max-width: 760px), (max-aspect-ratio: 4/5) {
     .hf__center { grid-template-columns: 1fr; grid-template-rows: auto 1fr auto; justify-items: center; align-content: center; padding-block: clamp(4.75rem, 11vh, 6rem) 1.5rem; gap: 0.25rem; }
@@ -151,6 +152,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
     const logoBox = root.querySelector<HTMLElement>('[data-hf-logo]')!;
     const logoImg = logoBox.querySelector('img')!;
     const words = [...root.querySelectorAll<HTMLElement>('.hf__word')];
+    const stack = matchMedia('(max-width: 760px), (max-aspect-ratio: 4/5)');
     const items = [...root.querySelectorAll<HTMLElement>('.hf__p')].map((el, i) => ({
       el,
       pin: el.querySelector<HTMLElement>('.hf__pin')!,
@@ -204,9 +206,18 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
           `rotateX(${(-cmy * 18 * fl).toFixed(2)}deg) rotateY(${(cmx * 28 * fl).toFixed(2)}deg) ` +
           `rotateZ(${(Math.sin(t * 0.6) * 1.8 * fl + cmx * 5 * fl).toFixed(2)}deg)`;
 
+        const sp = fl ? Math.min(1, scroll / Math.max(1, root.offsetHeight * 0.75)) : 0;
+        const spe = sp * sp * (3 - 2 * sp);
+        const hov = fine && fl ? Math.max(0, 1 - Math.hypot(cmx * 1.4, cmy) * 3.2) : 0;
+        const stacked = stack.matches;
         words.forEach((w, i) => {
           const dir = i === 0 ? -1 : 1;
-          w.style.transform = `translate3d(${(-cmx * 46 * fl + dir * Math.abs(cmx) * 18 * fl).toFixed(1)}px, ${(-cmy * 26 * fl).toFixed(1)}px, 0)`;
+          const out = stacked ? 0 : spe * innerWidth * 0.2 + hov * 34;
+          const x = -cmx * 46 * fl + dir * out;
+          const y = -cmy * 26 * fl;
+          w.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0)`;
+          w.style.letterSpacing = `${(-0.05 + spe * (stacked ? 0.1 : 0.16) + hov * 0.035).toFixed(4)}em`;
+          w.style.opacity = String((1 - spe * 0.55).toFixed(3));
         });
 
         items.forEach((it) => {

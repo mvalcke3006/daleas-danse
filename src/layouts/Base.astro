@@ -79,7 +79,7 @@ const breadcrumb = crumbs.length
     <meta name="twitter:card" content="summary_large_image" />
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     {breadcrumb && <script type="application/ld+json" set:html={JSON.stringify(breadcrumb)} />}
-    <script is:inline>document.documentElement.classList.replace('no-js', 'js');</script>
+    <script is:inline>document.documentElement.classList.replace('no-js', 'js');try{if(localStorage.getItem('dd-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
   </head>
   <body>
     <div class="bglight" aria-hidden="true"></div>
@@ -227,7 +227,7 @@ const breadcrumb = crumbs.length
         addEventListener('pointerdown', () => cur.classList.add('is-down'));
         addEventListener('pointerup', () => cur.classList.remove('is-down'));
 
-        document.querySelectorAll<HTMLElement>('.btn, .nav__pill, .chip[href], .tlink').forEach((el) => {
+        document.querySelectorAll<HTMLElement>('.btn, .chip[href], .tlink').forEach((el) => {
           el.classList.add('mag');
           el.addEventListener('pointermove', (e) => {
             const r = el.getBoundingClientRect();
@@ -304,7 +304,7 @@ const breadcrumb = crumbs.length
         backdrop-filter: blur(8px);
         color: #fff;
         font-size: 12px;
-        letter-spacing: 0.12em;
+        letter-spacing: var(--tr-caps);
         text-transform: uppercase;
         scale: 0.2;
         opacity: 0;
