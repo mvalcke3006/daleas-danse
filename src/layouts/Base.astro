@@ -82,7 +82,7 @@ const breadcrumb = crumbs.length
     <script is:inline>document.documentElement.classList.replace('no-js', 'js');try{if(localStorage.getItem('dd-theme')==='dark')document.documentElement.dataset.theme='dark'}catch(e){}</script>
   </head>
   <body>
-    <div class="bglight" aria-hidden="true"></div>
+    <div class="bglight" aria-hidden="true"><i class="bglight__spot" data-spot></i></div>
     <a href="#contenu" class="skip btn">Aller au contenu</a>
     <Header />
     <main id="contenu">
@@ -90,7 +90,7 @@ const breadcrumb = crumbs.length
     </main>
     {footer && <Footer />}
     <Edges />
-    <div class="lightfx" aria-hidden="true"></div>
+    <div class="lightfx" aria-hidden="true"><i class="lightfx__glow" data-glow></i></div>
     <div class="grain" aria-hidden="true"></div>
     <div class="cur" aria-hidden="true" data-cur><span class="cur__ring"></span><span class="cur__label" data-cur-label>Voir</span></div>
 
@@ -154,10 +154,9 @@ const breadcrumb = crumbs.length
         el,
         words: [...el.querySelectorAll<HTMLElement>('.w')],
       }));
-      let lastY = scrollY, vel = 0, lastVa = -1;
-      const rootStyle = document.documentElement.style;
-
+      let ticking = false;
       const update = () => {
+        ticking = false;
         const vh = innerHeight;
         progress.forEach((el) => {
           const r = el.getBoundingClientRect();
@@ -175,35 +174,29 @@ const breadcrumb = crumbs.length
         }
         wordBlocks.forEach(({ el, words }) => {
           const r = el.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > vh) return;
           const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.6)));
           const n = Math.round(p * words.length);
           words.forEach((w, i) => w.classList.toggle('is-on', i < n));
         });
-        const dy = scrollY - lastY;
-        lastY = scrollY;
-        vel += (dy - vel) * 0.12;
-        const va = reduce ? 0 : Math.min(1, Math.abs(vel) / 45);
-        if (Math.abs(va - lastVa) > 0.01 || (va === 0 && lastVa !== 0)) {
-          lastVa = va;
-          rootStyle.setProperty('--va', va.toFixed(3));
-          rootStyle.setProperty('--vs', (Math.sign(vel) * va).toFixed(3));
-        }
-        requestAnimationFrame(update);
       };
-      requestAnimationFrame(update);
+      const queue = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+      addEventListener('scroll', queue, { passive: true });
+      addEventListener('resize', queue);
+      update();
 
       if (matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce) {
         const cur = document.querySelector<HTMLElement>('[data-cur]')!;
         const curLabel = document.querySelector<HTMLElement>('[data-cur-label]')!;
         const viewSel = '.hf__p, .gal__item, .tease__media, .block__media, .full__media, .tile__img, .sph__tile, .menu__preview';
-        let kx = -100, ky = -100, qx = kx, qy = ky, curOn = false;
+        let kx = -100, ky = -100, qx = kx, qy = ky, curOn = false, curRun = false;
         const curStep = () => {
-          qx += (kx - qx) * 0.2;
-          qy += (ky - qy) * 0.2;
+          qx += (kx - qx) * 0.22;
+          qy += (ky - qy) * 0.22;
           cur.style.transform = `translate3d(${qx.toFixed(1)}px, ${qy.toFixed(1)}px, 0)`;
-          requestAnimationFrame(curStep);
+          if (Math.abs(kx - qx) + Math.abs(ky - qy) > 0.3) requestAnimationFrame(curStep);
+          else curRun = false;
         };
-        requestAnimationFrame(curStep);
         const curState = (t: Element | null) => {
           const view = t?.closest(viewSel);
           const link = t?.closest('a, button, [role="tab"], label, select');
@@ -214,6 +207,7 @@ const breadcrumb = crumbs.length
         addEventListener('pointermove', (e) => {
           kx = e.clientX; ky = e.clientY;
           if (!curOn) { curOn = true; qx = kx; qy = ky; cur.classList.add('is-on'); }
+          if (!curRun) { curRun = true; requestAnimationFrame(curStep); }
           curState(e.target as Element);
         }, { passive: true });
         let curPending = false;
@@ -238,18 +232,19 @@ const breadcrumb = crumbs.length
         });
 
         const sel = '.lit, .media, .tile__img, .gal__item, .ph__img';
-        let tx = innerWidth / 2, ty = innerHeight * 0.25, cx = tx, cy = ty, running = false;
+        const spot = document.querySelector<HTMLElement>('[data-spot]');
+        const glow = document.querySelector<HTMLElement>('[data-glow]');
+        let tx = innerWidth / 2, ty = innerHeight * 0.3, cx = tx, cy = ty, running = false;
         const step = () => {
-          cx += (tx - cx) * 0.12;
-          cy += (ty - cy) * 0.12;
-          const nx = cx / innerWidth - 0.5, ny = cy / innerHeight - 0.5;
-          rootStyle.setProperty('--mx', `${cx.toFixed(0)}px`);
-          rootStyle.setProperty('--my', `${cy.toFixed(0)}px`);
-          rootStyle.setProperty('--shx', `${(-nx * 36).toFixed(1)}px`);
-          rootStyle.setProperty('--shy', `${(22 - ny * 26).toFixed(1)}px`);
+          cx += (tx - cx) * 0.1;
+          cy += (ty - cy) * 0.1;
+          const t = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0)`;
+          if (spot) spot.style.transform = t;
+          if (glow) glow.style.transform = t;
           if (Math.abs(tx - cx) + Math.abs(ty - cy) > 0.5) requestAnimationFrame(step);
           else running = false;
         };
+        requestAnimationFrame(step);
         addEventListener('pointermove', (e) => {
           tx = e.clientX; ty = e.clientY;
           if (!running) { running = true; requestAnimationFrame(step); }

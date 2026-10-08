@@ -47,6 +47,8 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
 
   <section class="expand" data-progress aria-label="Le spectacle de l’école">
     <div class="expand__sticky">
+      <p class="expand__w expand__w--l" aria-hidden="true">Spec</p>
+      <p class="expand__w expand__w--r" aria-hidden="true">tacle</p>
       <div class="expand__frame">
         <Image src={gala} alt="Les élèves de l’école réunis sur scène pour le spectacle de fin d’année" widths={[960, 1280]} sizes="100vw" />
       </div>
@@ -147,8 +149,26 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     height: 100%;
     object-fit: cover;
     transform: scale(calc(1.2 - var(--p) * 0.2));
-    filter: blur(calc((1 - var(--p)) * 6px));
+    will-change: transform;
   }
+  .expand__w {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    margin: 0;
+    font-size: clamp(1.6rem, 7.2vw, 8rem);
+    font-weight: 200;
+    line-height: 1;
+    letter-spacing: calc(var(--tr-display) + var(--p) * 0.35em);
+    text-transform: uppercase;
+    white-space: nowrap;
+    font-feature-settings: 'case' 1;
+    translate: 0 -50%;
+    opacity: clamp(0, calc(1.15 - var(--p) * 1.3), 1);
+    pointer-events: none;
+  }
+  .expand__w--l { right: calc(100% - (1 - var(--p)) * 24%); padding-right: clamp(0.75rem, 1.6vw, 1.75rem); }
+  .expand__w--r { left: calc(100% - (1 - var(--p)) * 24%); padding-left: clamp(0.75rem, 1.6vw, 1.75rem); }
   .expand__caption { position: absolute; left: var(--side); bottom: calc(clamp(70px, 13vh, 150px) + 0.5rem); opacity: clamp(0, calc((var(--p) - 0.6) * 4), 1); }
   .expand__caption .chip { --chip-bg: var(--white); color: var(--ink); font-size: 14px; padding: 11px 16px; border-radius: 999px; }
 

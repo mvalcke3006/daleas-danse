@@ -312,15 +312,10 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 .tile__cap { padding-top: 12px; }
 .tile__cap p:first-child { font-weight: 400; text-transform: uppercase; }
 
-.tile__img, .ph__img, .slider__stage, .stages__media, .dist {
-  scale: 1 calc(1 + var(--va, 0) * 0.07);
-  filter: blur(calc(var(--va, 0) * 4px));
-  transform-origin: 50% calc(50% - var(--vs, 0) * 50%);
-}
 
 :is(.lit, .media, .tile__img, .card, .contact__card, .gal__item, .ph__img) {
   position: relative;
-  box-shadow: var(--shx, 0px) var(--shy, 22px) 46px -26px rgba(20, 22, 23, 0.45);
+  box-shadow: 0 24px 46px -26px rgba(20, 22, 23, 0.42);
 }
 :is(.lit, .media, .tile__img, .gal__item, .ph__img)::after {
   content: '';
@@ -341,13 +336,19 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   inset: 0;
   z-index: 45;
   pointer-events: none;
-  background: radial-gradient(circle 75vmax at var(--mx, 50vw) var(--my, 25vh), rgba(20, 22, 23, 0) 0%, rgba(20, 22, 23, 0.11) 100%);
+  overflow: hidden;
+  background: radial-gradient(ellipse 80% 75% at 50% 45%, rgba(20, 22, 23, 0) 55%, rgba(20, 22, 23, 0.1) 100%);
 }
-.lightfx::after {
-  content: '';
+.lightfx__glow {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(circle 28vmax at var(--mx, 50vw) var(--my, 25vh), rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0) 70%);
+  left: -28vmax;
+  top: -28vmax;
+  width: 56vmax;
+  height: 56vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0));
+  transform: translate3d(50vw, 30vh, 0);
+  will-change: transform;
 }
 @media (hover: none), (prefers-reduced-motion: reduce) {
   .lightfx { display: none; }
@@ -367,7 +368,7 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
 }
 .on-black.stage { background-color: var(--black); }
 .on-black.stage::after {
-  background: radial-gradient(circle 38vmax at var(--mx, 50vw) var(--my, 30vh), rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0) 65%) fixed;
+  background: radial-gradient(ellipse 70% 60% at 50% 0%, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0) 70%);
 }
 .on-black.stage::before {
   inset: -20% -10% auto;
@@ -385,7 +386,7 @@ html { background: var(--paper); color-scheme: light; }
 .bglight { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: var(--paper); }
 .grain {
   position: fixed;
-  inset: -50%;
+  inset: -10%;
   z-index: 46;
   pointer-events: none;
   opacity: 0.07;
@@ -405,9 +406,18 @@ html { background: var(--paper); color-scheme: light; }
   content: '';
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(circle 46vmax at var(--mx, 50vw) var(--my, 30vh), #fff 0%, rgba(255, 255, 255, 0.82) 22%, rgba(255, 255, 255, 0) 62%),
-    radial-gradient(ellipse 85% 70% at 50% 40%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 70%);
+  background: radial-gradient(ellipse 85% 70% at 50% 40%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0) 70%);
+}
+.bglight__spot {
+  position: absolute;
+  left: -46vmax;
+  top: -46vmax;
+  width: 92vmax;
+  height: 92vmax;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, #fff 0%, rgba(255, 255, 255, 0.82) 24%, rgba(255, 255, 255, 0) 100%);
+  transform: translate3d(50vw, 30vh, 0);
+  will-change: transform;
 }
 .bglight::before {
   content: '';
@@ -481,11 +491,12 @@ html[data-theme='dark'] {
 }
 html[data-theme='dark'] .bglight::after,
 html[data-theme='dark'] .bglight::before { opacity: 0.08; }
-html[data-theme='dark'] .lightfx { background: radial-gradient(circle 75vmax at var(--mx, 50vw) var(--my, 25vh), rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.26) 100%); }
-html[data-theme='dark'] .lightfx::after { opacity: 0.35; }
+html[data-theme='dark'] .lightfx { background: radial-gradient(ellipse 80% 75% at 50% 45%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.3) 100%); }
+html[data-theme='dark'] .lightfx__glow { opacity: 0.35; }
+html[data-theme='dark'] .bglight__spot { opacity: 0.07; }
 html[data-theme='dark'] .grain { filter: invert(1); opacity: 0.05; }
 html[data-theme='dark'] .on-black.stage::before, html[data-theme='dark'] .on-black.stage::after { opacity: 0; }
-html[data-theme='dark'] :is(.lit, .media, .tile__img, .card, .contact__card, .gal__item, .ph__img) { box-shadow: var(--shx, 0px) var(--shy, 22px) 46px -26px rgba(0, 0, 0, 0.8); }
+html[data-theme='dark'] :is(.lit, .media, .tile__img, .card, .contact__card, .gal__item, .ph__img) { box-shadow: 0 24px 46px -26px rgba(0, 0, 0, 0.8); }
 html[data-theme='dark'] ::selection { background: var(--ink); color: var(--paper); }
 
 .is-theming::view-transition-old(root), .is-theming::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
