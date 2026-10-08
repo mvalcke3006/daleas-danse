@@ -6,7 +6,7 @@ import { site } from '../data/site';
 <Base title="Mentions légales" description="Mentions légales du site Daléas Danse.">
   <PageHero kicker="Informations" accent="légales">Mentions<br /><em>légales</em></PageHero>
 
-  <section class="legal prose">
+  <section class="legal prose sec sec--tight">
     <p class="label">Éditeur</p>
     <p>Daléas Danse — École de danse privée<br />{site.address.street}, {site.address.zip} {site.address.city}<br /><a href={`mailto:${site.email}`}>{site.email}</a></p>
     <p>SIRET : à compléter<br />Responsable de la publication : à compléter</p>
@@ -23,8 +23,9 @@ import { site } from '../data/site';
 </Base>
 
 <style>
-  .legal { width: min(30rem, 100% - 2rem); margin: 0 auto; }
-  .legal .label { margin: 3rem 0 0.8rem; }
+  .legal { width: min(36rem, 100% - 2 * var(--side)); margin: 0 auto; }
+  .legal .label { margin: 3rem 0 0.8rem; padding-top: 1rem; border-top: 1px solid var(--ink); }
+  .legal .label:first-child { margin-top: 0; }
   .legal p:not(.label) { margin-bottom: 0.8rem; }
   .legal a { text-decoration: underline; text-underline-offset: 3px; }
 </style>

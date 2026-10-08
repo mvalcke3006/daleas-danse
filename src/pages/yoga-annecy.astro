@@ -1,7 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
 import { site } from '../data/site';
 import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
 
@@ -11,63 +11,49 @@ const path = [
   ['Méthode Desikachar', 'Quatre ans auprès de Claude Maréchal, jusqu’à l’autorisation de transmettre.'],
   ['1967', 'Premiers cours de Viniyoga.'],
 ];
-const indent = [0, 0.8, 1.8, 0.4];
 ---
 <Base
   title="Cours de yoga à Annecy"
   description="Maryse Daléas enseigne le Viniyoga depuis 1967 et continue de partager son savoir dans ses cours dispensés à l’Espace Daléas d’Annecy."
 >
-  <PageHero kicker="Viniyoga avec" accent="Maryse Daléas">
+  <PageHero kicker="Viniyoga avec" accent="Maryse Daléas" image={yoga} pos="50% 35%">
     Yoga<br /><em>le corps, le souffle</em>
     <Fragment slot="sub">Séances le matin, à midi, l’après-midi ou le soir, à l’Espace Daléas.</Fragment>
   </PageHero>
 
-  <figure class="portrait" data-reveal>
-    <div class="tile__img"><Image src={yoga} alt="Maryse Daléas assise sur un tapis de yoga" widths={[400, 700]} sizes="(max-width: 560px) 80vw, 360px" loading="eager" /></div>
-    <figcaption class="tile__cap label"><p>Maryse Daléas</p><p class="grey">Enseignante depuis 1967</p></figcaption>
-  </figure>
-
-  <section class="ch stage">
-    <div class="chapter-head" data-reveal><p class="label">Ch. Un</p><p class="num">I</p><h2 class="label">Pratique</h2></div>
-    <div class="ch__cols">
-      <p class="prose ch__l" data-reveal>
+  <section class="wrap sec">
+    <SectionHead n="01" label="La pratique">Trouver<br /><em>un bon contrôle de soi</em></SectionHead>
+    <div class="cols">
+      <p class="lead" data-reveal>
         Le yoga est un ensemble de techniques qui, par un travail sur le corps, sur le souffle et sur la pensée,
         avec l’aide de la relaxation, permet de trouver un bon contrôle de soi.
       </p>
-      <p class="prose ch__r" data-reveal style="--d:.1s">
+      <p class="prose muted" data-reveal style="--d:.1s">
         Un état de bien-être, ou tout simplement une meilleure santé. Jeunes, moins jeunes, souples ou raides :
         venez participer à une séance.
       </p>
     </div>
   </section>
 
-  <section class="ch stage">
-    <div class="chapter-head" data-reveal><p class="label">Ch. Deux</p><p class="num">II</p><h2 class="label">Parcours</h2></div>
-    <ul class="path" data-reveal>
-      {path.map(([k, v], i) => (
-        <li style={`padding-left:${indent[i]}em`}>
-          <p class="label">{k}</p>
-          <p class="prose">{v}</p>
-        </li>
-      ))}
-    </ul>
-    <p class="more" data-reveal>
-      <a href={site.links.yoga} class="btn" target="_blank" rel="noopener">Horaires & infos yoga</a>
-    </p>
+  <section class="on-black sec stage">
+    <div class="wrap">
+      <SectionHead n="02" label="Parcours">Maryse Daléas,<br /><em>depuis 1967</em></SectionHead>
+      <ul class="rows path" data-reveal>
+        {path.map(([k, v], i) => (
+          <li>
+            <span class="label muted">{String(i + 1).padStart(2, '0')}</span>
+            <span class="rows__big">{k}</span>
+            <span class="prose muted">{v}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="ctas path__cta" data-reveal>
+        <a href={site.links.yoga} class="btn" target="_blank" rel="noopener">Horaires & infos yoga</a>
+      </div>
+    </div>
   </section>
 </Base>
 
 <style>
-  .portrait { width: min(360px, 80vw); margin: 0 auto; }
-  .ch { padding: clamp(8rem, 14vw, 11rem) 1rem 0; }
-  .ch__cols { display: grid; grid-template-columns: 1fr clamp(80px, 10vw, 150px) 1fr; margin-top: 5rem; }
-  .ch__l { grid-column: 1; justify-self: end; max-width: 18rem; text-align: right; }
-  .ch__r { grid-column: 3; max-width: 18rem; margin-top: 6rem; }
-  .path { width: min(22rem, 100%); margin: 5rem auto 0; display: grid; gap: 1.8rem; }
-  .path .label { margin-bottom: 0.3rem; }
-  .more { display: flex; justify-content: center; margin-top: 5rem; }
-  @media (max-width: 700px) {
-    .ch__cols { grid-template-columns: 1fr; gap: 3rem; }
-    .ch__l, .ch__r { grid-column: 1; justify-self: start; text-align: left; margin-top: 0; }
-  }
+  .path__cta { margin-top: clamp(3rem, 6vw, 5rem); }
 </style>

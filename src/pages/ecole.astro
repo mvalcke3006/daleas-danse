@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
 import { schedule, season } from '../data/site';
 
 import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
@@ -32,21 +33,24 @@ const story = [
     <Fragment slot="sub">Au fil des années, les élèves construisent leurs bases en Modern’Jazz. Une fois le vocabulaire maîtrisé, ados et adultes peuvent rejoindre le Moderne.</Fragment>
   </PageHero>
 
-  <section class="story on-white section stage">
+  <section class="story sec">
+    <div class="wrap">
+      <SectionHead n="01" label="Histoire">Trois générations,<br /><em>une seule école</em></SectionHead>
+    </div>
     <div class="wrap story__grid">
       {story.map((s, i) => (
         <article class="step" data-speed={[0.04, -0.05, 0.07][i]}>
           <p class="step__y xl">{s.y}</p>
-          <p class="label muted">{s.n} — {s.t}</p>
+          <p class="label muted">{s.t}</p>
           <p class="prose">{s.p}</p>
         </article>
       ))}
     </div>
   </section>
 
-  <section class="years on-black section stage">
+  <section class="years on-black sec stage">
     <div class="wrap">
-      <p class="kicker">En chiffres</p>
+      <p class="label muted">02 — En chiffres</p>
       <div class="years__head">
         <p class="years__big xl" data-count="60">60</p>
         <p class="h2">ans de danse<br />à Annecy</p>
@@ -60,10 +64,9 @@ const story = [
     </div>
   </section>
 
-  <section class="courses on-white section stage">
+  <section class="courses sec">
     <div class="wrap">
-      <p class="kicker">Les disciplines</p>
-      <h2 class="h1 courses__title" data-reveal>Six disciplines,<br /><em>un seul parcours</em></h2>
+      <SectionHead n="03" label="Les disciplines">Six disciplines,<br /><em>un seul parcours</em></SectionHead>
       <ul class="courses__list">
         {schedule.map((d, i) => (
           <li>
@@ -76,7 +79,7 @@ const story = [
           </li>
         ))}
       </ul>
-      <div class="courses__foot" data-reveal>
+      <div class="ctas courses__foot" data-reveal>
         <a href="/horaires/" class="btn">Voir le planning {season}</a>
         <a href="/daleas-danse-annecy-tarifs/" class="tlink">Les tarifs</a>
       </div>
@@ -87,7 +90,7 @@ const story = [
 
 <style>
   .story__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 4vw, 4rem); }
-  .step { display: grid; align-content: start; gap: 1rem; padding-top: 1.5rem; border-top: 1.5px solid var(--ink); }
+  .step { display: grid; align-content: start; gap: 1rem; padding-top: 1.5rem; border-top: 1px solid var(--ink); }
   .step__y { font-size: clamp(4rem, 7vw, 6.5rem); }
 
   .years__head { display: flex; align-items: flex-end; gap: clamp(1.5rem, 4vw, 3rem); margin: 1.5rem 0 3.5rem; flex-wrap: wrap; }
@@ -98,8 +101,7 @@ const story = [
   .years__stats li + li { padding-left: 1.5rem; border-left: 1px solid var(--rule); }
   .years__stats .xl { font-size: clamp(3rem, 5.5vw, 5rem); }
 
-  .courses__title { margin: 1.25rem 0 clamp(2.5rem, 5vw, 4rem); }
-  .courses__list { border-top: 1.5px solid var(--ink); }
+  .courses__list { border-top: 1px solid var(--ink); }
   .course {
     display: grid;
     grid-template-columns: 3rem 1fr 14rem 2rem;
@@ -109,13 +111,13 @@ const story = [
     border-bottom: 1px solid var(--line);
     transition: color 0.35s var(--ease-out);
   }
-  .course__name { font-size: clamp(1.6rem, 3.4vw, 3.2rem); font-weight: 400; line-height: 1.05; letter-spacing: -0.03em; text-transform: uppercase; transition: transform 0.6s var(--ease-expo); }
+  .course__name { font-size: clamp(1.6rem, 3.4vw, 3.2rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.03em; text-transform: uppercase; transition: transform 0.6s var(--ease-expo); }
   .course__aud { color: var(--muted); }
+  .course:hover .course__aud { color: currentColor; }
   .course__arrow { justify-self: end; width: 12px; height: 12px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); transition: transform 0.6s var(--ease-expo); }
-  .course:hover { color: var(--ink); }
   .course:hover .course__name { transform: translateX(1rem); }
   .course:hover .course__arrow { transform: translateX(4px) rotate(45deg); }
-  .courses__foot { display: flex; align-items: center; gap: 1.75rem; flex-wrap: wrap; margin-top: 2.5rem; }
+  .courses__foot { margin-top: 2.5rem; }
   .float {
     position: fixed;
     left: 0;
@@ -132,7 +134,7 @@ const story = [
     transition: opacity 0.35s var(--ease-out), filter 0.45s var(--ease-out), transform 0.7s var(--ease-expo);
   }
   .float.is-on { opacity: 1; filter: none; transform: none; }
-  .float img { width: 100%; height: 100%; object-fit: cover; }
+  .float img { width: 100%; height: 100%; object-fit: cover; filter: none; }
 
   @media (max-width: 900px) {
     .story__grid { grid-template-columns: 1fr; }

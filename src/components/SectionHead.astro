@@ -1,0 +1,17 @@
+---
+interface Props {
+  n?: string;
+  label: string;
+  tag?: 'h2' | 'h3';
+}
+const { n, label, tag: Tag = 'h2' } = Astro.props;
+---
+<div class="sh">
+  <div>
+    <p class="label muted">{n ? `${n} — ${label}` : label}</p>
+    <Tag class="h2 sh__title" data-reveal><slot /></Tag>
+  </div>
+  {Astro.slots.has('aside') && (
+    <div class="sh__aside prose muted" data-reveal style="--d:.08s"><slot name="aside" /></div>
+  )}
+</div>

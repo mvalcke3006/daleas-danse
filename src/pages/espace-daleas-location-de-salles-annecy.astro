@@ -1,7 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
 import { site, sms } from '../data/site';
 import studio from '../assets/img/espacedaleas-salle1.jpg';
 
@@ -21,32 +21,36 @@ const features = [
   </PageHero>
 
 
-  <section class="feats stage">
-    {features.map(([k, v], i) => (
-      <div class="feat" style={`--x:${[0, 5, 2][i]}rem`} data-reveal>
-        <p class="label">{String(i + 1).padStart(2, '0')}</p>
-        <p class="feat__k display">{k}</p>
-        <p class="prose grey">{v}</p>
-      </div>
-    ))}
+  <section class="wrap sec">
+    <SectionHead n="01" label="L’espace">Au cœur<br /><em>d’Annecy</em>
+      <Fragment slot="aside">{site.address.venue}, {site.address.street}, {site.address.zip} {site.address.city}.</Fragment>
+    </SectionHead>
+    <ul class="cols" style="--n:3">
+      {features.map(([k, v], i) => (
+        <li class="card on-paper lit feat" data-reveal style={`--d:${i * 0.06}s`}>
+          <p class="label muted">{String(i + 1).padStart(2, '0')}</p>
+          <p class="h3 feat__k">{k}</p>
+          <p class="prose muted">{v}</p>
+        </li>
+      ))}
+    </ul>
   </section>
 
-  <section class="book stage" data-reveal>
-    <p class="intro">Réserver <span class="display">par écrit</span></p>
-    <p class="prose book__txt">Précisez l’activité, les créneaux et la fréquence souhaités.</p>
-    <div class="book__links">
-      <a href={sms(site.rentalPhone)} class="btn">SMS — {site.rentalPhone}</a>
-      <a href={`mailto:${site.email}?subject=Location%20de%20salle`} class="btn btn--ghost">E-mail</a>
-      <a href={site.links.espace} class="btn btn--ghost" target="_blank" rel="noopener">espacedaleas.fr</a>
+  <section class="on-black sec stage">
+    <div class="wrap">
+      <SectionHead n="02" label="Réserver">Par écrit,<br /><em>tout simplement</em>
+        <Fragment slot="aside">Précisez l’activité, les créneaux et la fréquence souhaités.</Fragment>
+      </SectionHead>
+      <div class="ctas" data-reveal>
+        <a href={sms(site.rentalPhone)} class="btn">SMS — {site.rentalPhone}</a>
+        <a href={`mailto:${site.email}?subject=Location%20de%20salle`} class="tlink">E-mail</a>
+        <a href={site.links.espace} class="tlink" target="_blank" rel="noopener">espacedaleas.fr</a>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .feats { display: flex; flex-direction: column; align-items: center; gap: 4.5rem; padding: clamp(8rem, 14vw, 11rem) 1rem 0; }
-  .feat { width: min(20rem, 100%); transform: translateX(var(--x)); }
-  .feat__k { font-size: 1.9rem; font-weight: 320; letter-spacing: -0.02em; line-height: 1.1; margin: 0.5rem 0; }
-  .book { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; padding: clamp(8rem, 14vw, 11rem) 1rem 0; text-align: center; }
-  .book__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; margin-top: 0.6rem; }
-  @media (max-width: 700px) { .feat { transform: none; } }
+  .feat { min-height: clamp(220px, 28vh, 300px); }
+  .feat__k { margin-top: auto; }
 </style>

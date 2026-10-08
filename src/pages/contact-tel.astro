@@ -1,87 +1,53 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
 import { site, tel, sms } from '../data/site';
 import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
 ---
 <Base
   title="Contact"
   description="Pour toute demande sur les cours de danse et les stages, contactez Diane ou Delphine Daléas par téléphone. Espace Daléas, 2bis rue Louis Chaumontel, Annecy."
-  footer={false}
 >
   <PageHero kicker="Nous" accent="contacter" image={team} pos="40% 45%">
     Contact<br /><em>un appel suffit</em>
     <Fragment slot="sub">Joignez directement Diane ou Delphine par téléphone.</Fragment>
   </PageHero>
 
-  <section class="people stage">
-    {site.teachers.map((t, i) => (
-      <a href={tel(t.phone)} class="person" data-reveal style={`--d:${i * 0.08}s`}>
-        <p class="label">{t.name}</p>
-        <p class="person__tel display">{t.phone}</p>
-      </a>
-    ))}
-  </section>
-
-  <section class="contact stage">
-    <div class="group g1" data-reveal>
-      <p class="label">Location de salles</p>
-      <ul class="prose">
-        <li><a href={sms(site.rentalPhone)}>SMS — {site.rentalPhone}</a></li>
-        <li style="padding-left:.6em"><a href={`mailto:${site.email}`}>{site.email}</a></li>
-      </ul>
-    </div>
-    <div class="group g2" data-reveal>
-      <p class="label">Adresse</p>
-      <ul class="prose">
-        <li>{site.address.venue}</li>
-        <li style="padding-left:.5em">{site.address.street}</li>
-        <li style="padding-left:1.3em">{site.address.zip} {site.address.city}</li>
-        <li style="padding-left:.3em"><a href={site.mapsUrl} target="_blank" rel="noopener" class="ulink">Itinéraire</a></li>
-      </ul>
-    </div>
-    <div class="group g3" data-reveal>
-      <p class="label">Suivre</p>
-      <ul class="prose">
-        {site.socials.map((s, i) => <li style={`padding-left:${[0, 0.7, 1.6][i]}em`}><a href={s.href} target="_blank" rel="noopener">{s.label}</a></li>)}
-      </ul>
+  <section class="wrap sec sec--tight">
+    <SectionHead n="01" label="Cours & stages">Diane<br /><em>& Delphine</em></SectionHead>
+    <div class="pcards cols">
+      {site.teachers.map((t, i) => (
+        <a href={tel(t.phone)} class="pcard" data-reveal style={`--d:${i * 0.08}s`}>
+          <span class="label">{t.name} — appeler</span>
+          <span class="pcard__tel xl">{t.phone}</span>
+        </a>
+      ))}
     </div>
   </section>
 
-  <p class="legal label grey"><a href="/mentions-legales/">Mentions légales</a> — © {new Date().getFullYear()} Daléas Danse</p>
+  <section class="wrap sec">
+    <SectionHead n="02" label="Infos">Nous trouver</SectionHead>
+    <div class="cols" style="--n:3">
+      <div class="info" data-reveal>
+        <p class="label muted">Adresse</p>
+        <p class="prose">{site.address.venue}<br />{site.address.street}<br />{site.address.zip} {site.address.city}</p>
+        <a href={site.mapsUrl} target="_blank" rel="noopener" class="tlink">Itinéraire</a>
+      </div>
+      <div class="info" data-reveal style="--d:.06s">
+        <p class="label muted">Location de salles</p>
+        <p class="prose"><a href={sms(site.rentalPhone)}>SMS — {site.rentalPhone}</a><br /><a href={`mailto:${site.email}`}>{site.email}</a></p>
+      </div>
+      <div class="info" data-reveal style="--d:.12s">
+        <p class="label muted">Suivre</p>
+        <p class="prose">{site.socials.map((s) => <><a href={s.href} target="_blank" rel="noopener">{s.label}</a><br /></>)}</p>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style>
-  .people { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; padding: 0 var(--side); }
-  .person {
-    flex: 1 1 280px;
-    max-width: 420px;
-    padding: 14px;
-    border-radius: 4px;
-    background: var(--chip);
-    transition: background-color 0.4s var(--ease-out);
-  }
-  .person:hover { background: var(--black); color: var(--white); }
-  .person__tel { font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 300; letter-spacing: -0.03em; margin-top: 3rem; font-variant-numeric: tabular-nums; }
-
-  .contact {
-    display: grid;
-    grid-template-columns: 1fr clamp(130px, 14vw, 200px) 1fr;
-    grid-template-rows: auto auto auto;
-    row-gap: 4rem;
-    align-items: center;
-    padding: clamp(7rem, 12vw, 10rem) 1rem 8rem;
-  }
-  .contact__emb { grid-column: 2; grid-row: 1 / 4; display: flex; justify-content: center; }
-  .group .label { margin-bottom: 1.2rem; }
-  .group a:hover { opacity: 0.5; }
-  .g1 { grid-column: 1; grid-row: 1; justify-self: end; margin-right: 3rem; }
-  .g2 { grid-column: 3; grid-row: 2; justify-self: start; margin-left: 2rem; }
-  .g3 { grid-column: 1; grid-row: 3; justify-self: end; }
-  .legal { text-align: center; padding: 0 1rem 12px; }
-  @media (max-width: 700px) {
-    .contact { grid-template-columns: 1fr; }
-    .contact__emb { grid-column: 1; grid-row: auto; }
-    .g1, .g2, .g3 { grid-column: 1; grid-row: auto; justify-self: center; margin: 0; }
-  }
+  .info { display: grid; gap: 1rem; align-content: start; padding-top: 1.25rem; border-top: 1px solid var(--ink); justify-items: start; }
+  .info .prose a { transition: color 0.3s var(--ease-out); }
+  .info .prose a:hover { color: var(--plum); }
 </style>

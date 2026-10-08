@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
 import {
   season, membership, kidsPricing, mainPricing, unlimited, singleClass, card10, pricingRules,
 } from '../data/site';
@@ -23,113 +24,91 @@ const extras = [
     </Fragment>
   </PageHero>
 
-  <section class="wrap">
-    {tables.map((t) => (
-      <div class="tbl" data-reveal>
-        <div class="tbl__head">
-          <h2 class="tbl__title display">{t.title}</h2>
-          <p class="label grey">{t.audience}</p>
-        </div>
-        <table>
-          <caption class="sr-only">Tarifs {t.title}, par trimestre et à l’année</caption>
-          <thead>
-            <tr class="label">
-              <th scope="col"><span class="sr-only">Formule</span></th>
-              {t.periods.map((p) => <th scope="col">{p}</th>)}
-              <th scope="col">Année</th>
+  {tables.map((t, ti) => (
+    <section class="wrap sec sec--tight tbl">
+      <SectionHead n={String(ti + 1).padStart(2, '0')} label={t.audience}>{t.title}</SectionHead>
+      <table data-reveal>
+        <caption class="sr-only">Tarifs {t.title}, par trimestre et à l’année</caption>
+        <thead>
+          <tr class="label">
+            <th scope="col"><span class="sr-only">Formule</span></th>
+            {t.periods.map((p) => <th scope="col">{p}</th>)}
+            <th scope="col">Année</th>
+          </tr>
+        </thead>
+        <tbody>
+          {t.rows.map((r) => (
+            <tr>
+              <th scope="row" class="label">{r.label}</th>
+              {r.prices.map((p, i) => <td data-label={t.periods[i]}>{p} €</td>)}
+              <td data-label="Année" class="year"><span>{r.year} €</span></td>
             </tr>
-          </thead>
-          <tbody>
-            {t.rows.map((r) => (
-              <tr>
-                <th scope="row" class="label">{r.label}</th>
-                {r.prices.map((p, i) => <td data-label={t.periods[i]}>{p} €</td>)}
-                <td data-label="Année" class="year"><span class="chip">{r.year} €</span></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ))}
+          ))}
+        </tbody>
+      </table>
+    </section>
+  ))}
 
-    <ul class="extras">
+  <section class="wrap sec sec--tight">
+    <SectionHead n="03" label="Formules libres">Sans engagement,<br /><em>ou sans limite</em></SectionHead>
+    <ul class="cols extras" style="--n:3">
       {extras.map((e, i) => (
-        <li data-reveal style={`--d:${i * 0.06}s`}>
-          <p class="label">{e.k}</p>
-          <p class="extras__v display">{e.v} €</p>
-          <p class="label grey">{e.note}</p>
+        <li class={`card ${i === 2 ? 'on-black' : 'on-paper'} lit`} data-reveal style={`--d:${i * 0.06}s`}>
+          <p class="label muted">{e.k}</p>
+          <p class="card__num xl">{e.v}<small>€</small></p>
+          <p class="label muted">{e.note}</p>
         </li>
       ))}
     </ul>
   </section>
 
-  <section class="rules stage">
-    <div class="chapter-head" data-reveal><p class="label">Règlement</p><p class="num">§</p><h2 class="label">Modalités</h2></div>
-    <div class="rules__cols">
-      <div class="rules__l" data-reveal>
-        <p class="label">Forfait trimestriel</p>
-        {pricingRules.quarterly.map((r) => <p class="prose">{r}</p>)}
-        <p class="label rules__gap">Bon à savoir</p>
-        {pricingRules.general.map((r) => <p class="prose">{r}</p>)}
+  <section class="on-black sec stage">
+    <div class="wrap">
+      <SectionHead n="04" label="Règlement">Modalités</SectionHead>
+      <div class="cols rules">
+        <div data-reveal>
+          <p class="label rules__h">Forfait trimestriel</p>
+          {pricingRules.quarterly.map((r) => <p class="prose">{r}</p>)}
+          <p class="label rules__h">Bon à savoir</p>
+          {pricingRules.general.map((r) => <p class="prose">{r}</p>)}
+        </div>
+        <div data-reveal style="--d:.1s">
+          <p class="label rules__h">Forfait annuel</p>
+          {pricingRules.yearly.map((r) => <p class="prose">{r}</p>)}
+          <p class="label rules__h">Réduction</p>
+          <p class="prose">{pricingRules.discount}</p>
+        </div>
       </div>
-      <div class="rules__r" data-reveal style="--d:.1s">
-        <p class="label">Forfait annuel</p>
-        {pricingRules.yearly.map((r) => <p class="prose">{r}</p>)}
-        <p class="label rules__gap">Réduction</p>
-        <p class="prose">{pricingRules.discount}</p>
+      <div class="ctas rules__cta" data-reveal>
+        <a href="/horaires/" class="btn">Choisir un cours</a>
+        <a href="/contact-tel/" class="tlink">Poser une question</a>
       </div>
-    </div>
-    <div class="rules__cta" data-reveal>
-      <a href="/horaires/" class="btn">Choisir un cours</a>
-      <a href="/contact-tel/" class="btn btn--ghost">Poser une question</a>
     </div>
   </section>
 </Base>
 
 <style>
-  .wrap { max-width: 1100px; margin-inline: auto; padding-inline: var(--side); }
-  .tbl { padding: 3rem 0; border-top: 1px solid var(--hair); }
-  .tbl__head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin-bottom: 2rem; }
-  .tbl__title { font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 320; letter-spacing: -0.025em; line-height: 1; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { text-align: right; padding: 0.9rem 0.5rem; border-bottom: 1px solid var(--hair); font-weight: inherit; }
-  thead th { color: var(--grey); padding-top: 0; }
-  tbody th { text-align: left; }
-  tbody tr:last-child > * { border-bottom: 0; }
-  td { font-family: var(--display); font-size: 20px; font-variant-numeric: tabular-nums; }
-  .year .chip { font-family: var(--display); font-size: 18px; line-height: 1.1; background: var(--black); color: var(--white); }
+  table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--ink); }
+  th, td { text-align: right; padding: 1.1rem 0.5rem; border-bottom: 1px solid var(--line); font-weight: inherit; }
+  thead th { color: var(--muted); }
+  tbody th { text-align: left; padding-left: 0; }
+  td { font-size: clamp(18px, 1.6vw, 22px); font-weight: 300; font-variant-numeric: tabular-nums; }
+  .year span { display: inline-block; padding: 6px 12px; border-radius: 999px; background: var(--ink); color: var(--white); font-weight: 400; }
 
-  .extras {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-    margin: 3rem 0 0;
-  }
-  .extras li { padding: 14px; border-radius: 4px; background: var(--chip); display: flex; flex-direction: column; gap: 4px; }
-  .extras__v { font-size: clamp(2.6rem, 4.4vw, 3.8rem); font-weight: 300; letter-spacing: -0.03em; line-height: 1; margin: 2.5rem 0 0.4rem; }
+  .extras .card { min-height: clamp(240px, 30vh, 320px); }
+  .card__num small { font-size: 0.4em; margin-left: 0.1em; vertical-align: 0.9em; }
 
-  .rules { padding: clamp(8rem, 14vw, 11rem) 1rem 2rem; }
-  .rules__cols {
-    display: grid;
-    grid-template-columns: 1fr clamp(80px, 10vw, 150px) 1fr;
-    margin-top: 5rem;
-  }
-  .rules__l { grid-column: 1; justify-self: end; max-width: 19rem; text-align: right; }
-  .rules__r { grid-column: 3; max-width: 19rem; margin-top: 7rem; }
-  .rules .label { margin-bottom: 0.8rem; }
-  .rules .prose { margin-bottom: 0.7rem; }
-  .rules__gap { margin-top: 2.5rem; }
-  .rules__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 6rem; }
+  .rules .prose { margin-bottom: 0.7rem; color: var(--fg-muted); }
+  .rules__h { margin: 2.25rem 0 0.9rem; }
+  .rules > div > .rules__h:first-child { margin-top: 0; }
+  .rules__cta { margin-top: clamp(3rem, 6vw, 5rem); }
 
   @media (max-width: 700px) {
     thead { display: none; }
     table, tbody, tr, th, td { display: block; }
-    tbody tr { padding: 1rem 0; border-bottom: 1px solid var(--hair); }
+    tbody tr { padding: 1rem 0; border-bottom: 1px solid var(--line); }
     tbody th { padding: 0 0 0.5rem; border: 0; }
-    td { display: flex; justify-content: space-between; align-items: baseline; padding: 0.4rem 0; border: 0; font-size: 18px; }
-    td::before { content: attr(data-label); font-family: var(--text); font-size: 12px; color: var(--grey); }
-    .extras { grid-template-columns: 1fr; }
-    .rules__cols { grid-template-columns: 1fr; gap: 3rem; }
-    .rules__l, .rules__r { grid-column: 1; justify-self: start; text-align: left; margin-top: 0; }
+    td { display: flex; justify-content: space-between; align-items: baseline; padding: 0.4rem 0; border: 0; }
+    td::before { content: attr(data-label); font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muted); }
   }
 </style>

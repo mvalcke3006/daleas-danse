@@ -25,12 +25,13 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     <Fragment slot="sub">De l’éveil rythmique dès 2 ans ½ jusqu’aux classes avancées.</Fragment>
   </PageHero>
 
-  <section class="planning stage" data-planning>
+  <section class="planning wrap" data-planning>
     <div class="controls" data-reveal>
       <div class="controls__group" role="tablist" aria-label="Affichage">
-        <button class="chip" role="tab" aria-selected="true" data-view="disc">Par cours<sup>1</sup></button>
-        <button class="chip" role="tab" aria-selected="false" data-view="day">Par jour<sup>2</sup></button>
+        <button class="chip" role="tab" aria-selected="true" data-view="disc">Par cours</button>
+        <button class="chip" role="tab" aria-selected="false" data-view="day">Par jour</button>
       </div>
+      <span class="controls__sep" aria-hidden="true"></span>
       <div class="controls__group" role="group" aria-label="Filtrer par discipline">
         <button class="chip" aria-pressed="true" data-filter="all">Tous</button>
         {schedule.map((d) => <button class="chip" aria-pressed="false" data-filter={d.id}>{d.name}</button>)}
@@ -41,17 +42,16 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
       {schedule.map((d, i) => (
         <article class="disc" id={d.id} data-disc={d.id}>
           <header class="disc__head">
-            <p class="label grey">{String(i + 1).padStart(2, '0')}</p>
-            <h2 class="disc__name display">{d.name}</h2>
-            <p class="label">{d.audience}</p>
-            <p class="prose grey disc__desc">{d.description}</p>
+            <p class="label muted">{String(i + 1).padStart(2, '0')} — {d.audience}</p>
+            <h2 class="h2 disc__name">{d.name}</h2>
+            <p class="prose muted disc__desc">{d.description}</p>
           </header>
-          <ul class="slots">
+          <ul class="rows slots">
             {d.slots.map((s) => (
               <li>
                 <span class="label">{s.level}</span>
-                <span class="display slots__day">{s.day}</span>
-                <span class="display slots__time">{s.start} – {s.end}</span>
+                <span class="slots__day">{s.day}</span>
+                <span class="slots__time">{s.start} – {s.end}</span>
               </li>
             ))}
           </ul>
@@ -62,13 +62,13 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
     <div class="week" data-panel="day" hidden>
       {byDay.map(({ day, items }) => (
         <div class="week__col">
-          <h2 class="week__day display">{day}</h2>
+          <h2 class="label week__day">{day}</h2>
           <ul>
             {items.map((it) => (
               <li class="cell" data-disc={it.disc.id}>
-                <span class="display cell__time">{it.start} – {it.end}</span>
+                <span class="cell__time">{it.start} – {it.end}</span>
                 <span class="label">{it.disc.name}</span>
-                <span class="label grey">{it.level}</span>
+                <span class="label muted">{it.level}</span>
               </li>
             ))}
           </ul>
@@ -76,94 +76,92 @@ const total = schedule.reduce((n, d) => n + d.slots.length, 0);
       ))}
     </div>
 
-    <div class="notes label">
-      <p>Pas de cours pendant les vacances scolaires et les jours fériés.<br />Cours dispensés de septembre à juin.</p>
-      <a href="/daleas-danse-annecy-tarifs/" class="btn btn--ghost">Voir les tarifs</a>
+    <div class="notes">
+      <p class="prose muted">Pas de cours pendant les vacances scolaires et les jours fériés.<br />Cours dispensés de septembre à juin.</p>
+      <div class="ctas">
+        <a href="/daleas-danse-annecy-tarifs/" class="btn">Voir les tarifs</a>
+        <a href="/contact-tel/" class="tlink">Une question</a>
+      </div>
     </div>
   </section>
 </Base>
 
 <style>
-  .planning { padding: 0 var(--side) 4rem; max-width: 1240px; margin-inline: auto; }
+  .planning { padding-bottom: var(--section); }
   .controls {
     position: sticky;
-    top: 48px;
+    top: 88px;
     z-index: 5;
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: center;
-    gap: 8px 20px;
-    padding: 10px 0;
-    margin-bottom: 4rem;
-    background: rgba(255, 255, 255, 0.9);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
+    gap: 6px 10px;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto clamp(3rem, 6vw, 5rem);
+    padding: 6px;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.72);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 18px 40px -28px rgba(20, 22, 23, 0.45);
   }
   .controls__group { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; }
-  .controls .chip[aria-selected='true'], .controls .chip[aria-pressed='true'] { background: var(--black); color: var(--white); }
+  .controls__sep { width: 1px; height: 22px; background: var(--line); }
+  .controls .chip { border-radius: 999px; background: transparent; padding: 9px 14px; transition: background-color 0.3s var(--ease-out), color 0.3s var(--ease-out); }
+  .controls .chip[aria-selected='true'], .controls .chip[aria-pressed='true'] { background: var(--ink); color: var(--white); }
 
   [data-disc].is-off { display: none; }
 
   .disc {
     display: grid;
-    grid-template-columns: 1fr 1.35fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
     gap: 2rem clamp(2rem, 6vw, 6rem);
-    padding: 3.5rem 0;
-    border-top: 1px solid var(--hair);
-    scroll-margin-top: 9rem;
+    padding: clamp(2.5rem, 5vw, 4rem) 0;
+    scroll-margin-top: 10rem;
     animation: fade 0.7s var(--ease-out) both;
   }
-  .disc__head { display: flex; flex-direction: column; gap: 0.6rem; }
-  .disc__name { font-size: clamp(2rem, 3.4vw, 3rem); font-weight: 320; line-height: 1; letter-spacing: -0.025em; }
-  .disc__desc { max-width: 20rem; margin-top: 0.6rem; }
-  .slots li {
-    display: grid;
-    grid-template-columns: 1.3fr 0.7fr 0.9fr;
-    gap: 1rem;
-    align-items: baseline;
-    padding: 0.85rem 0;
-    border-bottom: 1px solid var(--hair);
-  }
-  .slots li:first-child { padding-top: 0.4rem; }
-  .slots__day, .slots__time { font-size: 17px; }
-  .slots__day { text-transform: capitalize; }
+  .disc + .disc { border-top: 1px solid var(--line); }
+  .disc__head { display: flex; flex-direction: column; gap: 0.9rem; }
+  .disc__name { margin: 0; }
+  .disc__desc { max-width: 24rem; }
+  .slots { --rc: minmax(0, 1.3fr) minmax(0, 0.7fr) minmax(0, 0.9fr); }
+  .slots__day, .slots__time { font-size: 17px; font-weight: 300; text-transform: uppercase; letter-spacing: 0.02em; }
   .slots__time { text-align: right; font-variant-numeric: tabular-nums; }
 
-  .week { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .week { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
   .week[hidden] { display: none; }
-  .week__day { font-size: 1.7rem; font-weight: 320; text-transform: capitalize; letter-spacing: -0.02em; margin-bottom: 1rem; }
-  .week ul { display: grid; gap: 4px; }
+  .week__day { margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--ink); }
+  .week ul { display: grid; gap: 6px; }
   .cell {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 10px;
-    border-radius: 4px;
-    background: var(--chip);
+    padding: 12px;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.55);
     animation: fade 0.6s var(--ease-out) both;
   }
-  .cell__time { font-size: 17px; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+  .cell__time { font-size: 17px; font-weight: 300; margin-bottom: 6px; font-variant-numeric: tabular-nums; }
 
   @keyframes fade { from { opacity: 0; transform: translateY(8px); } }
 
-  .notes {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.25rem;
-    text-align: center;
-    margin-top: 6rem;
-  }
+  .notes { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1.5rem 3rem; margin-top: clamp(3rem, 6vw, 5rem); padding-top: 1.5rem; border-top: 1px solid var(--ink); }
 
   @media (max-width: 1000px) {
-    .week { grid-template-columns: repeat(3, 1fr); row-gap: 2.5rem; }
+    .week { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 2.5rem; }
   }
   @media (max-width: 700px) {
-    .controls { position: static; }
+    .controls { position: static; border-radius: 18px; }
+    .controls__sep { display: none; }
     .disc { grid-template-columns: 1fr; }
-    .slots li { grid-template-columns: 1fr auto; }
+    .slots { --rc: 1fr auto; }
     .slots li .label { grid-column: 1 / -1; }
     .week { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 700px) {
+    .slots > li { grid-template-columns: 1fr auto; }
   }
 </style>
 
