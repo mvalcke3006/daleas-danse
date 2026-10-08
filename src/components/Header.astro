@@ -153,6 +153,8 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
   .roll__in::after { content: attr(data-t); position: absolute; left: 0; top: 100%; }
   a:hover .roll__in, button:hover .roll__in { transform: translateY(-100%); }
 
+  :global(.theme-veil) { position: fixed; inset: 0; z-index: 200; pointer-events: none; opacity: 0; }
+
   .menu {
     position: fixed;
     inset: 0;
@@ -284,6 +286,7 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
     meta?.setAttribute('content', dark ? '#000000' : '#ffffff');
   };
   syncTheme();
+  let busy = false;
   themeBtn.addEventListener('click', () => {
     const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
     const apply = () => {
@@ -292,30 +295,26 @@ const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWi
       try { localStorage.setItem('dd-theme', next); } catch {}
       syncTheme();
     };
-    const doc = document as Document & { startViewTransition?: (cb: () => void) => { ready: Promise<void>; finished: Promise<void> } };
-    if (!doc.startViewTransition || matchMedia('(prefers-reduced-motion: reduce)').matches) { apply(); return; }
-    root.classList.add('is-theming');
-    const vt = doc.startViewTransition(apply);
-    vt.ready.then(() => {
-      const ease = 'cubic-bezier(0.65, 0, 0.35, 1)';
-      root.animate(
-        [
-          { filter: 'blur(0px) contrast(1)', transform: 'scale(1)', opacity: 1 },
-          { filter: 'blur(18px) contrast(1.25)', transform: 'scale(1.035, 1.015) skewX(-0.6deg)', opacity: 1, offset: 0.55 },
-          { filter: 'blur(30px) contrast(1.4)', transform: 'scale(1.06, 1.02) skewX(-1deg)', opacity: 0 },
-        ],
-        { duration: 1000, easing: ease, fill: 'forwards', pseudoElement: '::view-transition-old(root)' }
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { apply(); return; }
+    if (busy) return;
+    busy = true;
+    const veil = document.createElement('div');
+    veil.className = 'theme-veil';
+    veil.style.background = next === 'dark' ? 'rgba(0, 0, 0, 0.72)' : 'rgba(255, 255, 255, 0.72)';
+    document.body.append(veil);
+    const ease = 'cubic-bezier(0.65, 0, 0.35, 1)';
+    const inAnim = veil.animate(
+      [{ opacity: 0, backdropFilter: 'blur(0px)' }, { opacity: 1, backdropFilter: 'blur(24px)' }],
+      { duration: 380, easing: ease, fill: 'forwards' }
+    );
+    inAnim.finished.then(() => {
+      apply();
+      const outAnim = veil.animate(
+        [{ opacity: 1, backdropFilter: 'blur(24px)' }, { opacity: 0, backdropFilter: 'blur(0px)' }],
+        { duration: 520, easing: ease, fill: 'forwards' }
       );
-      root.animate(
-        [
-          { filter: 'blur(30px) contrast(1.4)', transform: 'scale(0.96, 1.03) skewX(1deg)', opacity: 0 },
-          { filter: 'blur(14px) contrast(1.15)', transform: 'scale(0.985, 1.01) skewX(0.4deg)', opacity: 0.6, offset: 0.45 },
-          { filter: 'blur(0px) contrast(1)', transform: 'none', opacity: 1 },
-        ],
-        { duration: 1000, easing: ease, fill: 'forwards', pseudoElement: '::view-transition-new(root)' }
-      );
+      outAnim.finished.then(() => { veil.remove(); busy = false; });
     });
-    vt.finished.finally(() => root.classList.remove('is-theming'));
   });
 
   const setOpen = (open: boolean) => {

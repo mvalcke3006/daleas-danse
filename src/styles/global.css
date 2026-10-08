@@ -495,7 +495,5 @@ html[data-theme='dark'] .on-black.stage::before, html[data-theme='dark'] .on-bla
 html[data-theme='dark'] :is(.lit, .media, .tile__img, .card, .contact__card, .gal__item, .ph__img) { box-shadow: 0 24px 46px -26px rgba(0, 0, 0, 0.8); }
 html[data-theme='dark'] ::selection { background: var(--ink); color: var(--paper); }
 
-.is-theming::view-transition-old(root), .is-theming::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
-.is-theming::view-transition-old(nav), .is-theming::view-transition-new(nav) { animation: none; }
 
 .grain, .lightfx, .bglight__spot, .bglight::before, .bglight::after, .on-black.stage::before, .on-black.stage::after { display: none; }

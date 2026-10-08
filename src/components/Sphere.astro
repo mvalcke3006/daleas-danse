@@ -78,9 +78,10 @@ const imgs = await Promise.all(
 
   <div class="sph__ui">
     <p class="sph__count label" aria-live="polite"><span data-cur-n>01</span> / {String(tiles.length).padStart(2, '0')}</p>
-    <div class="sph__caption" aria-hidden="true">
+    <div class="sph__caption">
       <p class="sph__ct" data-cap-t>{tiles[0].title}</p>
       <p class="label muted" data-cap-c>{tiles[0].cap}</p>
+      <a class="sph__more" href={`${base}${tiles[0].href}`} data-more>Voir la page</a>
     </div>
     <div class="sph__ctrls">
       <button class="sph__btn" data-prev aria-label="Photo précédente"><span aria-hidden="true">←</span></button>
@@ -99,7 +100,7 @@ const imgs = await Promise.all(
 
   <div class="sph__foot label">
     <span>École de danse privée<br />Annecy</span>
-    <span class="muted sph__hint">Glisser pour explorer</span>
+    <span class="muted sph__hint">Cliquer sur une photo pour l’agrandir — glisser pour tourner</span>
     <span class="r">Modern’Jazz, Moderne<br />Classe chorégraphique, Yoga</span>
   </div>
 </section>
@@ -140,6 +141,9 @@ const imgs = await Promise.all(
   .sph__count { position: absolute; left: var(--side); top: clamp(6rem, 14vh, 8rem); font-feature-settings: 'tnum' 1; }
   .sph__caption { position: absolute; left: var(--side); top: calc(clamp(6rem, 14vh, 8rem) + 1.75rem); display: grid; gap: 0.35rem; pointer-events: none; }
   .sph__ct { font-size: clamp(1.6rem, 3vw, 2.8rem); font-weight: 300; line-height: 1; letter-spacing: var(--tr-h2); text-transform: uppercase; transition: opacity 0.3s var(--ease-out), transform 0.5s var(--ease-expo); }
+  .sph__caption { pointer-events: auto; }
+  .sph__more { justify-self: start; margin-top: 0.5rem; font-size: 12px; letter-spacing: var(--tr-caps); text-transform: uppercase; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; padding-bottom: 2px; transition: color 0.3s var(--ease-out); }
+  .sph__more:hover { color: var(--plum); }
   .sph__caption.is-swap .sph__ct { opacity: 0; transform: translateY(8px); }
   .sph__ctrls { position: absolute; right: var(--side); top: clamp(6rem, 14vh, 8rem); display: flex; align-items: center; gap: 6px; }
   .sph__btn {
@@ -208,7 +212,7 @@ const imgs = await Promise.all(
   }
   .sph__foot .r { text-align: right; }
   @media (max-width: 640px) {
-    .sph__hint { display: none; }
+    .sph__hint { font-size: 10px; }
     .sph__ctrls { top: auto; bottom: calc(clamp(3.5rem, 8vh, 5rem) + 3rem); right: 50%; translate: 50% 0; }
     .sph__count, .sph__caption { top: clamp(5.5rem, 12vh, 7rem); }
     .sph__tile { --u: clamp(40px, 12vw, 60px); }
@@ -295,12 +299,14 @@ const imgs = await Promise.all(
     };
     requestAnimationFrame(frame);
 
+    const more = root.querySelector<HTMLAnchorElement>('[data-more]')!;
     const showCap = (i: number) => {
       curN.textContent = String(i + 1).padStart(2, '0');
       capBox.classList.add('is-swap');
       setTimeout(() => {
         capT.textContent = tiles[i].dataset.title || '';
         capC.textContent = tiles[i].dataset.cap || '';
+        more.href = tiles[i].getAttribute('href') || '#';
         capBox.classList.remove('is-swap');
       }, 220);
     };
@@ -375,6 +381,12 @@ const imgs = await Promise.all(
     }, { passive: true });
     addEventListener('pointerup', () => { dragging = false; root.classList.remove('is-drag'); });
     root.addEventListener('click', (e) => { if (moved > 8) e.preventDefault(); }, true);
+    tiles.forEach((tile, i) => {
+      tile.addEventListener('click', (e) => {
+        if (moved > 8) return;
+        if (focus !== i || auto) { e.preventDefault(); center(i); }
+      });
+    });
 
     addEventListener('scroll', () => {
       if (!reduce) vy += (scrollY - lastScroll) * 0.00012;
