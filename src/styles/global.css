@@ -309,21 +309,6 @@ h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; }
   .lightfx { display: none; }
 }
 
-.plumfx {
-  position: fixed;
-  inset: 0;
-  z-index: 45;
-  pointer-events: none;
-  background: radial-gradient(circle clamp(140px, 16vmax, 280px) at var(--mx, -50vw) var(--my, -50vh), rgba(136, 24, 107, 0.34), rgba(136, 24, 107, 0.12) 45%, rgba(136, 24, 107, 0) 100%);
-  mix-blend-mode: multiply;
-  opacity: 0;
-  transition: opacity 0.6s var(--ease-out);
-}
-.is-pointer .plumfx { opacity: 1; }
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .plumfx { display: none; }
-}
-
 .stage {
   position: relative;
   isolation: isolate;
@@ -421,4 +406,11 @@ html { background: #ececeb; }
 @keyframes vt-in { from { opacity: 0; filter: blur(10px); transform: translateY(24px); } }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+}
+
+.btn:hover, .on-cream .btn:hover, .on-black .btn:hover, .btn--ghost:hover, .on-cream .btn--ghost:hover, .on-black .btn--ghost:hover,
+.chip[href]:hover, .nav__pill:hover:not([aria-expanded='true']) {
+  background: var(--plum);
+  color: var(--white);
+  box-shadow: none;
 }

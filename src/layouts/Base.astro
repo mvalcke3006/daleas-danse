@@ -91,7 +91,6 @@ const breadcrumb = crumbs.length
     {footer && <Footer />}
     <Edges />
     <div class="lightfx" aria-hidden="true"></div>
-    <div class="plumfx" aria-hidden="true"></div>
     <div class="grain" aria-hidden="true"></div>
     <div class="cur" aria-hidden="true" data-cur><span class="cur__ring"></span><span class="cur__label" data-cur-label>Voir</span></div>
 
@@ -214,7 +213,7 @@ const breadcrumb = crumbs.length
         };
         addEventListener('pointermove', (e) => {
           kx = e.clientX; ky = e.clientY;
-          if (!curOn) { curOn = true; qx = kx; qy = ky; cur.classList.add('is-on'); document.documentElement.classList.add('is-pointer'); }
+          if (!curOn) { curOn = true; qx = kx; qy = ky; cur.classList.add('is-on'); }
           curState(e.target as Element);
         }, { passive: true });
         let curPending = false;
@@ -223,8 +222,8 @@ const breadcrumb = crumbs.length
           curPending = true;
           requestAnimationFrame(() => { curPending = false; curState(document.elementFromPoint(kx, ky)); });
         }, { passive: true });
-        document.addEventListener('pointerleave', () => { cur.classList.remove('is-on'); document.documentElement.classList.remove('is-pointer'); });
-        document.addEventListener('pointerenter', () => { cur.classList.add('is-on'); document.documentElement.classList.add('is-pointer'); });
+        document.addEventListener('pointerleave', () => { cur.classList.remove('is-on'); });
+        document.addEventListener('pointerenter', () => { cur.classList.add('is-on'); });
         addEventListener('pointerdown', () => cur.classList.add('is-down'));
         addEventListener('pointerup', () => cur.classList.remove('is-down'));
 
@@ -288,7 +287,7 @@ const breadcrumb = crumbs.length
         mix-blend-mode: difference;
         transition: scale 0.5s var(--ease-expo), background-color 0.3s var(--ease-out), opacity 0.3s var(--ease-out);
       }
-      .cur.is-link .cur__ring { scale: 1.7; background: #fff; }
+      .cur.is-link .cur__ring { scale: 0.22; background: #fff; }
       .cur.is-down .cur__ring { scale: 0.7; }
       .cur.is-view .cur__ring { opacity: 0; }
       .cur__label {
