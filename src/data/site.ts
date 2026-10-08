@@ -137,6 +137,13 @@ export const schedule: Discipline[] = [
   },
 ];
 
+export const ages = [
+  { id: 'petits', label: '2 ans ½ – 5 ans', short: 'Tout-petits', discs: ['eveil'] },
+  { id: 'enfants', label: '6 – 9 ans', short: 'Enfants', discs: ['initiation'] },
+  { id: 'ados', label: '10 – 17 ans', short: 'Ados', discs: ['ado', 'moderne', 'choregraphique'] },
+  { id: 'adultes', label: '18 ans et +', short: 'Adultes', discs: ['adultes', 'moderne', 'choregraphique'] },
+];
+
 export const membership = [
   { label: 'Par personne', price: 20 },
   { label: 'Par famille', price: 35 },

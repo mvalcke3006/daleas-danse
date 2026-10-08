@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import TitleHero from '../components/TitleHero.astro';
 import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
-import { schedule, days, season } from '../data/site';
+import { schedule, days, season, ages } from '../data/site';
 
 const toMin = (t: string) => {
   const [h, m] = t.split('h').map(Number);
@@ -53,9 +53,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     </div>
     <div class="hh__row">
       <p class="lead">{total} cours par semaine, de l’éveil rythmique dès 2 ans ½ aux classes avancées.</p>
-      <div class="hh__filters" role="group" aria-label="Mettre en avant une discipline">
-        <button class="hf-chip" aria-pressed="true" data-filter="all">Tout</button>
-        {schedule.map((d) => <button class="hf-chip" aria-pressed="false" data-filter={d.id}>{d.name}</button>)}
+      <div class="hh__filters" role="group" aria-label="Pour qui ?">
+        <span class="label muted hh__q">Pour qui ?</span>
+        <button class="hf-chip" aria-pressed="true" data-filter="all">Tout le monde</button>
+        {ages.map((a) => <button class="hf-chip" aria-pressed="false" data-filter={a.id} data-discs={a.discs.join(' ')}>{a.short} <small>{a.label}</small></button>)}
       </div>
     </div>
   </section>
@@ -170,6 +171,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
     transition: color 0.3s var(--ease-out), background-size 0.5s var(--ease-expo);
   }
   .hf-chip:hover { color: var(--plum); }
+  .hf-chip small { font-size: 10px; letter-spacing: 0.04em; opacity: 0.7; margin-left: 4px; }
+  .hh__q { margin-right: 6px; }
   .hf-chip[aria-pressed='true'] { color: var(--fg); background-size: 100% 1px; }
 
   .agenda {
@@ -296,14 +299,24 @@ const pad = (n: number) => String(n).padStart(2, '0');
   const agenda = document.querySelector<HTMLElement>('[data-agenda]')!;
   const daysList = document.querySelector<HTMLElement>('.days')!;
   const chips = [...document.querySelectorAll<HTMLButtonElement>('.hf-chip')];
-  const setFilter = (f: string) => {
-    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === f)));
+  let current = 'all';
+  const highlight = (ids: string[] | null) => {
     [agenda, daysList].forEach((root) => {
-      root.classList.toggle('is-filtered', f !== 'all');
-      root.querySelectorAll<HTMLElement>('[data-disc]').forEach((el) => el.classList.toggle('is-on', el.dataset.disc === f));
+      root.classList.toggle('is-filtered', !!ids);
+      root.querySelectorAll<HTMLElement>('[data-disc]').forEach((el) => el.classList.toggle('is-on', !!ids && ids.includes(el.dataset.disc!)));
     });
   };
-  chips.forEach((c) => c.addEventListener('click', () => setFilter(c.dataset.filter!)));
+  const setAge = (id: string) => {
+    current = id;
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === id)));
+    const chip = chips.find((c) => c.dataset.filter === id);
+    highlight(id === 'all' || !chip ? null : (chip.dataset.discs || '').split(' '));
+    const url = new URL(location.href);
+    if (id === 'all') url.searchParams.delete('age'); else url.searchParams.set('age', id);
+    history.replaceState(null, '', url);
+  };
+  const setFilter = (disc: string) => highlight(disc === 'all' ? null : [disc]);
+  chips.forEach((c) => c.addEventListener('click', () => setAge(c.dataset.filter!)));
   const sheet = document.querySelector<HTMLElement>('[data-sheet]')!;
   const panel = sheet.querySelector<HTMLElement>('.sheet__panel')!;
   const discs = JSON.parse(panel.dataset.discs || '[]');
@@ -336,14 +349,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
     sheet.hidden = true;
     document.documentElement.style.overflow = '';
     agenda.querySelectorAll('.ev').forEach((e) => e.classList.remove('is-active'));
-    setFilter('all');
+    setAge(current);
     opener?.focus({ preventScroll: true });
   };
   document.querySelectorAll<HTMLElement>('.ev, .days__btn').forEach((b) => b.addEventListener('click', () => open(b)));
   sheet.querySelectorAll('[data-close]').forEach((el) => el.addEventListener('click', close));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
   const hash = location.hash.slice(1);
-  if (hash && chips.some((c) => c.dataset.filter === hash)) setFilter(hash);
+  const ageParam = new URLSearchParams(location.search).get('age');
+  if (ageParam && chips.some((c) => c.dataset.filter === ageParam)) setAge(ageParam);
+  else if (hash && discs.some((d: { id: string }) => d.id === hash)) setFilter(hash);
 
   const parts = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris', hour12: false }).formatToParts(new Date());
   const get = (t: string) => parts.find((p) => p.type === t)?.value || '';
