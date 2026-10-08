@@ -162,7 +162,7 @@ const word = title.toUpperCase();
     const start = () => {
       fit();
       if (reduce) { root.classList.add('is-done'); paint(); return; }
-      const t0 = performance.now(), dur = 1300;
+      const t0 = performance.now(), dur = 900;
       const step = (now: number) => {
         t = (now - t0) / 1000;
         const p = Math.min(1, (now - t0) / dur);
@@ -180,7 +180,7 @@ const word = title.toUpperCase();
       setTimeout(() => {
         if (cancelled || scrollY > 10) return;
         const target = root.getBoundingClientRect().bottom + scrollY;
-        const from = scrollY, dist = target - from, s0 = performance.now(), d = 900;
+        const from = scrollY, dist = target - from, s0 = performance.now(), d = 800;
         const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
         const go = (now: number) => {
           if (cancelled) return;
@@ -189,7 +189,7 @@ const word = title.toUpperCase();
           if (p < 1) requestAnimationFrame(go);
         };
         requestAnimationFrame(go);
-      }, 1700);
+      }, 1250);
     };
     document.fonts.ready.then(start);
     addEventListener('resize', fit);
