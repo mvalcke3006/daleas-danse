@@ -6,204 +6,40 @@ interface Props {
   right: string;
 }
 const { title, accent, left, right } = Astro.props;
-const word = title.toUpperCase();
 ---
-<section class="th" data-th>
-  <div class="th__labels wrap">
+<header class="th wrap">
+  <div class="th__labels">
     <p class="label muted">{left}</p>
     <p class="label muted">{right}</p>
   </div>
-
-  <svg class="th__blob" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-    <defs>
-      <filter id="thw-b" x="-30%" y="-30%" width="160%" height="160%">
-        <feTurbulence type="fractalNoise" baseFrequency="0.006 0.011" numOctaves="3" seed={word.length * 5} result="n" data-turb-b />
-        <feDisplacementMap in="SourceGraphic" in2="n" scale="160" xChannelSelector="R" yChannelSelector="G" result="d" data-disp-b />
-        <feGaussianBlur in="d" stdDeviation="34" data-blur-b />
-      </filter>
-    </defs>
-    <g filter="url(#thw-b)" class="th__blob-g">
-      <ellipse cx="500" cy="300" rx="250" ry="105" />
-      <ellipse cx="610" cy="270" rx="120" ry="70" />
-      <ellipse cx="380" cy="335" rx="140" ry="60" />
-    </g>
-  </svg>
-
   <h1 class="th__title">
-    <span class="sr-only">{accent ? `${title}, ${accent}` : title}</span>
-    <svg class="th__svg" aria-hidden="true" focusable="false" data-th-svg>
-      <defs>
-        <filter id="thw-t" x="-25%" y="-60%" width="150%" height="220%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.01 0.04" numOctaves="2" seed="4" result="n" data-turb-t />
-          <feDisplacementMap in="SourceGraphic" in2="n" scale="120" xChannelSelector="R" yChannelSelector="G" result="d" data-disp-t />
-          <feGaussianBlur in="d" stdDeviation="14" data-blur-t />
-        </filter>
-      </defs>
-      <text x="0" y="0" filter="url(#thw-t)">{word}</text>
-    </svg>
-    {accent && <span class="th__accent" aria-hidden="true">{accent}</span>}
+    <span class="th__word">{title}</span>
+    {accent && <em class="th__accent">{accent}</em>}
   </h1>
-
-  <p class="th__hint label muted" aria-hidden="true"><span></span>Défiler</p>
-</section>
+</header>
 
 <style>
-  .th {
-    --s: 0;
-    --in: 1;
-    position: relative;
-    height: 100dvh;
-    min-height: 520px;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-  }
-  .th__labels { position: absolute; left: 0; right: 0; top: clamp(6.5rem, 13vh, 8.5rem); z-index: 2; display: flex; justify-content: space-between; gap: 1rem; margin-inline: auto; }
-
-  .th__blob {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    color: var(--fg);
-    pointer-events: none;
-    opacity: 0;
-  }
-  .th__blob-g { fill: currentColor; transform-origin: 500px 300px; transform: scale(calc(0.55 + (1 - var(--in)) * 0.9)); }
-
-  .th__title {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    justify-items: center;
-    padding-inline: var(--side);
-    transform: translate3d(0, calc(var(--s) * -6vh), 0);
-  }
-  .th__svg {
-    display: block;
-    height: clamp(3rem, 12.5vw, 13.5rem);
-    max-width: calc(100vw - 2 * var(--side));
-    overflow: visible;
-    opacity: 0;
-  }
-  .th__svg text {
-    font-family: var(--text);
-    font-size: 100px;
+  .th { padding-top: clamp(7rem, 14vh, 9rem); padding-bottom: clamp(1.5rem, 3vw, 2.5rem); }
+  .th__labels { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--ink); }
+  .th__title { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2em 0.5em; margin-top: clamp(1rem, 2vw, 1.75rem); }
+  .th__word {
+    font-size: clamp(2.8rem, 8vw, 7.5rem);
     font-weight: 200;
-    letter-spacing: -0.04em;
-    font-feature-settings: 'case' 1;
-    fill: currentColor;
-  }
-
-  .th__accent {
-    margin-top: 0.7em;
-    font-size: clamp(1.1rem, 2.6vw, 2.5rem);
-    font-style: italic;
-    font-weight: 300;
-    letter-spacing: var(--tr-h1);
+    line-height: 0.9;
+    letter-spacing: var(--tr-display);
     text-transform: uppercase;
     font-feature-settings: 'case' 1;
-    opacity: 0;
-    filter: blur(12px);
-    transform: translate3d(0, 0.4em, 0);
-    transition: opacity 0.7s var(--ease-out), filter 0.7s var(--ease-out), transform 0.9s var(--ease-expo);
+    animation: th-in 0.6s var(--ease-out) both;
   }
-  .th.is-done .th__accent { opacity: calc(1 - var(--s) * 1.4); filter: blur(calc(var(--s) * 10px)); transform: none; }
-
-  .th__hint { position: absolute; left: 50%; bottom: clamp(1.25rem, 4vh, 2.5rem); translate: -50% 0; display: grid; justify-items: center; gap: 0.6rem; opacity: calc(1 - var(--s) * 3); }
-  .th__hint span { width: 1px; height: 36px; background: currentColor; transform-origin: top; animation: th-hint 2.4s var(--ease-in-out) infinite; }
-  @keyframes th-hint { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
-
-  @media (prefers-reduced-motion: reduce) {
-    .th__svg { opacity: 1; }
-    .th__svg text { filter: none; }
-    .th__blob { display: none; }
-    .th__accent { opacity: 1; filter: none; transform: none; transition: none; }
-    .th__hint span { animation: none; }
+  .th__accent {
+    font-size: clamp(1rem, 2vw, 1.8rem);
+    font-style: italic;
+    font-weight: 300;
+    letter-spacing: var(--tr-h2);
+    text-transform: uppercase;
+    color: var(--fg-muted);
+    animation: th-in 0.6s var(--ease-out) 0.1s both;
   }
+  @keyframes th-in { from { opacity: 0; transform: translateY(10px); } }
+  @media (prefers-reduced-motion: reduce) { .th__word, .th__accent { animation: none; } }
 </style>
-
-<script>
-  document.querySelectorAll<HTMLElement>('[data-th]').forEach((root) => {
-    const svg = root.querySelector<SVGSVGElement>('[data-th-svg]')!;
-    const text = svg.querySelector('text')!;
-    const blob = root.querySelector<SVGSVGElement>('.th__blob')!;
-    const q = (k: string) => root.querySelector<SVGElement>(`[data-${k}]`);
-    const turbT = q('turb-t'), dispT = q('disp-t'), blurT = q('blur-t');
-    const turbB = q('turb-b'), dispB = q('disp-b'), blurB = q('blur-b');
-    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let intro = reduce ? 0 : 1, sNow = 0, raf = 0, t = 0;
-
-    const paint = () => {
-      raf = 0;
-      const k = Math.max(intro, sNow);
-      if (k < 0.004) text.removeAttribute('filter');
-      else text.setAttribute('filter', 'url(#thw-t)');
-      dispT?.setAttribute('scale', (130 * k).toFixed(2));
-      blurT?.setAttribute('stdDeviation', (16 * Math.pow(k, 1.3)).toFixed(2));
-      turbT?.setAttribute('baseFrequency', `${(0.01 + 0.006 * Math.sin(t * 1.3)).toFixed(4)} ${(0.04 + 0.01 * Math.cos(t)).toFixed(4)}`);
-      svg.style.opacity = String(Math.min(1, (1 - intro) * 1.6 + 0.08) * (1 - sNow * 0.9));
-      const bo = Math.sin(Math.min(1, 1 - intro) * Math.PI) * 0.16 + sNow * 0.12;
-      blob.style.opacity = bo.toFixed(3);
-      root.style.setProperty('--in', intro.toFixed(3));
-      dispB?.setAttribute('scale', (90 + 120 * Math.max(intro, sNow)).toFixed(1));
-      blurB?.setAttribute('stdDeviation', (24 + 30 * (1 - intro)).toFixed(1));
-      turbB?.setAttribute('baseFrequency', `${(0.006 + 0.003 * Math.sin(t * 0.9)).toFixed(4)} ${(0.011 + 0.004 * Math.cos(t * 0.7)).toFixed(4)}`);
-    };
-    const queue = () => { if (!raf) raf = requestAnimationFrame(paint); };
-
-    const fit = () => {
-      const b = text.getBBox();
-      const pad = 2;
-      svg.setAttribute('viewBox', `${(b.x - pad).toFixed(1)} ${(b.y - pad).toFixed(1)} ${(b.width + pad * 2).toFixed(1)} ${(b.height + pad * 2).toFixed(1)}`);
-      svg.style.aspectRatio = `${b.width + pad * 2} / ${b.height + pad * 2}`;
-    };
-
-    const start = () => {
-      fit();
-      if (reduce) { root.classList.add('is-done'); paint(); return; }
-      const t0 = performance.now(), dur = 900;
-      const step = (now: number) => {
-        t = (now - t0) / 1000;
-        const p = Math.min(1, (now - t0) / dur);
-        intro = Math.pow(1 - p, 2.4);
-        paint();
-        if (p > 0.45) root.classList.add('is-done');
-        if (p < 1) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-
-      if (scrollY > 10) return;
-      let cancelled = false;
-      const cancel = () => { cancelled = true; };
-      ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach((ev) => addEventListener(ev, cancel, { passive: true, once: true }));
-      setTimeout(() => {
-        if (cancelled || scrollY > 10) return;
-        const target = root.getBoundingClientRect().bottom + scrollY;
-        const from = scrollY, dist = target - from, s0 = performance.now(), d = 800;
-        const ease = (x: number) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
-        const go = (now: number) => {
-          if (cancelled) return;
-          const p = Math.min(1, (now - s0) / d);
-          scrollTo(0, from + dist * ease(p));
-          if (p < 1) requestAnimationFrame(go);
-        };
-        requestAnimationFrame(go);
-      }, 1250);
-    };
-    document.fonts.ready.then(start);
-    addEventListener('resize', fit);
-
-    if (!reduce) {
-      let ticking = false;
-      const update = () => {
-        ticking = false;
-        const r = root.getBoundingClientRect();
-        sNow = Math.min(1, Math.max(0, -r.top / (r.height * 0.75)));
-        root.style.setProperty('--s', sNow.toFixed(3));
-        queue();
-      };
-      addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
-    }
-  });
-</script>

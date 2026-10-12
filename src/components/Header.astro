@@ -17,7 +17,7 @@ const previews = [gala, eveil, studioClass, sp2, alain, yoga, creatif, sp5, team
 const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640, format: 'webp' })));
 const mark = await getImage({ src: fullLogo, width: 164, format: 'webp' });
 const pad = (n: number) => String(n).padStart(2, '0');
-const quick = navigation.filter((n) => ['/ecole/', '/horaires/', '/stages/', '/contact-tel/'].includes(n.href));
+const quick = navigation.filter((n) => ['/ecole/', '/horaires/', '/daleas-danse-annecy-tarifs/', '/stages/', '/contact-tel/'].includes(n.href));
 const links = [{ label: 'Accueil', href: '/' }, ...navigation];
 const isCurrent = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---

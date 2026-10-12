@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import Inscription from '../components/Inscription.astro';
 import TitleHero from '../components/TitleHero.astro';
 import { site, tel, sms } from '../data/site';
 const address = `${site.address.street}, ${site.address.zip} ${site.address.city}`;
@@ -24,6 +25,8 @@ const address = `${site.address.street}, ${site.address.zip} ${site.address.city
       </a>
     ))}
   </section>
+
+  <Inscription />
 
   <section class="ct-info wrap sec">
     <div class="ct-info__c">

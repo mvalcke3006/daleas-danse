@@ -1,0 +1,40 @@
+---
+import { site, tel, membership } from '../data/site';
+const steps = [
+  { t: 'Choisir un cours', p: 'Repérez le cours qui correspond à l’âge et au niveau dans le planning.', href: '/horaires/', cta: 'Voir le planning' },
+  { t: 'Appeler l’école', p: `Diane (${site.teachers[0].phone}) ou Delphine (${site.teachers[1].phone}) confirment la place et répondent à vos questions.`, href: tel(site.teachers[0].phone), cta: 'Appeler Diane' },
+  { t: 'Finaliser l’inscription', p: `Adhésion annuelle (${membership.map((m) => `${m.price} € ${m.label.toLowerCase()}`).join(', ')}), certificat médical et règlement du forfait.`, href: '/daleas-danse-annecy-tarifs/', cta: 'Voir les tarifs' },
+];
+---
+<section class="ins wrap sec">
+  <div class="ins__head">
+    <p class="label muted">S’inscrire</p>
+    <p class="label muted">En 3 étapes</p>
+  </div>
+  <ol class="ins__list">
+    {steps.map((s, i) => (
+      <li data-reveal style={`--d:${i * 0.06}s`}>
+        <span class="ins__n">{String(i + 1).padStart(2, '0')}</span>
+        <p class="ins__t">{s.t}</p>
+        <p class="prose muted">{s.p}</p>
+        <a href={s.href} class="tlink">{s.cta}</a>
+      </li>
+    ))}
+  </ol>
+</section>
+
+<style>
+  .ins__head { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+  .ins__list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1px solid var(--ink); }
+  .ins__list li { display: flex; flex-direction: column; align-items: flex-start; gap: 0.9rem; padding: 1.25rem clamp(1rem, 2.5vw, 2.25rem) 0; }
+  .ins__list li:first-child { padding-left: 0; }
+  .ins__list li + li { border-left: 1px solid var(--line); }
+  .ins__n { font-size: clamp(2.6rem, 5vw, 4.5rem); font-weight: 200; line-height: 0.9; letter-spacing: var(--tr-display); font-variant-numeric: tabular-nums; }
+  .ins__t { font-size: clamp(1.2rem, 1.8vw, 1.6rem); font-weight: 300; text-transform: uppercase; letter-spacing: var(--tr-h3); }
+  .ins__list .tlink { margin-top: auto; }
+  @media (max-width: 900px) {
+    .ins__list { grid-template-columns: 1fr; }
+    .ins__list li { padding: 1.25rem 0; }
+    .ins__list li + li { border-left: 0; border-top: 1px solid var(--line); }
+  }
+</style>
