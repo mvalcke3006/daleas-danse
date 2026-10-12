@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import TitleHero from '../components/TitleHero.astro';
 import { site, sms } from '../data/site';
-import studio from '../assets/img/espacedaleas-salle1.jpg';
+import atelier from '../assets/img/espace-atelier-pinceaux.jpg';
 
 const features = [
   ['Trois studios', 'Pour activités artistiques et de bien-être, yoga, répétitions.'],
@@ -25,7 +25,7 @@ const fields = [
 
   <section class="lo">
     <div class="lo__media">
-      <Image src={studio} alt="Studio de l’Espace Daléas" widths={[800, 1400]} sizes="(max-width: 900px) 100vw, 50vw" loading="eager" />
+      <Image src={atelier} alt="Pinceaux et peintures dans un atelier d’artiste" widths={[800, 1400]} sizes="(max-width: 900px) 100vw, 50vw" loading="eager" />
       <p class="lo__cap label">{site.address.venue} — {site.address.street}, {site.address.city}</p>
     </div>
 

@@ -15,6 +15,7 @@ const P = {
   duo: img('daleasdansestage-web-copyrightdaleasdanse.jpg'),
   yoga: img('coursyogaannecy-marysedaleas.jpg'),
   studio: img('espacedaleas-salle1.jpg'),
+  atelier: img('espace-atelier-pinceaux.jpg'),
   gala: img('daleasdanse-slide4.jpg'),
   team: img('daleasdanse-contactdianeetdelphine.jpg'),
   eveil: img('cours-eveil.jpg'),
@@ -42,7 +43,7 @@ const cards = [
   { slug: 'tarifs', title: 'Tarifs', accent: 'dès 18 € le cours', left: 'Daléas Danse', right: 'Saison 2026 – 2027', photos: ['sp1', 'sp5', 'sp2', 'sp3', 'gala'] },
   { slug: 'stages', title: 'Stages', accent: 'chorégraphes invités', left: 'Daléas Danse', right: 'Week-ends & été', photos: ['alain', 'laure', 'fred', 'pascal', 'duo'] },
   { slug: 'yoga', title: 'Yoga', accent: 'avec Maryse Daléas', left: 'Viniyoga', right: 'Espace Daléas, Annecy', photos: ['yoga', 'studio'] },
-  { slug: 'location', title: 'Location', accent: 'trois studios à Annecy', left: 'Espace Daléas', right: 'Location de salles', photos: ['studio'] },
+  { slug: 'location', title: 'Location', accent: 'trois studios à Annecy', left: 'Espace Daléas', right: 'Location de salles', photos: ['atelier', 'studio'] },
   { slug: 'galerie', title: 'Galerie', accent: 'la sphère en 3D', left: 'Daléas Danse', right: 'Cours, scène, studios', photos: ['sp2', 'alain', 'eveil', 'sp3', 'rouge'] },
   { slug: 'contact', title: 'Contact', accent: 'un appel suffit', left: 'Diane & Delphine', right: 'Annecy', photos: ['team', 'kids', 'sp1'] },
 ];

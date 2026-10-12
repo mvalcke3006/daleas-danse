@@ -1,6 +1,6 @@
 ---
 import { getImage } from 'astro:assets';
-import studio from '../assets/img/espacedaleas-salle1.jpg';
+import atelier from '../assets/img/espace-atelier-pinceaux.jpg';
 import fullLogo from '../assets/img/logo-emblem.png';
 import yoga from '../assets/img/coursyogaannecy-marysedaleas.jpg';
 import gala from '../assets/img/daleasdanse-slide4.jpg';
@@ -13,7 +13,7 @@ import alain from '../assets/img/stage-alain-gruttadauria.jpg';
 import { navigation, site, tel } from '../data/site';
 
 const path = Astro.url.pathname;
-const previews = [gala, eveil, studioClass, sp2, alain, yoga, studio, sp5, team];
+const previews = [gala, eveil, studioClass, sp2, alain, yoga, atelier, sp5, team];
 const shots = await Promise.all(previews.map((src) => getImage({ src, width: 640, format: 'webp' })));
 const mark = await getImage({ src: fullLogo, width: 164, format: 'webp' });
 const pad = (n: number) => String(n).padStart(2, '0');
