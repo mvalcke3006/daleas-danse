@@ -47,12 +47,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <TitleHero title="Horaires" accent={`${total} cours par semaine`} left={`Planning ${season}`} right="Du lundi au vendredi" />
 
   <section class="hh wrap">
-    <div class="hh__top">
-      <p class="label muted">Le planning</p>
-      <p class="label muted" data-today-label>Du lundi au vendredi</p>
-    </div>
     <div class="hh__row">
-      <p class="lead">{total} cours par semaine, de l’éveil rythmique dès 2 ans ½ aux classes avancées.</p>
       <div class="hh__filters" role="group" aria-label="Pour qui ?">
         <span class="label muted hh__q">Pour qui ?</span>
         <button class="hf-chip" aria-pressed="true" data-filter="all">Tout le monde</button>

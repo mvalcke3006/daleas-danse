@@ -13,10 +13,6 @@ const address = `${site.address.street}, ${site.address.zip} ${site.address.city
   <TitleHero title="Contact" accent="un appel suffit" left="Diane & Delphine" right="Annecy" />
 
   <section class="ct wrap">
-    <div class="ct__top">
-      <p class="label muted">Contact</p>
-      <p class="label muted">Un appel suffit</p>
-    </div>
 
     {site.teachers.map((t, i) => (
       <a href={tel(t.phone)} class="ct__row" data-reveal style={`--d:${i * 0.1}s`}>

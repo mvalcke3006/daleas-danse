@@ -26,10 +26,6 @@ const first = mainPricing.rows[0];
   <TitleHero title="Tarifs" accent="à votre rythme" left={`Saison ${season}`} right="Du cours à l’unité à l’illimité" />
 
   <section class="calc wrap" data-calc data-prices={JSON.stringify(data)}>
-    <div class="calc__top">
-      <p class="label muted">Tarifs {season}</p>
-      <p class="label muted">Calculer son forfait</p>
-    </div>
 
     <p class="calc__phrase">
       <span class="calc__line">
@@ -125,6 +121,7 @@ const first = mainPricing.rows[0];
   .calc__opts { display: inline-flex; align-items: baseline; gap: 0.2em; }
   .calc__or { color: var(--fg-muted); font-weight: 200; }
   .calc__opts button {
+    white-space: nowrap;
     font-weight: 200;
     text-transform: uppercase;
     letter-spacing: inherit;
@@ -166,6 +163,9 @@ const first = mainPricing.rows[0];
   .rules .prose { margin-bottom: 0.6rem; color: var(--fg-muted); }
   .rules__cta { grid-column: 2 / -1; margin-top: 1.5rem; }
 
+  @media (max-width: 600px) {
+    .calc__phrase { font-size: 6.2vw; }
+  }
   @media (max-width: 900px) {
     .calc__out { grid-template-columns: 1fr; }
     .free__list { grid-template-columns: 1fr; }

@@ -212,7 +212,10 @@ const imgs = await Promise.all(
   }
   .sph__foot .r { text-align: right; }
   @media (max-width: 640px) {
-    .sph__hint { font-size: 10px; }
+    .sph__foot .r, .sph__foot > span:first-child, .sph__count { display: none; }
+    .sph__foot { justify-content: center; bottom: 0.75rem; }
+    .sph__hint { font-size: 10px; text-align: center; }
+    .sph__filters { bottom: 3rem; }
     .sph__ctrls { top: auto; bottom: calc(clamp(3.5rem, 8vh, 5rem) + 3rem); right: 50%; translate: 50% 0; }
     .sph__count, .sph__caption { top: clamp(5.5rem, 12vh, 7rem); }
     .sph__tile { --u: clamp(40px, 12vw, 60px); }
