@@ -274,7 +274,7 @@ const breadcrumb = crumbs.length
       }
 
       const main = document.getElementById('contenu');
-      if (main && !reduce) {
+      if (main && !reduce && matchMedia('(hover: hover) and (pointer: fine)').matches) {
         const disp = document.querySelector('[data-pg-disp]');
         const turb = document.querySelector('[data-pg-turb]');
         const t0 = performance.now(), dur = 700;

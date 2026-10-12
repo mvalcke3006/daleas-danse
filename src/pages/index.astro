@@ -196,8 +196,8 @@ const finder = ages.map((a) => {
   }
   .expand__w--l { right: calc(100% - (1 - var(--p)) * 24%); padding-right: clamp(0.75rem, 1.6vw, 1.75rem); }
   .expand__w--r { left: calc(100% - (1 - var(--p)) * 24%); padding-left: clamp(0.75rem, 1.6vw, 1.75rem); }
-  .expand__caption { position: absolute; left: var(--side); bottom: calc(clamp(70px, 13vh, 150px) + 0.5rem); opacity: clamp(0, calc((var(--p) - 0.6) * 4), 1); }
-  .expand__caption .chip { --chip-bg: var(--white); color: var(--ink); font-size: 14px; padding: 11px 16px; border-radius: 999px; }
+  .expand__caption { position: absolute; left: var(--side); right: var(--side); bottom: calc(clamp(70px, 13vh, 150px) + 0.5rem); opacity: clamp(0, calc((var(--p) - 0.6) * 4), 1); }
+  .expand__caption .chip { --chip-bg: var(--white); color: var(--ink); font-size: 14px; padding: 11px 16px; border-radius: 999px; white-space: normal; max-width: 100%; line-height: 1.35; }
 
   .hub-intro { padding: var(--section) 0; }
   .manif {

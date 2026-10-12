@@ -126,6 +126,10 @@ const ete = summerCamp.dates.match(/(\d+)\D+(\d+)\s+([a-zéû]+)/i);
   .st-call__n { font-size: clamp(1.4rem, 2.6vw, 2.4rem); font-weight: 200; letter-spacing: var(--tr-h2); font-variant-numeric: tabular-nums; }
   .st-call__a:hover { color: var(--plum); }
 
+  @media (max-width: 600px) {
+    .poster__team li { flex-direction: column; gap: 2px; }
+    .poster { aspect-ratio: 4 / 5; }
+  }
   @media (max-width: 900px) {
     .posters, .st-text, .st-call__list { grid-template-columns: 1fr; }
     .st-call__a + .st-call__a { padding-left: 0; border-left: 0; }

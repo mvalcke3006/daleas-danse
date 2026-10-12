@@ -1,6 +1,6 @@
 ---
 import { getImage } from 'astro:assets';
-import figure from '../assets/img/daleas-figure.png';
+import figure from '../assets/img/daleas-figure-hd.png';
 import kids from '../assets/img/coursinitiationjazz_daleasdanse.jpg';
 import jazz from '../assets/img/coursdansemodernjazz_daleasdanseannecy.jpg';
 import duo from '../assets/img/daleasdansestage-web-copyrightdaleasdanse.jpg';
@@ -10,7 +10,7 @@ import gala from '../assets/img/daleasdanse-slide4.jpg';
 import team from '../assets/img/daleasdanse-contactdianeetdelphine.jpg';
 
 const base = import.meta.env.BASE_URL;
-const logo = await getImage({ src: figure, width: 574, format: 'webp' });
+const logo = await getImage({ src: figure, width: 861, format: 'webp', quality: 90 });
 
 const photos = [
   { src: duo, x: 15, y: 20, w: 11, r: -6, d: 0.25, ratio: '4/5', pos: '45% 30%', href: 'stages/' },
@@ -128,7 +128,6 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
     height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 18px 16px rgba(20, 22, 23, 0.22));
-    will-change: transform;
     animation: logo-in 1.8s var(--ease-expo) 0.05s backwards;
   }
   @keyframes logo-in { from { opacity: 0; filter: blur(18px); } }
@@ -216,7 +215,7 @@ const shots = await Promise.all(photos.map((p) => getImage({ src: p.src, width: 
         const fl = reduce ? 0 : 1;
         logoImg.style.transform =
           `translate3d(${(cmx * 12 * fl).toFixed(1)}px, ${(cmy * 18 * fl + Math.sin(t * 0.9) * 7 * fl - scroll * 0.12).toFixed(1)}px, 0) ` +
-          `rotateX(${(-cmy * 18 * fl).toFixed(2)}deg) rotateY(${(cmx * 28 * fl).toFixed(2)}deg) ` +
+          (fine ? `rotateX(${(-cmy * 18 * fl).toFixed(2)}deg) rotateY(${(cmx * 28 * fl).toFixed(2)}deg) ` : '') +
           `rotateZ(${(Math.sin(t * 0.6) * 1.8 * fl + cmx * 5 * fl).toFixed(2)}deg)`;
 
         words.forEach((w, i) => {
