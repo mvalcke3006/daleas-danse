@@ -2,7 +2,6 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import TitleHero from '../components/TitleHero.astro';
-import creatif from '../assets/img/espace-activites-creatives.jpg';
 import { site, sms } from '../data/site';
 import studio from '../assets/img/espacedaleas-salle1.jpg';
 
@@ -26,7 +25,7 @@ const fields = [
 
   <section class="lo">
     <div class="lo__media">
-      <Image src={creatif} alt="Activités créatives à l’Espace Daléas" widths={[800, 1400]} sizes="(max-width: 900px) 100vw, 50vw" loading="eager" />
+      <Image src={studio} alt="Studio de l’Espace Daléas" widths={[800, 1400]} sizes="(max-width: 900px) 100vw, 50vw" loading="eager" />
       <p class="lo__cap label">{site.address.venue} — {site.address.street}, {site.address.city}</p>
     </div>
 

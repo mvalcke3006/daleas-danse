@@ -14,7 +14,6 @@ import studioClass from '../assets/img/cours-studio-nb.jpg';
 import sp2 from '../assets/img/spectacle-2.jpg';
 import sp5 from '../assets/img/spectacle-5.jpg';
 import alain from '../assets/img/stage-alain-gruttadauria.jpg';
-import creatif from '../assets/img/espace-activites-creatives.jpg';
 
 const next = weekends[0];
 const total = schedule.reduce((n, d) => n + d.slots.length, 0);
@@ -111,7 +110,7 @@ const finder = ages.map((a) => {
           { label: 'Tarifs', meta: `Dès ${singleClass} € le cours`, href: '/daleas-danse-annecy-tarifs/', img: sp2 },
           { label: 'Stages', meta: next ? `Prochain : ${next.date}` : 'Chorégraphes invités', href: '/stages/', img: alain, pos: '50% 30%' },
           { label: 'Yoga', meta: 'Viniyoga avec Maryse', href: '/yoga-annecy/', img: yoga },
-          { label: 'Location', meta: 'Trois studios', href: '/espace-daleas-location-de-salles-annecy/', img: creatif },
+          { label: 'Location', meta: 'Trois studios', href: '/espace-daleas-location-de-salles-annecy/', img: studio, pos: '30% 50%' },
           { label: 'Galerie', meta: 'La sphère en 3D', href: '/galerie/', img: sp5 },
           { label: 'Contact', meta: 'Diane & Delphine', href: '/contact-tel/', img: team, pos: '40% 45%' },
         ]}
